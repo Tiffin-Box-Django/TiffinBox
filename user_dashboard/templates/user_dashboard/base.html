@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %} TiffinBox {% endblock %}</title>
+          <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../static/user_dashboard/base-styles.css" />
+
+  </head>
+  <body>
+    <!-- header.html -->
+    <header class="header container d-flex">
+      <nav class="nav navbar navbar-default navbar-static-top navbar-fixed-top">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active "><a href="#">Home</a></li>
+          <li><a href="#">Menu</a></li>
+          <li><a href="#">Cart</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    {% block body %}{% endblock %}
+
+    <!-- footer.html -->
+    <footer>
+      <p>&copy; {% now "Y" %} TiffinBox. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
