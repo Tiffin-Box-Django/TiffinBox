@@ -1,2 +1,6 @@
 # Tiffin-Box
-## The user_dashboard brach is the upstream branch for the user application
+
+# Requirements
+
+1. Use Python 3.10
+2. Install packages from requirements.txt

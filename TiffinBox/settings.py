@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'admin_dashboard.apps.AdminDashboardConfig',
-    "user_dashboard.apps.User_dashboardConfig"
+    'admin_dashboard',
+    'user_dashboard',
+    'django_bootstrap5'
 ]
 
 MIDDLEWARE = [
