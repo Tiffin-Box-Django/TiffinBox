@@ -8,8 +8,8 @@ class Business(User):
         (1, 'Registered'),
         (2, 'Registration in process')]
 
-    business_name = models.CharField(max_length=200, unique=True, null=False)
-    phone_number = models.CharField(max_length=10, unique=True, null=False)
+    business_name = models.CharField(max_length=200, unique=True, null=True)
+    phone_number = models.CharField(max_length=10, unique=True, null=True)
     is_registered = models.IntegerField(choices=registered_enum, null=False, default=0)
 
     class Meta:
