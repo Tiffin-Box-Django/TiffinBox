@@ -17,9 +17,12 @@ class TBUser(User):
     class Meta:
         verbose_name = "TBUser"
 
+    def __str__(self):
+        return self.last_name + " " + self.first_name + " " + str(self.client_type)
+
 
 class TiffinItemList(models.Model):
-    name = models.CharField(max_length=200),
+    name = models.CharField(max_length=200)
     createdDate = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -36,18 +39,12 @@ class Schedule(models.Model):
     frequency = models.IntegerField(choices=choices)
 
     def __str__(self):
-        return str(self.frequency)
+        return f"Schedule: {str(self.frequency)}"
 
 
 class Tiffin(models.Model):
     MEAL = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
-    RATING = [
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-        (5, 5)
-    ]
+
     schedule_id = models.ForeignKey(Schedule, on_delete=models.DO_NOTHING)
     business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
     tiffin_name = models.CharField(max_length=50)
@@ -56,28 +53,32 @@ class Tiffin(models.Model):
     meal_type = models.IntegerField(choices=MEAL, default=0)
     calories = models.IntegerField()
     price = models.DecimalField(max_digits=4, decimal_places=2)
-    avg_rating = models.IntegerField(choices=RATING)
+    avg_rating = models.DecimalField(max_digits=2, decimal_places=1)
     free_delivery_eligible = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.tiffin_name
+        return self.tiffin_name + " " + str(self.meal_type) + " " + str(self.price)
 
 
-class Orders(models.Model):
-    payment_types = [(0, "Credit Card"), (1, "Debit Card"), (2, "Cash"), (3, "Interac")]
-    order_status_types = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled")]
+class Order(models.Model):
+    PAYMENT_TYPES = [(0, "Credit Card"), (1, "Debit Card"), (2, "Cash"), (3, "Interac")]
+    ORDER_STATUS = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled")]
+
     user_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
-    total_price = models.FloatField()
+    total_price = models.DecimalField(max_digits=4, decimal_places=2)
     shipping_address = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=10)
-    payment_method = models.IntegerField(choices=payment_types, default=0)
-    status = models.IntegerField(choices=order_status_types, default=0)
+    payment_method = models.IntegerField(choices=PAYMENT_TYPES, default=0)
+    status = models.IntegerField(choices=ORDER_STATUS, default=0)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return str(self.id) + " " + str(self.status) + " " + str(self.payment_method) + " " + str(self.shipping_address)
 
-class TiffinContents(models.Model):
+
+class TiffinContent(models.Model):
     tiffin = models.ForeignKey(Tiffin, on_delete=models.CASCADE)
     tiffinitem = models.ForeignKey(TiffinItemList, on_delete=models.CASCADE)
     tiffinitem_description = models.TextField()
@@ -85,7 +86,7 @@ class TiffinContents(models.Model):
     quantity_metric = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"Tiffin Name: {self.tiffin.tiffin_name}, Tiffin Item: {self.tiffinitem.name}"
+        return self.tiffinitem.name + ", " + str(self.quantity) + str(self.quantity_metric)
 
 
 class Testimonial(models.Model):
@@ -94,11 +95,11 @@ class Testimonial(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Testimonial: {self.id}, Comment: {self.comment}"
+        return str(self.id) + " " + self.comment
 
 
 class OrderItem(models.Model):
-    order_id = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     tiffin_id = models.ForeignKey(Tiffin, on_delete=models.DO_NOTHING)
     quantity = models.IntegerField(null=False)
 
@@ -118,4 +119,4 @@ class Review(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Review: {self.id}, Comment: {self.comment}"
+        return self.user.username + " " + str(self.rating) + " " + self.comment
