@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+
 class TBUser(User):
     CLIENT_TYPE = [
         (0, 'User'),
@@ -37,6 +38,7 @@ class Schedule(models.Model):
     def __str__(self):
         return str(self.frequency)
 
+
 class Tiffin(models.Model):
     MEAL = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
     RATING = [1, 2, 3, 4, 5]
@@ -67,3 +69,14 @@ class Orders(models.Model):
     status = models.IntegerField(choices=order_status_types, default=0)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+
+
+class TiffinContents(models.Model):
+    tiffin = models.ForeignKey(Tiffin, on_delete=models.CASCADE)
+    tiffinitem = models.ForeignKey(TiffinItemList, on_delete=models.CASCADE)
+    tiffinitem_description = models.TextField()
+    quantity = models.IntegerField()
+    quantity_metric = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"Tiffin Name: {self.tiffin.tiffin_name}, Tiffin Item: {self.tiffinitem.name}"
