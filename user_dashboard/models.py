@@ -90,3 +90,9 @@ class Testimonial(models.Model):
     def __str__(self):
         return f"Testimonial: {self.id}, Comment: {self.comment}"
 
+
+class OrderItem(models.Model):
+    order_id = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    tiffin_id = models.ForeignKey(Tiffin, on_delete=models.DO_NOTHING)
+    quantity = models.IntegerField(null=False)
+
