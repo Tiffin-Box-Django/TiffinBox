@@ -1,6 +1,8 @@
 from django.shortcuts import render
 
 
-def index(request):
-    return render(request, 'base.html', {})
+def explore(request):
+    if request.method != 'GET':
+        return {"error": "Method Not Allowed"}
+    return render(request, 'user_dashboard/explore.html', {})
 
