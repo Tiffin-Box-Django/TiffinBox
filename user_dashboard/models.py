@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 class TBUser(User):
     CLIENT_TYPE = [
@@ -54,3 +54,16 @@ class Tiffin(models.Model):
 
     def __str__(self):
         return self.tiffin_name
+
+
+class Orders(models.Model):
+    payment_types = [(0, "Credit Card"), (1, "Debit Card"), (2, "Cash"), (3, "Interac")]
+    order_status_types = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled")]
+    user_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
+    total_price = models.FloatField()
+    shipping_address = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=10)
+    payment_method = models.IntegerField(choices=payment_types, default=0)
+    status = models.IntegerField(choices=order_status_types, default=0)
+    created_date = models.DateTimeField(default=timezone.now)
+    updated_date = models.DateTimeField(default=timezone.now)
