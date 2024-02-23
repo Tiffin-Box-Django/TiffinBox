@@ -80,3 +80,13 @@ class TiffinContents(models.Model):
 
     def __str__(self):
         return f"Tiffin Name: {self.tiffin.tiffin_name}, Tiffin Item: {self.tiffinitem.name}"
+
+
+class Testimonial(models.Model):
+    user = models.ForeignKey(TBUser, on_delete=models.DO_NOTHING)
+    comment = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Testimonial: {self.id}, Comment: {self.comment}"
+
