@@ -96,3 +96,14 @@ class OrderItem(models.Model):
     tiffin_id = models.ForeignKey(Tiffin, on_delete=models.DO_NOTHING)
     quantity = models.IntegerField(null=False)
 
+
+class Review(models.Model):
+    RATING = [1, 2, 3, 4, 5]
+    user = models.ForeignKey(TBUser, on_delete=models.DO_NOTHING)
+    tiffin = models.ForeignKey(Tiffin, on_delete=models.DO_NOTHING)
+    rating = models.IntegerField(choices=RATING, default=0)
+    comment = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review: {self.id}, Comment: {self.comment}"
