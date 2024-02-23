@@ -101,7 +101,7 @@ class Review(models.Model):
     RATING = [1, 2, 3, 4, 5]
     user = models.ForeignKey(TBUser, on_delete=models.DO_NOTHING)
     tiffin = models.ForeignKey(Tiffin, on_delete=models.DO_NOTHING)
-    rating = models.IntegerField(choices=RATING, default=0)
+    rating = models.IntegerField(choices=RATING)
     comment = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
 
