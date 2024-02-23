@@ -36,3 +36,21 @@ class Schedule(models.Model):
 
     def __str__(self):
         return str(self.frequency)
+
+class Tiffin(models.Model):
+    MEAL = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
+    RATING = [1, 2, 3, 4, 5]
+    schedule_id = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
+    tiffin_name = models.CharField(max_length=50)
+    tiffin_description = models.TextField()
+    image = models.TextField()
+    meal_type = models.IntegerField(choices=MEAL, default=0)
+    calories = models.IntegerField()
+    price = models.DecimalField(max_digits=4)
+    avg_rating = models.IntegerField(choices=RATING)
+    free_delivery_eligible = models.BooleanField(default=True)
+    created_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.tiffin_name
