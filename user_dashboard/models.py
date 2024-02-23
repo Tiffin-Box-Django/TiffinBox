@@ -69,3 +69,9 @@ class Orders(models.Model):
     status = models.IntegerField(choices=order_status_types, default=0)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
+
+
+class OrderItem(models.Model):
+    order_id = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    tiffin_id = models.ForeignKey(Tiffin, on_delete=models.DO_NOTHING)
+    quantity = models.IntegerField(null=False)
