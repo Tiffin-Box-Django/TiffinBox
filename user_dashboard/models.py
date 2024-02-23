@@ -48,12 +48,12 @@ class Tiffin(models.Model):
     schedule_id = models.ForeignKey(Schedule, on_delete=models.DO_NOTHING)
     business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
     tiffin_name = models.CharField(max_length=50)
-    tiffin_description = models.TextField()
+    tiffin_description = models.TextField(blank=True)
     image = models.TextField()
     meal_type = models.IntegerField(choices=MEAL, default=0)
     calories = models.IntegerField()
     price = models.DecimalField(max_digits=4, decimal_places=2)
-    avg_rating = models.DecimalField(max_digits=2, decimal_places=1)
+    avg_rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0)
     free_delivery_eligible = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
@@ -81,7 +81,7 @@ class Order(models.Model):
 class TiffinContent(models.Model):
     tiffin = models.ForeignKey(Tiffin, on_delete=models.CASCADE)
     tiffinitem = models.ForeignKey(TiffinItemList, on_delete=models.CASCADE)
-    tiffinitem_description = models.TextField()
+    tiffinitem_description = models.TextField(blank=True)
     quantity = models.IntegerField()
     quantity_metric = models.CharField(max_length=50)
 
