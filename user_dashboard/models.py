@@ -8,11 +8,11 @@ class TBUser(User):
         (0, 'User'),
         (1, 'Business')]
 
-    profile_picture = models.TextField()
-    phone_number = models.CharField(max_length=10)
+    profile_picture = models.TextField(blank=True)
+    phone_number = models.CharField(max_length=10, blank=True)
     client_type = models.IntegerField(choices=CLIENT_TYPE, default=0)
     is_registered = models.BooleanField(default=False)
-    shipping_address = models.CharField(max_length=200)
+    shipping_address = models.CharField(max_length=200, blank=True)
 
     class Meta:
         verbose_name = "TBUser"
@@ -41,7 +41,13 @@ class Schedule(models.Model):
 
 class Tiffin(models.Model):
     MEAL = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
-    RATING = [1, 2, 3, 4, 5]
+    RATING = [
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5)
+    ]
     schedule_id = models.ForeignKey(Schedule, on_delete=models.DO_NOTHING)
     business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
     tiffin_name = models.CharField(max_length=50)
@@ -49,7 +55,7 @@ class Tiffin(models.Model):
     image = models.TextField()
     meal_type = models.IntegerField(choices=MEAL, default=0)
     calories = models.IntegerField()
-    price = models.DecimalField(max_digits=4)
+    price = models.DecimalField(max_digits=4, decimal_places=2)
     avg_rating = models.IntegerField(choices=RATING)
     free_delivery_eligible = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -98,10 +104,16 @@ class OrderItem(models.Model):
 
 
 class Review(models.Model):
-    RATING = [1, 2, 3, 4, 5]
+    RATINGS = [
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5)
+    ]
     user = models.ForeignKey(TBUser, on_delete=models.DO_NOTHING)
     tiffin = models.ForeignKey(Tiffin, on_delete=models.DO_NOTHING)
-    rating = models.IntegerField(choices=RATING)
+    rating = models.IntegerField(choices=RATINGS)
     comment = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
 
