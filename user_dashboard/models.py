@@ -42,7 +42,7 @@ class Schedule(models.Model):
 class Tiffin(models.Model):
     MEAL = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
     RATING = [1, 2, 3, 4, 5]
-    schedule_id = models.ForeignKey(Schedule, on_delete=models.CASCADE)
+    schedule_id = models.ForeignKey(Schedule, on_delete=models.DO_NOTHING)
     business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
     tiffin_name = models.CharField(max_length=50)
     tiffin_description = models.TextField()
@@ -52,7 +52,7 @@ class Tiffin(models.Model):
     price = models.DecimalField(max_digits=4)
     avg_rating = models.IntegerField(choices=RATING)
     free_delivery_eligible = models.BooleanField(default=True)
-    created_date = models.DateTimeField()
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.tiffin_name
