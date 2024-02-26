@@ -12,19 +12,9 @@
         <div class="card-body">
           <h5 class="card-title">Filters</h5>
           <form>
-            <!-- Dropdown for cuisine -->
-            <div class="form-group">
-              <label for="cuisine">Cuisine</label>
-              <select class="form-control" id="cuisine">
-                <option>Indian</option>
-                <option>Italian</option>
-                <option>Mexican</option>
-                <!-- Add more options -->
-              </select>
-            </div>
             <!-- Dropdown for veg/non-veg -->
             <div class="form-group">
-              <label for="veg_non_veg">Veg/Non-Veg</label>
+              <label for="veg_non_veg">Meal Type</label>
               <select class="form-control" id="veg_non_veg">
                   {% for meal_type in meal_types %}
                     <option>{{ meal_type }}</option>
