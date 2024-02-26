@@ -26,8 +26,9 @@
             <div class="form-group">
               <label for="veg_non_veg">Veg/Non-Veg</label>
               <select class="form-control" id="veg_non_veg">
-                <option>Veg</option>
-                <option>Non-Veg</option>
+                  {% for meal_type in meal_types %}
+                    <option>{{ meal_type }}</option>
+                  {% endfor %}
               </select>
             </div>
             <!-- Add more filters -->
@@ -69,6 +70,7 @@
                 {% endfor %}
               </div>
               <a href="#" class="btn btn-primary">View Details</a>
+              <p class="tw-light">${{ tiffin.price }}</p>
             </div>
           </div>
         </div>
