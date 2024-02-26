@@ -1,20 +1,80 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<!-- an explore page that has all the filter options, search bar for searching by business name, cusine or  tiffin name -->
-<div class="container mt-3">
-    <div class="row">
-        <div class="col-md-6">
-            <!-- Filter options -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles/explore.css' %}">
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-3">
+      <!-- Filter sidebar -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Filters</h5>
+          <form>
+            <!-- Dropdown for cuisine -->
+            <div class="form-group">
+              <label for="cuisine">Cuisine</label>
+              <select class="form-control" id="cuisine">
+                <option>Indian</option>
+                <option>Italian</option>
+                <option>Mexican</option>
+                <!-- Add more options -->
+              </select>
+            </div>
+            <!-- Dropdown for veg/non-veg -->
+            <div class="form-group">
+              <label for="veg_non_veg">Veg/Non-Veg</label>
+              <select class="form-control" id="veg_non_veg">
+                <option>Veg</option>
+                <option>Non-Veg</option>
+              </select>
+            </div>
+            <!-- Add more filters -->
+            <!-- Sort by buttons -->
+            <div class="form-group">
+              <label>Sort By</label>
+              <div class="btn-group d-flex" role="group">
+                <button type="button" class="btn btn-primary flex-fill">Rating</button>
+                <button type="button" class="btn btn-primary flex-fill">Price</button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Apply</button>
+          </form>
         </div>
-      <div class="col-md-6">
-        <!-- Search bar container -->
-        <div class="d-flex justify-content-end align-items-center">
-            <!-- Search input -->
-            <input type="text" class="form-control" placeholder="Search...">
-            <!-- Search button (optional) -->
-            <button class="btn btn-primary">Search</button>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <!-- Search bar -->
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Search by business name or food item" aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button">Search</button>
+        </div>
+      </div>
+      <!-- Tiffin cards -->
+      <div class="row">
+        {% for tiffin in tiffins %}
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <!-- link using static reference -->
+            <img src="{% static tiffin.photo %}" class="card-img-top" alt="{{ tiffin.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ tiffin.name }}</h5>
+              <p class="card-text">Business: {{ tiffin.business }}</p>
+              <!-- Render rating stars -->
+              <div class="rating">
+                {% for _ in tiffin.rating %}
+                <span class="fa fa-star checked"></span>
+                {% endfor %}
+              </div>
+              <a href="#" class="btn btn-primary">View Details</a>
+            </div>
           </div>
+        </div>
+        {% endfor %}
       </div>
     </div>
   </div>
+</div>
 {% endblock %}
