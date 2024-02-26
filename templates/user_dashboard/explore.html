@@ -60,12 +60,12 @@
             <!-- link using static reference -->
             <img src="{% static tiffin.photo %}" class="card-img-top" alt="{{ tiffin.name }}">
             <div class="card-body">
-              <h5 class="card-title">{{ tiffin.name }}</h5>
-              <p class="card-text">Business: {{ tiffin.business }}</p>
+              <h5 class="card-title mb-1">{{ tiffin.name }}</h5>
+              <p class="card-text text-muted mb-1">{{ tiffin.business }}</p>
               <!-- Render rating stars -->
-              <div class="rating">
+              <div>
                 {% for _ in tiffin.rating %}
-                <span class="fa fa-star checked"></span>
+                <span class="fa fa-star"></span>
                 {% endfor %}
               </div>
               <a href="#" class="btn btn-primary">View Details</a>
