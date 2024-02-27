@@ -8,5 +8,9 @@
 {% block bootstrap5_title %} Tiffin Box {% endblock %}
 
 {% block bootstrap5_content %}
-    {% block content %}{% endblock %}
+    {% block content %}
+        {% include "header.html" %}
+        
+        {%  include "footer.html" %}
+    {% endblock %}
 {% endblock %}
