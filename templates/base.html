@@ -3,9 +3,15 @@
 {% load django_bootstrap5  %}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
-
 {% bootstrap_messages %}
+
 {% block bootstrap5_title %} Tiffin Box {% endblock %}
+{% block bootstrap5_extra_head %}
+{% load static %}
+    <!-- Custom css header -->
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+{% endblock %}
 
 {% block bootstrap5_content %}
     {% block header %}
