@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'styles/user_dashboard/landing.css' %}">
+    
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Welcome to Tiffin Box</h1>
+                <p>Your one-stop solution for delicious homemade tiffin meals!</p>
+                <a href="#services" class="btn btn-primary">Explore Our Services</a>
+            </div>
+        </section>
+        
+        <section id="services" class="services">
+            <div class="container">
+                <h2>Our Services</h2>
+                <div class="row">
+                    <!-- Services content goes here -->
+                </div>
+            </div>
+        </section>
+    {% endblock %}
