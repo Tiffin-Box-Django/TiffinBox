@@ -3,6 +3,7 @@ from django.shortcuts import render
 from .models import Tiffin
 from enum_maps import MEAL
 
+
 def explore(request):
     if request.method != 'GET':
         return {"error": "Method Not Allowed"}
@@ -20,3 +21,6 @@ def explore(request):
     meal_types = [MEAL[i] for i in meal_types]
     return render(request, 'user_dashboard/explore.html', {'tiffins': tiffins,
                                                            "meal_types": meal_types})
+
+def landing(request):
+    return render(request, 'user_dashboard/landing.html')
