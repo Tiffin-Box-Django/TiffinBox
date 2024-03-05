@@ -20,3 +20,10 @@ def explore(request):
     meal_types = [MEAL[i] for i in meal_types]
     return render(request, 'user_dashboard/explore.html', {'tiffins': tiffins,
                                                            "meal_types": meal_types})
+
+def tiffindetails(request):
+    tiffin = Tiffin.objects.get(pk=1)
+    return render(request, 'user_dashboard/tiffindetails.html', {'tiffin': tiffin})
+
+def addcart(request, id):
+    return None

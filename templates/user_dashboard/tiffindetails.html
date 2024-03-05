@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+{% load static %}
+<!-- Link to external CSS file for extra stylings -->
+<link rel="stylesheet" href="{% static 'styles/user_dashboard/tiffindetails.css' %}">
+ 
+<div class="flex-container mt-5">
+ 
+ 
+ 
+ 
+    <!-- <div class="card mb-3" style="max-width: 540px;">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="..." class="img-fluid rounded-start" alt="...">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional
+                    content. This content is a little bit longer.</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+        </div>
+    </div>
+</div> -->
+ 
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{% static 'img/dinner.jpg' %}" class="card-img-top col-md-4" alt="Tiffin Image">
+        </div>
+        <div class="col-md-8">
+ 
+            <div class="card-body">
+                <h5 class="card-title">{{ tiffin.tiffin_name }}</h5>
+                <p class="card-text">{{ tiffin.tiffin_description }}</p>
+                <p class="card-text">Calories: {{ tiffin.calories }}</p>
+                <p class="card-text">Price: ${{ tiffin.price }}</p>
+                <p class="card-text">Average Rating: {{ tiffin.avg_rating }}</p>
+                {% if tiffin.free_delivery_eligible %}
+                <p class="card-text">Free Delivery Eligible</p>
+                {% endif %}
+                <form method="post" action="{% url 'user_dashboard:add_to_cart' tiffin.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity:</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+</div>
+{% endblock %}
