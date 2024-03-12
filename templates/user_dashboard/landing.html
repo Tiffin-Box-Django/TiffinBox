@@ -1,22 +1,171 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %}
-    <link rel="stylesheet" href="{% static 'styles/user_dashboard/landing.css' %}">
-    
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Welcome to Tiffin Box</h1>
-                <p>Your one-stop solution for delicious homemade tiffin meals!</p>
-                <a href="#services" class="btn btn-primary">Explore Our Services</a>
-            </div>
-        </section>
-        
-        <section id="services" class="services">
+<link rel="stylesheet" href="{% static 'styles/user_dashboard/landing.css' %}">
+<!-- Include Slick Carousel CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+<link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Welcome to Tiffin Box</h1>
+        <p>Your one-stop solution for delicious homemade tiffin meals!</p>
+        <a href="#services" class="btn btn-primary">Explore Our Services</a>
+    </div>
+</section>
+
+
+<section id="tiffins" class="tiffins">
+    <div class="container">
+        <h2 class="text-center">Top Tiffins</h2>
+        <div class="row">
             <div class="container">
-                <h2>Our Services</h2>
-                <div class="row">
-                    <!-- Services content goes here -->
+                <div class="row mt-4">
+                    <div class="col-md-3 m-2">
+                        <div class="card p-3" style="width: 18rem;">
+                            <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Mini Tiffin</h5>
+                                <p class="card-text">Cauliflower Fry and Rotis</p>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-2">
+                        <div class="card p-3" style="width: 18rem;">
+                            <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Mini Tiffin</h5>
+                                <p class="card-text">Cauliflower Fry and Rotis</p>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-2">
+                        <div class="card p-3" style="width: 18rem;">
+                            <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Mini Tiffin</h5>
+                                <p class="card-text">Cauliflower Fry and Rotis</p>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-2">
+                        <div class="card p-3" style="width: 18rem;">
+                            <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Mini Tiffin</h5>
+                                <p class="card-text">Cauliflower Fry and Rotis</p>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section>
-    {% endblock %}
+        </div>
+    </div>
+</section>
+
+<section id="tiffins" class="tiffins">
+    <div class="container">
+        <h2 class="text-center">Top Business</h2>
+        <div class="row">
+            <div class="container">
+                <div class="row mt-4">
+                    <div class="col-md-3 m-2">
+                        <div class="card p-3" style="width: 18rem;">
+                            <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Mini Tiffin</h5>
+                                <p class="card-text">Cauliflower Fry and Rotis</p>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-2">
+                        <div class="card p-3" style="width: 18rem;">
+                            <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Mini Tiffin</h5>
+                                <p class="card-text">Cauliflower Fry and Rotis</p>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-2">
+                        <div class="card p-3" style="width: 18rem;">
+                            <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Mini Tiffin</h5>
+                                <p class="card-text">Cauliflower Fry and Rotis</p>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 m-2">
+                        <div class="card p-3" style="width: 18rem;">
+                            <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">Mini Tiffin</h5>
+                                <p class="card-text">Cauliflower Fry and Rotis</p>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Testimonials Section -->
+
+<section class="testimonials">
+    <div class="container">
+        <h2>What Our Customers Say</h2>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="testimonial-slider">
+                    <div class="slick-slide">
+                        <div class="testimonial">
+                            <div class="testimonial-content">
+                                <img src="{% static 'img/customer1.jpg' %}" alt="Customer 1">
+                                <div class="testimonial-text">
+                                    <blockquote>
+                                        "I love the variety and quality of meals offered by TiffinBox. It's convenient
+                                        and delicious!"
+                                    </blockquote>
+                                    <cite>John Doe</cite>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slick-slide">
+                        <div class="testimonial">
+                            <div class="testimonial-content">
+                                <img src="{% static 'img/customer2.jpg' %}" alt="Customer 2">
+                                <div class="testimonial-text">
+                                    <blockquote>
+                                        "TiffinBox has made my life so much easier with their tasty and affordable meal
+                                        plans."
+                                    </blockquote>
+                                    <cite>Jane Smith</cite>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add more testimonials as needed -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<script src="{% static 'js/user_dashboard/landing.js' %}"></script>
+
+{% endblock %}
