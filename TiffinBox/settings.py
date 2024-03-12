@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'business_dashboard',
     'user_dashboard',
-    'django_bootstrap5'
+    'django_bootstrap5',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
