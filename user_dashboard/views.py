@@ -5,7 +5,6 @@ from enum_maps import MEAL
 from .forms import ExploreSearchForm, FilterForm
 
 
-
 def explore(request):
     searchForm = ExploreSearchForm()
     filtersForm = FilterForm()
