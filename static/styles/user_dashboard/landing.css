@@ -1,5 +1,5 @@
 /* Custom CSS for the landing page */
-
+ 
 /* Hero section */
 .hero {
     background-image: url('../../img/tiffin-background.jpg');
@@ -9,58 +9,74 @@
     padding: 100px 0;
     text-align: center;
 }
-
+ 
 .hero-content {
     max-width: 800px;
     margin: 0 auto;
 }
-
+ 
 .hero h1 {
     font-size: 3em;
     margin-bottom: 20px;
 }
-
+ 
 .hero p {
     font-size: 1.2em;
     margin-bottom: 40px;
 }
-
+ 
 /* Services section */
-.services {
+.tiffins {
+    margin: 20px;
     background-color: #f8f9fa;
-    padding: 80px 0;
+    padding: 40px 0;
+    border-radius: 10px;
 }
-
-.service-item {
+ 
+/* Custom Styling for Testimonials Section */
+.testimonials {
+    padding: 50px 0;
     text-align: center;
-    margin-bottom: 40px;
 }
 
-.service-item i {
-    font-size: 3em;
-    color: #007bff; /* Blue color */
+.testimonial-slider {
+    /* display: inline-block; */
+    margin: 0 auto;
+    max-width: 90%;
+    width: 100%; 
+    text-align: center; /* Reset text-align for slider contents */
 }
 
-.service-item h3 {
-    font-size: 1.5em;
+.testimonial-slider .slick-slide {
+    margin: 0 auto; /* Center the slides horizontally */
+}
+
+.testimonial-slider .testimonial {
+    max-width: 600px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-slider .testimonial img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
     margin-bottom: 20px;
 }
 
-.service-item p {
-    font-size: 1.2em;
+.testimonial-slider blockquote {
+    font-size: 18px;
+    margin-bottom: 20px;
 }
 
-/* Button styling */
-.btn-primary {
-    background-color: #007bff; /* Blue color */
-    border-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    font-size: 1.2em;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+.testimonial-slider cite {
+    font-size: 16px;
+    font-style: italic;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+.testimonial-slider .slick-arrow{
+    color: #e34949 !important;
+    z-index: 1;
 }
