@@ -1,12 +1,7 @@
-{% extends 'django_bootstrap5/bootstrap5.html' %}
-{% load django_bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-{% bootstrap_messages %}
-{% block bootstrap5_title %} Tiffin Box {% endblock %}
-{% block bootstrap5_content %}
+{% extends 'base.html'%}
+{% block content %}
 <div class="container">
-    <h1>Tiffin List</h1>
+    <h1 style="margin-top: 4px">Tiffin List</h1>
     <div class="row">
         <div class="input-group col-md-4">
             <input class="form-control py-2 border-right-0 border" type="search" value="search" id="example-search-input">
