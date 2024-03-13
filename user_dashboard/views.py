@@ -22,8 +22,8 @@ def explore(request):
                                                            "meal_types": meal_types})
 
 def tiffindetails(request):
-    tiffin = Tiffin.objects.get(pk=1)
-    return render(request, 'user_dashboard/tiffindetails.html', {'tiffin': tiffin})
+    # tiffin = Tiffin.objects.get(pk=1)
+    return render(request, 'user_dashboard/tiffindetails.html')
 
 def addcart(request, id):
     return None
