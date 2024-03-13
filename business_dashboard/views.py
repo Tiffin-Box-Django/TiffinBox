@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from business_dashboard.forms import TiffinForm
-from user_dashboard.models import Tiffin
+from user_dashboard.models import Tiffin, TBUser
 
 
 def index(request):
@@ -23,3 +23,6 @@ def add_tiffin(request):
     return render(request, 'business_dashboard/add_tiffin.html', context={'form': form, 'msg': msg})
 
 
+def business_profile(request, username):
+    user = TBUser.objects.get(username=username)
+    return render(request, 'business_dashboard/profile.html', context={'user': user})
