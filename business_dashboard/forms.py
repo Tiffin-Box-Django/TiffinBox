@@ -13,6 +13,3 @@ class TiffinForm(forms.ModelForm):
                  'price': 'Price',
                  'free_delivery_eligible': 'Free Delivery'
                  }
-
-
-
