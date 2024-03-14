@@ -1,0 +1,27 @@
+{% extends 'django_bootstrap5/bootstrap5.html' %}
+
+{% load django_bootstrap5  %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
+{% block bootstrap5_title %} Business Dashboard - Tiffin Box {% endblock %}
+{% block bootstrap5_extra_head %}
+{% load static %}
+    <!-- Custom css header -->
+    <link rel="stylesheet" href="{% static 'styles/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- This is helping us override the bootstrap css theme colors -->
+    <link rel="stylesheet" type="text/css" href="{% url 'colors' %}">
+{% endblock %}
+
+{% block bootstrap5_content %}
+    {% block header %}
+        {% include "business_dashboard/header.html" %}
+    {% endblock %}
+    {% block content %}
+    {% endblock %}
+    {% block footer %}
+        {%  include "footer.html" %}
+    {% endblock %}
+{% endblock %}
