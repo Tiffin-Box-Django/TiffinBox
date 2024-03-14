@@ -7,6 +7,9 @@ from user_dashboard.models import Tiffin
 def index(request):
     return render(request, 'base.html', {})
 
+def login(request):
+    return render(request, 'business_dashboard/login.html', {})
+
 def tiffin(request):
     return render(request, template_name='business_dashboard/tiffin_list.html', context={})
 
