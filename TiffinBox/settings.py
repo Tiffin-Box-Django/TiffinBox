@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'business_dashboard',
     'user_dashboard',
-    'django_bootstrap5'
+    'django_bootstrap5',
+    'bootstrap_colors'
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,5 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+BOOTSTRAP_THEME_COLORS = ['#fd7e14', '#fd9843', '#ca650f']
