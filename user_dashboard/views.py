@@ -19,8 +19,11 @@ def explore(request):
             tiffins = []
     else:
         filters_form = FilterForm()
-        tiffins = Tiffin.objects.all().values("tiffin_name", "image", "business_id__first_name",
-                                              "business_id__last_name", "avg_rating", "price", "id")
+
+        if request.GET.get('search'):
+            tiffins = Tiffin.objects.filter(tiffin_name__contains=request.GET['search'])
+        else:
+            tiffins = Tiffin.objects.all()
 
     formatted_tiffins = []
     for tiffin in tiffins:

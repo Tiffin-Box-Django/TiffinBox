@@ -7,7 +7,8 @@ from user_dashboard.models import Tiffin
 
 
 class ExploreSearchForm(forms.Form):
-    search = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Search by business name or food item'}))
+    search = forms.CharField(label='', widget=forms.TextInput(attrs={'class': 'w-75',
+                                                                     'placeholder': 'Search tiffins or businesses'}))
 
 
 RATING_CHOICES = [
