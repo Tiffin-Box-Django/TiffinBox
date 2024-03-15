@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% load static %}
+    {% load django_bootstrap5  %}
+
+    
 <link rel="stylesheet" href="{% static 'styles/user_dashboard/explore.css' %}">
 <div class="container mt-4">
     <div class="row">
@@ -8,17 +11,15 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Filters</h5>
+{#                    {% bootstrap_form filtersForm %}#}
                     <form method="GET" class="filter-form">
-                        {{ filtersForm.as_p }}
+                        {% bootstrap_form filtersForm %}
+{#                        {{ filtersForm.as_p }}#}
 
-                        <label for="calorie-slider">Calorie Range:</label>
-                        <div class="mb-3 mt-3 slider" id="calorie-slider"></div>
-                        <input type="hidden" id="calorie-range" name="calorie_range">
-                    
-                        <label for="price-slider">Price Range:</label>
-                        <div class="mb-3 mt-3 slider" id="price-slider"></div>
-                        <input type="hidden" id="price-range" name="price_range">
-                        
+{#                        <label for="calorie-slider">Calorie Range</label>#}
+{#                        <input type="range" class="form-range" id="calorie-slider" min="0" max="5" value="0" ><br>#}
+{#                        <label for="price-slider">Price Range</label>#}
+{#                        <input type="range" class="form-range" id="price-slider" min="0" max="5" value="0"><br>#}
                         <button type="submit" class="btn btn-primary">Apply Filters</button>
                     </form>
                 </div>
@@ -46,7 +47,7 @@
                         </div>
                         <div class="card-footer">
                             <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="btn btn-primary">View Details</a>
-                        </div>  
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -72,59 +73,33 @@
 
 {% block scripts %}
 
-<script>
-      $(document).ready(function() {
-        // Calorie range slider
-        $("#calorie-slider").slider({
-            range: true,
-            min: 0,
-            max: 1000,
-            values: [0, 1000],
-            slide: function(event, ui) {
-                $("#calorie-range").val(ui.values[0] + '-' + ui.values[1]);
-            }
-        });
-
-        // Price range slider
-        $("#price-slider").slider({
-            range: true,
-            min: 0,
-            max: 50,
-            values: [0, 50],
-            slide: function(event, ui) {
-                $("#price-range").val(ui.values[0] + '-' + ui.values[1]);
-            }
-        });
-    });
-</script>
-
 <!-- jquery library for naty -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/raty/3.1.1/jquery.raty.min.js"></script>
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/raty/3.1.1/jquery.raty.min.js"></script>#}
 
 <!-- script to show stars for ratings -->
-<script>
-    $(function() {
-        let arr = ['id_rating_0', 'id_rating_1', 'id_rating_2', 'id_rating_3', 'id_rating_4'];
-
-        $.each(arr, function(index, value) {
-            $('label[for="' + value + '"]').raty({
-                score: function() {
-                    return $(this).text();
-                },
-                path: '',
-                hints: ['1', '2', '3', '4', '5'],
-                readOnly: true,
-                starType: 'i',
-                // show yellow star
-                scoreName: value,
-                starHalf: 'fa fa-star-half-o',
-                starOff: 'fa fa-star-o',
-                starOn: 'fa fa-star ',
-                halfShow: true
-
-            });
-        });
-    });
-</script>
+{#<script>#}
+{#    $(function() {#}
+{#        let arr = ['id_rating_0', 'id_rating_1', 'id_rating_2', 'id_rating_3', 'id_rating_4'];#}
+{##}
+{#        $.each(arr, function(index, value) {#}
+{#            $('label[for="' + value + '"]').raty({#}
+{#                score: function() {#}
+{#                    return $(this).text();#}
+{#                },#}
+{#                path: '',#}
+{#                hints: ['1', '2', '3', '4', '5'],#}
+{#                readOnly: true,#}
+{#                starType: 'i',#}
+{#                // show yellow star#}
+{#                scoreName: value,#}
+{#                starHalf: 'fa fa-star-half-o',#}
+{#                starOff: 'fa fa-star-o',#}
+{#                starOn: 'fa fa-star ',#}
+{#                halfShow: true#}
+{##}
+{#            });#}
+{#        });#}
+{#    });#}
+{#</script>#}
 
 {% endblock %}
