@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from business_dashboard.forms import TiffinForm
+from business_dashboard.forms import TiffinForm, SignUpForm
 from user_dashboard.models import Tiffin, TBUser
 
 
@@ -26,3 +26,8 @@ def add_tiffin(request):
 def business_profile(request, username):
     user = TBUser.objects.get(username=username)
     return render(request, 'business_dashboard/profile.html', context={'user': user})
+
+
+def signup(request):
+    form = SignUpForm()
+    return render(request, "business_dashboard/sign-up.html", {'form': form})
