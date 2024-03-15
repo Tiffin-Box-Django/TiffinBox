@@ -7,43 +7,31 @@ from .forms import ExploreSearchForm, FilterForm
 
 
 def explore(request):
-    searchForm = ExploreSearchForm()
-    filtersForm = FilterForm()
-    query_set = Tiffin.objects.all().values("tiffin_name", "image", "business_id__first_name",
-                                            "business_id__last_name", "avg_rating", "price", "id")
-    tiffins = []
-    if 'query' in request.GET:
-        search = request.GET.get("search")
-        query_set = query_set.filter(tiffin_name__contains=search)
-
-    if filtersForm.changed_data and False:
-        mealType = filtersForm.cleaned_data.get('meal_type')
-        rating = filtersForm.cleaned_data.get('rating')
-        # calorie_min = filtersForm.cleaned_data.get('calorie_range')
-        # calorie_max = filtersForm.cleaned_data.get('calorie_range')
-        # price_min = filtersForm.cleaned_data.get('price_range')
-        # price_max = filtersForm.cleaned_data.get('price_range')
-
-        if mealType:
-            query_set = query_set.filter(meal_type=mealType)
-
-        if rating:
-            query_set = query_set.filter(avg_rating__in=rating)
+    if request.method == 'POST':
+        post_data = request.POST.dict()
+        if post_data["avg_rating"]:
+            post_data["avg_rating"] = float(post_data["avg_rating"])
+        filters_form = FilterForm(post_data)
+        if filters_form.is_valid():
+            tiffins = Tiffin.objects.filter(
+                **{k: v for k, v in filters_form.cleaned_data.items() if v != '' and v is not None})
+        else:
+            tiffins = []
     else:
-        query_set = query_set
+        filters_form = FilterForm()
+        tiffins = Tiffin.objects.all().values("tiffin_name", "image", "business_id__first_name",
+                                              "business_id__last_name", "avg_rating", "price", "id")
 
-    for tiffin in query_set:
-        tiffins.append({"name": tiffin["tiffin_name"], "photo": tiffin["image"],
-                        "business": tiffin["business_id__first_name"] + tiffin["business_id__last_name"],
-                        "rating": list(range(int(round(tiffin["avg_rating"])))),
-                        "price": tiffin["price"], "id": tiffin["id"]})
-
-    paginator = Paginator(tiffins, 9)  # Show 9 dishes per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    formatted_tiffins = []
+    for tiffin in tiffins:
+        formatted_tiffins.append({"name": tiffin.tiffin_name, "photo": tiffin.image,
+                                  "business": tiffin.business_id.first_name + tiffin.business_id.last_name,
+                                  "rating": list(range(int(round(tiffin.avg_rating)))),
+                                  "price": tiffin.price, "id": tiffin.id})
+    search_form = ExploreSearchForm()
     return render(request, 'user_dashboard/explore.html',
-                  {'searchForm': searchForm, 'filtersForm': filtersForm,
-                   'tiffins': page_obj, "filter_params": {}})
+                  {'searchForm': search_form, 'filtersForm': filters_form,
+                   'tiffins': formatted_tiffins, "filter_params": {}})
 
 
 def tiffindetails(request, tiffinid: int):
