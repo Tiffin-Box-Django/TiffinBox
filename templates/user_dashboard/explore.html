@@ -12,15 +12,9 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Filters</h5>
-{#                    {% bootstrap_form filtersForm %}#}
-                    <form method="GET" class="filter-form">
+                    <form method="POST" class="filter-form" action="{% url 'user_dashboard:explore' %}">
+                        {% csrf_token %}
                         {% bootstrap_form filtersForm %}
-{#                        {{ filtersForm.as_p }}#}
-
-{#                        <label for="calorie-slider">Calorie Range</label>#}
-{#                        <input type="range" class="form-range" id="calorie-slider" min="0" max="5" value="0" ><br>#}
-{#                        <label for="price-slider">Price Range</label>#}
-{#                        <input type="range" class="form-range" id="price-slider" min="0" max="5" value="0"><br>#}
                         <button type="submit" class="btn btn-primary">Apply Filters</button>
                     </form>
                 </div>

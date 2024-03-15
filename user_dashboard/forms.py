@@ -18,19 +18,6 @@ RATING_CHOICES = [
     ('1', '⭐'),
 ]
 
-MEAL_TYPE = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
-
-
-# class FilterForm(forms.Form):
-#     rating = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.CheckboxSelectMultiple, required=False)
-#     meal_type = forms.ChoiceField(choices=MEAL_TYPE, widget=forms.CheckboxSelectMultiple, required=False)
-#     calorie_range = forms.IntegerField(label='Calorie Range', required=False, min_value=0, max_value=5,
-#                                        # attrs={'class': 'form-control'},
-#                                        widget=forms.NumberInput(attrs={'class': 'form-group numeric-slider',
-#                                                                        "type": "range",
-#                                                                        "data-range-min": "0",
-#                                                                        "data-range-max": "5"}))
-#     price_range = forms.IntegerField(label='Price Range', required=False)
 
 def create_price_range():
     min_ = float(Tiffin.objects.all().values_list('price', flat=True).annotate(Min('price')).order_by('price')[0])
@@ -60,8 +47,9 @@ class FilterForm(forms.ModelForm):
     class Meta:
         model = Tiffin
         exclude = ["image", "tiffin_name", "tiffin_description", "schedule_id", "business_id"]
-        widgets = {"meal_type": forms.CheckboxSelectMultiple(),
+        widgets = {"meal_type": forms.CheckboxSelectMultiple(choices=Tiffin.MEAL),
                    "avg_rating": forms.CheckboxSelectMultiple(choices=RATING_CHOICES),
                    "price": forms.RadioSelect(choices=create_price_range()),
                    "calories": forms.RadioSelect(choices=create_calorie_range())}
         labels = {"avg_rating": "Rating"}
+        required = []
