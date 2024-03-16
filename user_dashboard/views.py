@@ -1,9 +1,7 @@
-from django.core.paginator import Paginator
 from django.shortcuts import render
 
-from .models import Tiffin
-from enum_maps import MEAL
 from .forms import ExploreSearchForm, FilterForm
+from .models import Tiffin
 
 
 def explore(request):
