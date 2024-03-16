@@ -1,125 +1,65 @@
-{% extends 'base.html' %} {% block content %} {% load static %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
 <!-- Style CSS -->
-<link rel="stylesheet" href="{% static 'styles/user_dashboard/tiffindetails.css' %}" />
+{#<link rel="stylesheet" href="{% static 'styles/user_dashboard/tiffindetails.css' %}" />#}
 
 <!-- Product Details Area Start -->
-<div class="product-details-area pt-100px pb-100px">
-  <div class="container">
+  <div class="container m-0">
     <div class="row">
-      <div
-        class="col-lg-6 col-sm-12 col-xs-12 mb-lm-30px mb-md-30px mb-sm-30px"
-      >
-        <!-- Swiper -->
-        <div class="swiper-container zoom-top">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img
-                class="img-responsive m-auto"
-                src="{% static 'img/breakfast.jpg' %}"
-                alt=""
-              />
-              <a
-                class="venobox full-preview"
-                data-gall="myGallery"
-                href="{% static 'img/breakfast.jpg' %}"
-              >
-                <i class="fa fa-arrows-alt" aria-hidden="true"></i>
-              </a>
-            </div>
-
-          </div>
-        </div>
-
+      <div class="col-md-6 border border-primary">
+          <img class="img-fluid" src="{% static 'img/breakfast.jpg' %}" alt=""/>
       </div>
-      <div
-        class="col-lg-6 col-sm-12 col-xs-12"
-        data-aos="fade-up"
-        data-aos-delay="200"
-      >
-        <div class="product-details-content quickview-content ml-25px">
-          <h2>Tiffin</h2>
-          <div class="pricing-meta">
-            <ul class="d-flex">
-              <li class="new-price">$20.90</li>
-            </ul>
+      <div class="col-md-6 border border-primary">
+          <div class="row">
+              <div class="col-md-12">
+                  <h2 class="fs-1">Tiffin name</h2>
+              </div>
           </div>
-          <div class="pro-details-rating-wrap">
-            <div class="rating-product">
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-            </div>
-            <span class="read-review"
-              ><a class="reviews" href="#">(5 Customer Reviews)</a></span
-            >
+          <div class="row">
+              <div class="col-md-12">
+                  <p>⭐⭐⭐⭐⭐ <small class="text-muted">(4 Reviews )</small></p>
+              </div>
           </div>
-          <p class="mt-30px">
-            Lorem ipsum dolor sit amet, consecte adipisicing elit, sed do
+          <div class="row">
+              <div class="col-md-12">
+                  <p class="fs-3">$130.4</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-12">
+                  <p class="fs-6">Lorem ipsum dolor sit amet, consecte adipisicing elit, sed do
             eiusmll tempor incididunt ut labore et dolore magna aliqua. Ut enim
             ad mill veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip exet commodo consequat. Duis aute irure dolor
-          </p>
-          <div
-            class="pro-details-categories-info pro-details-same-style d-flex m-0"
-          >
-            <span>SKU:</span>
-            <ul class="d-flex">
-              <li>
-                <a href="#">####</a>
-              </li>
-            </ul>
+            aliquip exet commodo consequat. Duis aute irure dolor</p>
+              </div>
           </div>
-          <div
-            class="pro-details-categories-info pro-details-same-style d-flex m-0"
-          >
-            <span>Categories: </span>
-            <ul class="d-flex">
-              <li>
-                <a href="#">Lunch, </a>
-              </li>
-              <li>
-                <a href="#">ETC</a>
-              </li>
-            </ul>
+          <hr class="hr m-2" />
+          <div class="row">
+              <div class="col-md-6">
+                  <div class="row">
+                      <div class="col-md-4 border border-2 border-secondary rounded-start d-md-flex justify-content-md-center">
+                          <p>-</p>
+                      </div>
+                      <div class="col-md-4 border border-2 border-secondary d-md-flex justify-content-md-center">
+                          <p>1</p>
+                      </div>
+                      <div class="col-md-4 border border-2 border-secondary rounded-end d-md-flex justify-content-md-center">
+                          <p>+</p>
+                      </div>
+                  </div>
+                  <span>(In Stock)</span>
+              </div>
+              <div class="col-md-6">
+                  <div class="d-md-flex justify-content-md-center">
+                    <a href="#" class="btn btn-primary btn-lg align-middle">Add to cart</a>
+                  </div>
+              </div>
           </div>
-          <div
-            class="pro-details-categories-info pro-details-same-style d-flex m-0"
-          >
-            <span>Tags: </span>
-            <ul class="d-flex">
-              <li>
-                <a href="#">Rice, </a>
-              </li>
-              <li>
-                <a href="#">Dal</a>
-              </li>
-            </ul>
-          </div>
-          <div class="pro-details-quality">
-            <div class="cart-plus-minus">
-              <input
-                class="cart-plus-minus-box"
-                type="text"
-                name="qtybutton"
-                value="1"
-              />
-            </div>
-            <div class="pro-details-cart">
-              <button class="add-cart">Add To Cart</button>
-            </div>
-            <div class="pro-details-compare-wishlist pro-details-wishlist">
-              <a href="wishlist.html"><i class="pe-7s-like"></i></a>
-            </div>
-            <div class="pro-details-compare-wishlist pro-details-wishlist">
-              <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>
-            </div>
-          </div>
-        </div>
+          <hr class="hr m-2" />
       </div>
     </div>
   </div>
-</div>
 
 {% endblock %}
