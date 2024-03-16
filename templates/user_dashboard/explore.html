@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 
 {% load static %}
-    {% load django_bootstrap5  %}
+{% load django_bootstrap5  %}
 
-    
+{% block content %}
 <link rel="stylesheet" href="{% static 'styles/user_dashboard/explore.css' %}">
-<div class="container mt-4">
+<div class="container m-2">
     <div class="row">
-        <div class="col-md-3">
-            <div class="card mb-4">
+        <div class="col-md-3 w-25">
+            <div class="card">
+                <h5 class="card-header">Filters</h5>
                 <div class="card-body">
-                    <h5 class="card-title">Filters</h5>
+                    <!-- All filter -->
                     <form method="POST" action="{% url 'user_dashboard:explore' %}">
                         {% csrf_token %}
                         {% bootstrap_form filtersForm %}
@@ -19,79 +20,29 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
-        <div class="row">
+        <div class="col-md-9 w-75">
+            <!-- Search text filter -->
             <form method="GET" class="form-inline">
                 {% bootstrap_form searchForm %}
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
-        </div>
             <!-- List of dishes as cards -->
             <div class="row mt-3">
                 {% for dish in tiffins %}
                 <div class="col-md-4 mb-4">
                     <div class="card">
-                        <img src="{{ dish.image.url }}" class="card-img-top" alt="{{ dish.name }}">
+                        <img src="{{ dish.photo }}" class="card-img-top" alt="{{ dish.name }}">
                         <div class="card-body">
-                            <h5 class="card-title">{{ dish.name }}</h5>
-                            <p class="card-text">{{ dish.description }}</p>
+                            <h5 class="card-title">{{ dish.name|truncatechars:27 }}</h5>
                             <p class="card-text"><small class="text-muted">Price: ${{ dish.price }}</small></p>
-                        </div>
-                        <div class="card-footer">
                             <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="btn btn-primary">View Details</a>
                         </div>
+
                     </div>
                 </div>
                 {% endfor %}
             </div>
-            <!-- Pagination -->
-            <div class="mt-4">
-                <ul class="pagination justify-content-center">
-                    {% if tiffins.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
-                    <li class="page-item"><a class="page-link" href="?page={{ tiffins.previous_page_number }}">{{ tiffins.previous_page_number }}</a></li>
-                    {% endif %}
-                    <li class="page-item active" aria-current="page"><a class="page-link" href="#">{{ tiffins.number }}</a></li>
-                    {% if tiffins.has_next %}
-                    <li class="page-item"><a class="page-link" href="?page={{ tiffins.next_page_number }}">{{ tiffins.next_page_number }}</a></li>
-                    <li class="page-item"><a class="page-link" href="?page={{ tiffins.paginator.num_pages }}">&raquo;</a></li>
-                    {% endif %}
-                </ul>
-            </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-
-<!-- jquery library for naty -->
-{#<script src="https://cdnjs.cloudflare.com/ajax/libs/raty/3.1.1/jquery.raty.min.js"></script>#}
-
-<!-- script to show stars for ratings -->
-{#<script>#}
-{#    $(function() {#}
-{#        let arr = ['id_rating_0', 'id_rating_1', 'id_rating_2', 'id_rating_3', 'id_rating_4'];#}
-{##}
-{#        $.each(arr, function(index, value) {#}
-{#            $('label[for="' + value + '"]').raty({#}
-{#                score: function() {#}
-{#                    return $(this).text();#}
-{#                },#}
-{#                path: '',#}
-{#                hints: ['1', '2', '3', '4', '5'],#}
-{#                readOnly: true,#}
-{#                starType: 'i',#}
-{#                // show yellow star#}
-{#                scoreName: value,#}
-{#                starHalf: 'fa fa-star-half-o',#}
-{#                starOff: 'fa fa-star-o',#}
-{#                starOn: 'fa fa-star ',#}
-{#                halfShow: true#}
-{##}
-{#            });#}
-{#        });#}
-{#    });#}
-{#</script>#}
-
 {% endblock %}

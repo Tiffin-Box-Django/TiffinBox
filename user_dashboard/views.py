@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Tiffin, Review
 from enum_maps import MEAL
 from .forms import ExploreSearchForm, FilterForm
+from .models import Tiffin
 
 
 def explore(request):
