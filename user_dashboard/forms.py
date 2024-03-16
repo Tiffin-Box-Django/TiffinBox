@@ -1,5 +1,3 @@
-from math import ceil
-
 from django import forms
 from django.db.models import Max, Min
 
@@ -53,4 +51,3 @@ class FilterForm(forms.ModelForm):
                    "price": forms.RadioSelect(choices=create_price_range()),
                    "calories": forms.RadioSelect(choices=create_calorie_range())}
         labels = {"avg_rating": "Rating"}
-        required = []
