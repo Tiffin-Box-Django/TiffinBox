@@ -5,7 +5,7 @@
 {% bootstrap_javascript %}
 {% bootstrap_messages %}
 
-{% block bootstrap5_title %} Tiffin Box {% endblock %}
+{% block bootstrap5_title %} Business Dashboard - Tiffin Box {% endblock %}
 {% block bootstrap5_extra_head %}
 {% load static %}
     <!-- Custom css header -->
@@ -17,11 +17,11 @@
 
 {% block bootstrap5_content %}
     {% block header %}
-        {% include "header.html" %}
+        {% include "business_dashboard/header.html" %}
     {% endblock %}
     {% block content %}
     {% endblock %}
     {% block footer %}
-        {%  include "footer.html" %}
+        {%  include "business_dashboard/footer.html" %}
     {% endblock %}
 {% endblock %}
