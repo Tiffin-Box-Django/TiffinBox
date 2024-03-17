@@ -5,6 +5,7 @@ from .forms import ExploreSearchForm, FilterForm
 
 
 
+
 def explore(request):
     if request.method == 'POST':
         post_data = request.POST.dict()
