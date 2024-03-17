@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'business_dashboard',
     'user_dashboard',
     'django_bootstrap5',
-    'django_bootstrap_icons'
+    'django_bootstrap_icons',
     'bootstrap_colors',
     'svg'
 ]
