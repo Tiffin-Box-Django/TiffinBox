@@ -1,107 +1,75 @@
-
-/* Custom Styling for Hero Section */
-.hero {
-    position: relative; /* Ensure positioning context for pseudo-element */
-    background-image: url('../../img/tiffin-background.jpg'); /* Replace 'path/to/your/image.jpg' with the path to your background image */
-    background-size: cover;
-    background-position: center;
-    padding: 100px 0; /* Adjust padding as needed */
-    text-align: center;
-    color: #fff; /* Text color for better contrast */
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 16px;
 }
 
-.overlay {
+.fa-star::before {
+    color: #F1C40F;
+    font-size: large;
+}
+
+.fa-star-o::before {
+    color: #F1C40F;
+    font-size: large;
+}
+/* slider styles */
+.ui-slider {
+    position: relative;
+    text-align: left;
+    width: 100%;
+    height: 3px;
+    background-color: #ccc; /* Background color of the slider track */
+}
+
+.ui-slider .ui-slider-range {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity as needed */
-    z-index: 1; /* Ensure the overlay is above the background image */
+    font-size: 4px;
+    display: block;
+    border-radius: 2px;
+    background-color: #e34949; /* Color for selected range */
 }
 
-.hero-content {
-    position: relative; /* Ensure stacking context */
-    z-index: 2; /* Ensure content is above the overlay */
-    max-width: 800px; /* Adjust maximum width as needed */
-    margin: 0 auto;
-}
-
-.hero h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-}
-
-.hero p {
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-
-.hero .btn {
-    margin-top: 20px;
-}
-
-
-/* Custom Styling for Category Cards */
-.category-card {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.3s ease;
-}
-
-.category-card:hover {
-    transform: translateY(-5px);
-}
-
-.category-card img {
-    width: 100%;
-    height: 200px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.category-card h3 {
-    font-size: 24px;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.category-card p {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 15px;
-}
-
-/* Custom Styling for Testimonials Section */
-.testimonials {
-    padding: 50px 0;
-    text-align: center;
-}
-
-.testimonial-slider .testimonial {
-    
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-.testimonial-slider .testimonial img {
-    width: 100px;
-    height: 100px;
+.ui-slider .ui-slider-handle {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    cursor: default;
+    margin: -8px 0 0 -8px;
     border-radius: 50%;
-    margin-bottom: 20px;
+    background-color: #fff; /* Background color of the slider handle */
+    border: 2px solid #e34949; /* Border color of the slider handle */
 }
 
-.testimonial-slider blockquote {
-    font-size: 18px;
-    margin-bottom: 20px;
+.ui-slider .ui-slider-handle:active,
+.ui-slider .ui-slider-handle:focus {
+    outline: none;
 }
 
-.testimonial-slider cite {
-    font-size: 16px;
-    font-style: italic;
+/* .ui-slider-horizontal {
+    height: 2px;
+} */
+
+/* .ui-slider-horizontal .ui-slider-range {
+    top: 0;
+    width: 0;
+} */
+
+/* .ui-slider-horizontal .ui-slider-handle {
+    top: -7px;
+} */
+
+.ui-slider-range-disabled {
+    background-color: #ddd; /* Background color for disabled range */
+}
+
+.ui-slider-range-selected {
+    background-color: #e34949; /* Color for selected range */
+}
+
+.ui-slider-handle-selected {
+    background-color: #e34949; /* Background color for selected handle */
+    border-color: #e34949; /* Border color for selected handle */
 }
