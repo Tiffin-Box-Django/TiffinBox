@@ -1,72 +1,62 @@
 {% extends 'base.html' %}
 
-{% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'styles/user_dashboard/explore.css' %}">
+{% load django_bootstrap5  %}
 
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-md-3">
-      <!-- Filter sidebar -->
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Filters</h5>
-          <form>
-            <!-- Dropdown for veg/non-veg -->
-            <div class="form-group">
-              <label for="veg_non_veg">Meal Type</label>
-              <select class="form-control" id="veg_non_veg">
-                  {% for meal_type in meal_types %}
-                    <option>{{ meal_type }}</option>
-                  {% endfor %}
-              </select>
+{% block content %}
+<!-- Script to reset and submit form -->
+<script>
+function resetFilterForm() {
+   let frm = document.getElementById('filter-form');
+   frm.reset(); 
+   frm.submit();
+}
+</script>
+<link rel="stylesheet" href="{% static 'styles/user_dashboard/explore.css' %}">
+<div class="d-flex flex-column align-items-center">
+<div class="container m-2 flex-row">
+    <div class="row">
+        <div class="col-md-3 w-25">
+            <div class="card">
+                <h5 class="card-header">Filters</h5>
+                <div class="card-body">
+                    <!-- All filter -->
+                    <form method="POST" action="{% url 'user_dashboard:explore' %}" id="filter-form">
+                        {% csrf_token %}
+                        {% bootstrap_form filtersForm %}
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <button type="reset" class="btn btn-primary" onclick="resetFilterForm()">Reset Filters</button>
+                    </form>
+                </div>
             </div>
-            <!-- Add more filters -->
-            <!-- Sort by buttons -->
-            <div class="form-group">
-              <label>Sort By</label>
-              <div class="btn-group d-flex" role="group">
-                <button type="button" class="btn btn-primary flex-fill">Rating</button>
-                <button type="button" class="btn btn-primary flex-fill">Price</button>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Apply</button>
-          </form>
         </div>
-      </div>
-    </div>
-    <div class="col-md-9">
-      <!-- Search bar -->
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search by business name or food item" aria-label="Search" aria-describedby="basic-addon2">
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary" type="button">Search</button>
-        </div>
-      </div>
-      <!-- Tiffin cards -->
-      <div class="row">
-        {% for tiffin in tiffins %}
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <!-- link using static reference -->
-            <img src="{% static tiffin.photo %}" class="card-img-top" alt="{{ tiffin.name }}">
-            <div class="card-body">
-              <h5 class="card-title mb-1">{{ tiffin.name }}</h5>
-              <p class="card-text text-muted mb-1">{{ tiffin.business }}</p>
-              <!-- Render rating stars -->
-              <div>
-                {% for _ in tiffin.rating %}
-                <span class="fa fa-star"></span>
+        <div class="col-md-9">
+            <!-- Search text filter -->
+            <form method="GET" class="row">
+                <div class="col-md-11 p-0">
+                    {% bootstrap_form searchForm %}
+                </div>
+                <div class="col-md-1 p-0">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+            <!-- List of dishes as cards -->
+            <div class="row mt-3">
+                {% for dish in tiffins %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ dish.photo }}" class="card-img-top" alt="{{ dish.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ dish.name|truncatechars:27 }}</h5>
+                            <p class="card-text"><small class="text-muted">Price: ${{ dish.price }}</small></p>
+                            <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
                 {% endfor %}
-              </div>
-              <a href="#" class="btn btn-primary">View Details</a>
-              <p class="tw-light">${{ tiffin.price }}</p>
             </div>
-          </div>
         </div>
-        {% endfor %}
-      </div>
     </div>
-  </div>
+</div>
 </div>
 {% endblock %}
