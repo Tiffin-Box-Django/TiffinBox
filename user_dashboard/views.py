@@ -26,8 +26,19 @@ def explore(request):
 def tiffindetails(request, tiffinid: int):
     tiffin = get_object_or_404(Tiffin, id=tiffinid)
     review_counts = Review.objects.filter(tiffin_id=tiffinid).count()
+    reviews = Review.objects.all().values("user__first_name", "user__last_name", "comment", "rating", "created_date")
+    reviews_grid, tmp = [], []
+    for idx, review in enumerate(reviews):
+        if idx % 3 != 0 or idx == 0:
+            tmp.append(review)
+        else:
+            reviews_grid.append(tmp)
+            tmp = [review]
+    if tmp:
+        reviews_grid.append(tmp)
     return render(request, 'user_dashboard/tiffindetails.html', {"tiffin": tiffin,
-                                                                 "review_counts": review_counts})
+                                                                 "review_counts": review_counts,
+                                                                 "reviews_grid": reviews_grid})
 
 
 def addcart(request, id):
