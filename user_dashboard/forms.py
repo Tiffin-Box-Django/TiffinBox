@@ -1,7 +1,8 @@
 from django import forms
 from django.db.models import Max, Min
+from user_dashboard.models import Tiffin, TBUser
+from django.contrib.auth.forms import UserCreationForm
 
-from user_dashboard.models import Tiffin
 
 
 class ExploreSearchForm(forms.Form):
@@ -51,3 +52,11 @@ class FilterForm(forms.ModelForm):
                    "price": forms.RadioSelect(choices=create_price_range()),
                    "calories": forms.RadioSelect(choices=create_calorie_range())}
         labels = {"avg_rating": "Rating"}
+
+
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
+ 
+    class Meta:
+        model = TBUser
+        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']

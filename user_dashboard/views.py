@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Avg
 from .models import Tiffin, Testimonial, TBUser
-from .forms import ExploreSearchForm, FilterForm
+from .forms import ExploreSearchForm, FilterForm, SignUpForm
 
 
 def explore(request):
@@ -58,3 +58,16 @@ def landing(request):
     top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by('-avg_rating')[:3]
     testimonials = Testimonial.objects.all()
     return render(request,  'user_dashboard/landing.html', {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses})
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+            return redirect('login')  # Redirect to login page after successful signup
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/signup.html', {'form': form})
