@@ -1,19 +1,4 @@
-$(document).ready(function () {
-    $('.testimonial-slider').slick({
-        autoplay: true,
-        autoplaySpeed: 2000,
-        arrows: false,
-        dots: false,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        cssEase: 'linear',
-        adaptiveHeight: true
-    });
-});
-
-const images = ['../../static/img/lunch.jpeg', '../../static/img/dinner.jpg', '../../static/img/breakfast.jpg'];
+const images = ['../../static/img/landingimage1.jpg','../../static/img/landingimage2.jpg','../../static/img/landingimage3.jpg'];
     let index = 0;
     const hero = document.querySelector('.hero');
  
@@ -25,4 +10,4 @@ const images = ['../../static/img/lunch.jpeg', '../../static/img/dinner.jpg', '.
     }
  
     // Change image every 5 seconds
-    setInterval(changeImage, 5000);
+    setInterval(changeImage, 2000);
