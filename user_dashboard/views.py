@@ -1,9 +1,7 @@
 from django.shortcuts import render
-
-from .models import Tiffin
+from django.db.models import Avg
+from .models import Tiffin, Testimonial, TBUser
 from .forms import ExploreSearchForm, FilterForm
-
-
 
 
 def explore(request):
@@ -54,3 +52,9 @@ def tiffindetails(request, tiffinid):
 
 def addcart(request, tiffin_id):
     return None
+
+def landing(request):
+    top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
+    top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by('-avg_rating')[:3]
+    testimonials = Testimonial.objects.all()
+    return render(request,  'user_dashboard/landing.html', {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses})
