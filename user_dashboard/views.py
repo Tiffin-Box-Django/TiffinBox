@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Avg
-from .models import Tiffin, Testimonial, TBUser
+from .models import Tiffin, Testimonial, TBUser, Review
 from .forms import ExploreSearchForm, FilterForm
 
 
@@ -51,9 +51,26 @@ def explore(request):
                    'tiffins': formatted_tiffins, "filter_params": {}})
 
 
-def tiffindetails(request, tiffinid):
-    print(tiffinid)
-    return Tiffin.objects.get(id=tiffinid)
+def tiffindetails(request, tiffinid: int):
+    tiffin = get_object_or_404(Tiffin, id=tiffinid)
+    review_counts = Review.objects.filter(tiffin_id=tiffinid).count()
+    reviews = Review.objects.all().values("user__first_name", "user__last_name", "comment", "rating", "created_date")
+    reviews_grid, tmp = [], []
+    for idx, review in enumerate(reviews):
+        if idx % 3 != 0 or idx == 0:
+            tmp.append(review)
+        else:
+            reviews_grid.append(tmp)
+            tmp = [review]
+    if tmp:
+        reviews_grid.append(tmp)
+    tiffin_extras = [("Delivery Frequency", tiffin.schedule_id.enum(), "calendar-week"),
+                     ("Meal Plan", dict(tiffin.MEAL)[tiffin.meal_type], "basket"),
+                     ("Calories", tiffin.calories, "lightning")]
+    return render(request, 'user_dashboard/tiffindetails.html', {"tiffin": tiffin,
+                                                                 "tiffin_extras": tiffin_extras,
+                                                                 "review_counts": review_counts,
+                                                                 "reviews_grid": reviews_grid})
 
 
 def addcart(request, tiffin_id):
