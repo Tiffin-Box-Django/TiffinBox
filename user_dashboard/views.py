@@ -45,15 +45,18 @@ def explore(request):
                   {'searchForm': search_form, 'filtersForm': filters_form,
                    'tiffins': formatted_tiffins, "filter_params": {}})
 
+        if post_data.get('free_delivery_eligible'):
+            if post_data['free_delivery_eligible'] == "on":
+                post_data['free_delivery_eligible'] = True
+            else:
+                post_data['free_delivery_eligible'] = False
 
-def tiffindetails(request, tiffinid: int):
-    tiffin = get_object_or_404(Tiffin, id=tiffinid)
-    review_counts = Review.objects.filter(tiffin_id=tiffinid).count()
-    reviews = Review.objects.all().values("user__first_name", "user__last_name", "comment", "rating", "created_date")
-    reviews_grid, tmp = [], []
-    for idx, review in enumerate(reviews):
-        if idx % 3 != 0 or idx == 0:
-            tmp.append(review)
+        post_data.pop("csrfmiddlewaretoken")
+        tiffins = Tiffin.objects.filter(
+            **{k: v for k, v in post_data.items() if v != '' and v is not None})
+    else:
+        if request.GET.get('search'):
+            tiffins = Tiffin.objects.filter(tiffin_name__contains=request.GET['search'])
         else:
             reviews_grid.append(tmp)
             tmp = [review]
@@ -68,5 +71,5 @@ def tiffindetails(request, tiffinid: int):
                                                                  "reviews_grid": reviews_grid})
 
 
-def addcart(request, id):
-    return None
+def tiffindetails(request, tiffin_id):
+    return Tiffin.objects.get(id=tiffin_id)
