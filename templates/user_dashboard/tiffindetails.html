@@ -2,52 +2,72 @@
 {% load static %}
 
 {% block content %}
-<!-- Style CSS -->
-{#<link rel="stylesheet" href="{% static 'styles/user_dashboard/tiffindetails.css' %}" />#}
+<!-- Script for add to cart counter -->
+    <script>
+        function incrementValue() {
+            document.getElementById("counter").value = Number(document.getElementById("counter").value) + 1;
+        }
 
+        function decrementValue() {
+            const tmp = Number(document.getElementById("counter").value);
+            if(tmp <= 0){
+                return
+            }
+            document.getElementById("counter").value = tmp - 1;
+    }
+    </script>
 <!-- Product Details Area Start -->
   <div class="container m-0">
-    <div class="row">
-      <div class="col-md-6 border border-primary">
-          <img class="img-fluid" src="{% static 'img/breakfast.jpg' %}" alt=""/>
+    <div class="row m-2">
+      <div class="col-md-5 border border-primary">
+          <img class="img-fluid" src="{{ tiffin.image }}" alt=""/>
       </div>
-      <div class="col-md-6 border border-primary">
-          <div class="row">
+      <div class="col-md-7 border border-primary">
+          <!-- Tiffin name -->
+          <div class="row m-2">
               <div class="col-md-12">
-                  <h2 class="fs-1">Tiffin name</h2>
+                  <h2 class="fs-2">{{ tiffin.tiffin_name }}</h2>
               </div>
           </div>
-          <div class="row">
+          <!-- Business info -->
+          <div class="row m-2">
               <div class="col-md-12">
-                  <p>⭐⭐⭐⭐⭐ <small class="text-muted">(4 Reviews )</small></p>
+                  <p class="fs-5 m-0">{{ tiffin.business_id.first_name|add:tiffin.business_id.last_name }}</p>
               </div>
           </div>
-          <div class="row">
-              <div class="col-md-12">
-                  <p class="fs-3">$130.4</p>
+          <!-- Rating -->
+          <div class="row m-2">
+              <div class="col-md-12 m-0">
+                  <p>
+                    {% for x in ""|ljust:tiffin.avg_rating %}⭐
+                    {% endfor %}
+                      <small class="text-muted">({{ review_counts }} Reviews )</small>
+                  </p>
               </div>
           </div>
-          <div class="row">
+          <!-- Price -->
+          <div class="row m-2">
               <div class="col-md-12">
-                  <p class="fs-6">Lorem ipsum dolor sit amet, consecte adipisicing elit, sed do
-            eiusmll tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad mill veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip exet commodo consequat. Duis aute irure dolor</p>
+                  <p class="fs-3 m-0">${{ tiffin.price }}</p>
+              </div>
+          </div>
+          <!-- Description -->
+          <div class="row m-2">
+              <div class="col-md-12">
+                  <p class="fs-6">{{ tiffin.tiffin_description }}</p>
               </div>
           </div>
           <hr class="hr m-2" />
-          <div class="row">
+          <!-- Add to cart -->
+          <div class="row m-2">
               <div class="col-md-6">
-                  <div class="row">
-                      <div class="col-md-4 border border-2 border-secondary rounded-start d-md-flex justify-content-md-center">
-                          <p>-</p>
-                      </div>
-                      <div class="col-md-4 border border-2 border-secondary d-md-flex justify-content-md-center">
-                          <p>1</p>
-                      </div>
-                      <div class="col-md-4 border border-2 border-secondary rounded-end d-md-flex justify-content-md-center">
-                          <p>+</p>
-                      </div>
+                  <div class="input-group w-auto justify-content-end align-items-center">
+                      <input type="button" value="-" id="button-minus" onclick="decrementValue()"
+                             class="col-md-4 border rounded-start d-md-flex justify-content-md-center">
+                      <label for="counter"></label>
+                      <input type="number" step="1" max="10" value="1" id="counter" class="border-0 text-center w-25">
+                      <input type="button" value="+" id="button-plus"  onclick="incrementValue()"
+                             class="col-md-4 border rounded-end d-md-flex justify-content-md-center">
                   </div>
                   <span>(In Stock)</span>
               </div>
@@ -58,6 +78,21 @@
               </div>
           </div>
           <hr class="hr m-2" />
+          <!-- Frequency, meal type, calories -->
+          <div class="row m-2">
+              <div class="col-md-4">
+                  <h3 class="fs-5">Delivery Frequency</h3>
+                  <h3 class="fs-5 rounded bg-primary m-1">{{ tiffin.schedule_id.enum }}</h3>
+              </div>
+              <div class="col-md-4">
+                  <h3 class="fs-5">Meal Plan</h3>
+                  <h3 class="fs-5 rounded bg-primary m-1">VEG</h3>
+              </div>
+              <div class="col-md-4">
+                  <h3 class="fs-5">Calories</h3>
+                  <h3 class="fs-5 rounded bg-primary m-1">300</h3>
+              </div>
+          </div>
       </div>
     </div>
   </div>

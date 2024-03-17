@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
-from .models import Tiffin
+from .models import Tiffin, Review
 from enum_maps import MEAL
+
 
 def explore(request):
     if request.method != 'GET':
@@ -21,9 +22,13 @@ def explore(request):
     return render(request, 'user_dashboard/explore.html', {'tiffins': tiffins,
                                                            "meal_types": meal_types})
 
-def tiffindetails(request):
-    # tiffin = Tiffin.objects.get(pk=1)
-    return render(request, 'user_dashboard/tiffindetails.html')
+
+def tiffindetails(request, tiffinid: int):
+    tiffin = get_object_or_404(Tiffin, id=tiffinid)
+    review_counts = Review.objects.filter(tiffin_id=tiffinid).count()
+    return render(request, 'user_dashboard/tiffindetails.html', {"tiffin": tiffin,
+                                                                 "review_counts": review_counts})
+
 
 def addcart(request, id):
     return None
