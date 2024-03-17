@@ -1,9 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 
-from .models import Tiffin, Review
+from .models import Tiffin
 from enum_maps import MEAL
 from .forms import ExploreSearchForm, FilterForm
-
 
 
 def explore(request):
@@ -50,25 +49,3 @@ def explore(request):
     meal_types = [MEAL[i] for i in meal_types]
     return render(request, 'user_dashboard/explore.html', {'tiffins': tiffins,
                                                            "meal_types": meal_types})
-
-
-def tiffindetails(request, tiffinid: int):
-    tiffin = get_object_or_404(Tiffin, id=tiffinid)
-    review_counts = Review.objects.filter(tiffin_id=tiffinid).count()
-    reviews = Review.objects.all().values("user__first_name", "user__last_name", "comment", "rating", "created_date")
-    reviews_grid, tmp = [], []
-    for idx, review in enumerate(reviews):
-        if idx % 3 != 0 or idx == 0:
-            tmp.append(review)
-        else:
-            reviews_grid.append(tmp)
-            tmp = [review]
-    if tmp:
-        reviews_grid.append(tmp)
-    return render(request, 'user_dashboard/tiffindetails.html', {"tiffin": tiffin,
-                                                                 "review_counts": review_counts,
-                                                                 "reviews_grid": reviews_grid})
-
-
-def addcart(request, id):
-    return None

@@ -41,9 +41,6 @@ class Schedule(models.Model):
     def __str__(self):
         return f"Schedule: {str(self.frequency)}"
 
-    def enum(self):
-        return dict(self.choices)[self.frequency]
-
 
 class Tiffin(models.Model):
     MEAL = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
