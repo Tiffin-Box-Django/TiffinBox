@@ -3,26 +3,29 @@
 
 {% block content %}
 <!-- Script for add to cart counter -->
+    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0"></script>
+
 <script>
     function incrementValue() {
-        document.getElementById("counter").value = Number(document.getElementById("counter").value) + 1;
+        document.getElementById("counter").innerHTML = String(Number(document.getElementById("counter").innerHTML) + 1);
     }
 
     function decrementValue() {
-        const tmp = Number(document.getElementById("counter").value);
+        const tmp = Number(document.getElementById("counter").innerHTML);
         if(tmp <= 1){
             return
         }
-        document.getElementById("counter").value = tmp - 1;
+        document.getElementById("counter").innerHTML = String(tmp - 1);
 }
 </script>
+<div class="d-flex flex-column align-items-center">
 <!-- Product Details Area Start -->
-<div class="container m-0">
+<div class="container mx-5 flex-row">
 <div class="row m-2">
-  <div class="col-md-5 border border-primary">
+  <div class="col-md-5">
       <img class="img-fluid" src="{{ tiffin.image }}" alt=""/>
   </div>
-  <div class="col-md-7 border border-primary">
+  <div class="col-md-7">
       <!-- Tiffin name -->
       <div class="row m-2">
           <div class="col-md-12">
@@ -37,12 +40,12 @@
       </div>
       <!-- Rating -->
       <div class="row m-2">
-          <div class="col-md-12 m-0">
-              <p>
+          <div class="col-md-12">
+              <span class="m-0">
                 {% for x in ""|ljust:tiffin.avg_rating %}⭐
                 {% endfor %}
-                  <small class="text-muted">({{ review_counts }} Reviews )</small>
-              </p>
+                  <a href="#reviews-grid" class="text-muted">({{ review_counts }} Reviews )</a>
+              </span>
           </div>
       </div>
       <!-- Price -->
@@ -59,61 +62,48 @@
       </div>
       <hr class="hr m-2" />
       <!-- Add to cart -->
-      <div class="row m-2">
-          <div class="col-md-6">
-              <div class="input-group w-auto justify-content-end align-items-center">
-                  <input type="button" value="-" id="button-minus" onclick="decrementValue()"
-                         class="col-md-4 border rounded-start d-md-flex justify-content-md-center">
-                  <label for="counter"></label>
-                  <input type="number" step="1" max="10" value="1" id="counter" class="border-0 text-center w-25">
-                  <input type="button" value="+" id="button-plus"  onclick="incrementValue()"
-                         class="col-md-4 border rounded-end d-md-flex justify-content-md-center">
-              </div>
-              <span>(In Stock)</span>
-          </div>
-          <div class="col-md-6">
-              <div class="d-md-flex justify-content-md-center">
-                <a href="#" class="btn btn-primary btn-lg align-middle">Add to cart</a>
-              </div>
-          </div>
+      <div class="row m-2 d-flex flex-row justify-content-around">
+        <div class="input-group input-group-lg w-25">
+          <input type="button" id="button-minus" class="form-control" value="-" onclick="decrementValue()">
+          <span id="counter" class="input-group-text">1</span>
+          <input type="button" id="button-plus" class="form-control" value="+" onclick="incrementValue()">
+        </div>
+        <a href="#" class="btn btn-lg btn-primary w-25">Add to cart</a>
       </div>
       <hr class="hr m-2" />
       <!-- Frequency, meal type, calories -->
-      <div class="row m-2">
-          <div class="col-md-4">
-              <h3 class="fs-5">Delivery Frequency</h3>
-              <h3 class="fs-5 rounded bg-primary m-1">{{ tiffin.schedule_id.enum }}</h3>
-          </div>
-          <div class="col-md-4">
-              <h3 class="fs-5">Meal Plan</h3>
-              <h3 class="fs-5 rounded bg-primary m-1">VEG</h3>
-          </div>
-          <div class="col-md-4">
-              <h3 class="fs-5">Calories</h3>
-              <h3 class="fs-5 rounded bg-primary m-1">300</h3>
-          </div>
+      <div class="row m-0">
+          {% for label, value, icon in tiffin_extras %}
+              <div class="col-4">
+                <div class="card card-body py-2">
+                  <p class="card-title fw-bold">{% bs_icon icon size='1.2em' %} {{ label }}</p>
+                  <p class="card-text">{{ value }}</p>
+                </div>
+              </div>
+          {% endfor %}
       </div>
   </div>
 </div>
 </div>
 <!-- Reviews grid -->
-<div class="container m-3">
+<div class="container mx-5 mt-4 flex-row" id="reviews-grid">
     <h5>Customer Reviews</h5>
     {% for review_row in reviews_grid %}
-    <div class="d-flex justify-content-around align-items-center">
+    <div class="d-flex justify-content-around">
         {% for review in review_row %}
-            <div class="card card-body m-3">
-            <div class="d-flex justify-content-between">
-                <h5 class="card-title">
-                    {% bs_icon 'person-circle' size='1.2em' %}
-                    {{ review.user__first_name }} {{ review.user__last_name }}</h5>
-                <h6 class="card-title">{{ review.created_date|date:'N d, Y' }}</h6>
-            </div>
-                {% for x in ""|ljust:review.rating %}⭐{% endfor %}
-                <p class="card-text fs-6">{{ review.comment }}</p>
+            <div class="card card-body m-2 p-3">
+                <div class="d-flex justify-content-between">
+                    <span class="fs-5">
+                        {% bs_icon 'person-circle' size='1.2em' %}
+                        {{ review.user__first_name }} {{ review.user__last_name }}</span>
+                    <span>{{ review.created_date|date:'N d, Y' }}</span>
+                </div>
+                <span class="py-1">{% for x in ""|ljust:review.rating %}⭐{% endfor %}</span>
+                <span class="card-text fs-6">{{ review.comment }}</span>
             </div>
         {% endfor %}
     </div>
     {% endfor %}
+</div>
 </div>
 {% endblock %}

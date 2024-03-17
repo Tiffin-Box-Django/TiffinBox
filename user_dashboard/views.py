@@ -36,7 +36,11 @@ def tiffindetails(request, tiffinid: int):
             tmp = [review]
     if tmp:
         reviews_grid.append(tmp)
+    tiffin_extras = [("Delivery Frequency", tiffin.schedule_id.enum(), "calendar-week"),
+                     ("Meal Plan", dict(tiffin.MEAL)[tiffin.meal_type], "basket"),
+                     ("Calories", tiffin.calories, "lightning")]
     return render(request, 'user_dashboard/tiffindetails.html', {"tiffin": tiffin,
+                                                                 "tiffin_extras": tiffin_extras,
                                                                  "review_counts": review_counts,
                                                                  "reviews_grid": reviews_grid})
 
