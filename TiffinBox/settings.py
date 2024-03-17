@@ -134,7 +134,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-BOOTSTRAP_THEME_COLORS = ['#fd7e14', '#fd9843', '#ca650f']
+BOOTSTRAP_THEME_COLORS = ['#f3274c', '#f3274c', '#f3274c']
 
 SVG_DIRS = [
     os.path.join(BASE_DIR, 'static/svg')
