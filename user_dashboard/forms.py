@@ -1,3 +1,5 @@
+from django.db.utils import Error
+
 from django import forms
 from django.db.models import Max, Min
 from user_dashboard.models import Tiffin, TBUser
@@ -18,7 +20,10 @@ RATING_CHOICES = [
 
 
 def create_price_range():
-    if Tiffin.objects.all().count() == 0:
+    try:
+        if Tiffin.objects.all().count() == 0:
+            return []
+    except Error:
         return []
     min_ = float(Tiffin.objects.all().values_list('price', flat=True).annotate(Min('price')).order_by('price')[0])
     max_ = float(Tiffin.objects.all().values_list('price', flat=True).annotate(Max('price')).order_by('-price')[0])
@@ -31,7 +36,10 @@ def create_price_range():
 
 
 def create_calorie_range():
-    if Tiffin.objects.all().count() == 0:
+    try:
+        if Tiffin.objects.all().count() == 0:
+            return []
+    except Error:
         return []
     min_ = float(Tiffin.objects.all().values_list('calories', flat=True)
                  .annotate(Min('calories')).order_by('calories')[0])
