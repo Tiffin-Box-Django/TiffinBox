@@ -1,8 +1,9 @@
+from django.db.utils import Error
+
 from django import forms
 from django.db.models import Max, Min
 from user_dashboard.models import Tiffin, TBUser
 from django.contrib.auth.forms import UserCreationForm
-
 
 
 class ExploreSearchForm(forms.Form):
@@ -19,6 +20,11 @@ RATING_CHOICES = [
 
 
 def create_price_range():
+    try:
+        if Tiffin.objects.all().count() == 0:
+            return []
+    except Error:
+        return []
     min_ = float(Tiffin.objects.all().values_list('price', flat=True).annotate(Min('price')).order_by('price')[0])
     max_ = float(Tiffin.objects.all().values_list('price', flat=True).annotate(Max('price')).order_by('-price')[0])
     min_ = int(min_ - (min_ % 10))
@@ -30,6 +36,11 @@ def create_price_range():
 
 
 def create_calorie_range():
+    try:
+        if Tiffin.objects.all().count() == 0:
+            return []
+    except Error:
+        return []
     min_ = float(Tiffin.objects.all().values_list('calories', flat=True)
                  .annotate(Min('calories')).order_by('calories')[0])
     max_ = float(Tiffin.objects.all().values_list('calories', flat=True)
@@ -70,4 +81,4 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = TBUser
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2']

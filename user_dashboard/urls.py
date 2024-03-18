@@ -5,8 +5,8 @@ app_name = 'user_dashboard'
 urlpatterns = [
     path('', views.landing, name='landing'),
     path('explore/', views.explore, name='explore'),
-    path('tiffin/<int:tiffinid>', views.tiffindetails, name='tiffindetails'),
+    path('tiffin/<int:pk>/', views.TiffinDetails.as_view(), name='tiffindetails'),
     path('addcart/<id>', views.addcart, name='add_to_cart'),
     path('signup/', views.signup, name='signup'),
-    path('login/', views.login.as_view(), name='login'),
+    path('login/', views.UserLogin.as_view(), name='login'),
 ]

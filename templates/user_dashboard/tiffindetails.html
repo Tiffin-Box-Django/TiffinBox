@@ -23,26 +23,26 @@
 <div class="container mx-5 flex-row">
 <div class="row m-2">
   <div class="col-md-5">
-      <img class="img-fluid" src="{{ tiffin.image }}" alt=""/>
+      <img class="img-fluid" src="{{ object.image }}" alt=""/>
   </div>
   <div class="col-md-7">
       <!-- Tiffin name -->
       <div class="row m-2">
           <div class="col-md-12">
-              <h2 class="fs-2">{{ tiffin.tiffin_name }}</h2>
+              <h2 class="fs-2">{{ object.tiffin_name }}</h2>
           </div>
       </div>
       <!-- Business info -->
       <div class="row m-2">
           <div class="col-md-12">
-              <p class="fs-5 m-0">{{ tiffin.business_id.first_name|add:tiffin.business_id.last_name }}</p>
+              <p class="fs-5 m-0">{{ object.business_id.first_name|add:object.business_id.last_name }}</p>
           </div>
       </div>
       <!-- Rating -->
       <div class="row m-2">
           <div class="col-md-12">
               <span class="m-0">
-                {% for x in ""|ljust:tiffin.avg_rating %}⭐
+                {% for x in ""|ljust:object.avg_rating %}⭐
                 {% endfor %}
                   <a href="#reviews-grid" class="text-muted">({{ review_counts }} Reviews )</a>
               </span>
@@ -51,13 +51,13 @@
       <!-- Price -->
       <div class="row m-2">
           <div class="col-md-12">
-              <p class="fs-3 m-0">${{ tiffin.price }}</p>
+              <p class="fs-3 m-0">${{ object.price }}</p>
           </div>
       </div>
       <!-- Description -->
       <div class="row m-2">
           <div class="col-md-12">
-              <p class="fs-6">{{ tiffin.tiffin_description }}</p>
+              <p class="fs-6">{{ object.tiffin_description }}</p>
           </div>
       </div>
       <hr class="hr m-2" />
