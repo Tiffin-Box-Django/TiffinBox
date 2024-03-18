@@ -101,7 +101,7 @@ def signup(request):
             user = form.save()
             user.set_password(form.cleaned_data['password1'])
             user.save()
-            return redirect('login')  # Redirect to login page after successful signup
+            return redirect('/user/login')  # Redirect to login page after successful signup
         else:
             return render(request, 'registration/signup.html', {'form': form, 'error': form.errors})
     else:
@@ -113,4 +113,4 @@ class login(LoginView):
     template_name = 'registration/login.html'
 
     def get_success_url(self):
-        return self.request.GET.get('next', 'explore')
+        return self.request.GET.get('next', '/user/explore')
