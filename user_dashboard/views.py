@@ -1,3 +1,4 @@
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from .models import Tiffin, Testimonial, TBUser, Review
@@ -106,3 +107,10 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
+
+
+class login(LoginView):
+    template_name = 'registration/login.html'
+
+    def get_success_url(self):
+        return self.request.GET.get('next', 'explore')
