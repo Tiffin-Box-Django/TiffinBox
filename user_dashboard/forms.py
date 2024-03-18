@@ -4,7 +4,6 @@ from user_dashboard.models import Tiffin, TBUser
 from django.contrib.auth.forms import UserCreationForm
 
 
-
 class ExploreSearchForm(forms.Form):
     search = forms.CharField(label='', widget=forms.TextInput(attrs={'placeholder': 'Search tiffins'}))
 
@@ -19,6 +18,8 @@ RATING_CHOICES = [
 
 
 def create_price_range():
+    if Tiffin.objects.all().count() == 0:
+        return []
     min_ = float(Tiffin.objects.all().values_list('price', flat=True).annotate(Min('price')).order_by('price')[0])
     max_ = float(Tiffin.objects.all().values_list('price', flat=True).annotate(Max('price')).order_by('-price')[0])
     min_ = int(min_ - (min_ % 10))
@@ -30,6 +31,8 @@ def create_price_range():
 
 
 def create_calorie_range():
+    if Tiffin.objects.all().count() == 0:
+        return []
     min_ = float(Tiffin.objects.all().values_list('calories', flat=True)
                  .annotate(Min('calories')).order_by('calories')[0])
     max_ = float(Tiffin.objects.all().values_list('calories', flat=True)
