@@ -4,7 +4,6 @@ from user_dashboard.models import Tiffin, TBUser
 from django.contrib.auth.forms import UserCreationForm
 
 
-
 class ExploreSearchForm(forms.Form):
     search = forms.CharField(label='', widget=forms.TextInput(attrs={'placeholder': 'Search tiffins'}))
 

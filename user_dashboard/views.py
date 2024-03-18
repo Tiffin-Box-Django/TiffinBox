@@ -77,11 +77,14 @@ def tiffindetails(request, tiffinid: int):
 def addcart(request, tiffin_id):
     return None
 
+
 def landing(request):
     top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
-    top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by('-avg_rating')[:3]
+    top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by(
+        '-avg_rating')[:3]
     testimonials = Testimonial.objects.all()
-    return render(request,  'user_dashboard/landing.html', {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses})
+    return render(request, 'user_dashboard/landing.html',
+                  {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses})
 
 
 def signup(request):
@@ -90,13 +93,13 @@ def signup(request):
         if form.is_valid():
             # Custom validation logic
             cleaned_data = form.cleaned_data
- 
+
             # Check if username contains any special characters
             username = cleaned_data.get('username')
             if any(char.isdigit() or not char.isalnum() for char in username):
                 form.add_error('username', 'Username must contain only alphanumeric characters.')
                 return render(request, 'registration/signup.html', {'form': form})
- 
+
             # Save the user
             user = form.save()
             user.set_password(form.cleaned_data['password1'])
@@ -109,7 +112,7 @@ def signup(request):
     return render(request, 'registration/signup.html', {'form': form})
 
 
-class login(LoginView):
+class UserLogin(LoginView):
     template_name = 'registration/login.html'
 
     def get_success_url(self):
