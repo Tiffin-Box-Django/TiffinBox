@@ -3,9 +3,7 @@ const images = ['../../static/img/landingimage1.jpg','../../static/img/landingim
     const hero = document.querySelector('.hero');
  
     function changeImage() {
-        console.log(images[index]);
         hero.style.backgroundImage = `url('${images[index]}')`;
-        console.log(hero.style.backgroundImage);
         index = (index + 1) % images.length;
     }
  
