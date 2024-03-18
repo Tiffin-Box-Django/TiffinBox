@@ -1,5 +1,6 @@
 from django import forms
 from user_dashboard.models import Tiffin, TBUser
+from django.contrib.auth.forms import UserCreationForm
 
 
 class TiffinForm(forms.ModelForm):
@@ -17,17 +18,25 @@ class TiffinForm(forms.ModelForm):
                   }
 
 
-class SignUpForm(forms.ModelForm):
+class SignUpForm(UserCreationForm):
+    email = forms.EmailField(max_length=254, help_text='You must enter a valid email address')
+
+    def validate_username(self):
+        username = self.cleaned_data['username']
+        if TBUser.objects.filter(username=username).exists():
+            raise forms.ValidationError(f"Username '{username}' is already in use")
+        return username
+
+    def validate_email(self):
+        email = self.cleaned_data['email']
+        if TBUser.objects.filter(email=email).exists():
+            raise forms.ValidationError(f"Email '{email}' is already in use")
+        return email
+
     class Meta:
         model = TBUser
-        fields = ['username', 'email', 'password', 'phone_number', 'is_registered', 'shipping_address']
-        labels = {'username': 'Username', 'email': 'Email', 'password': 'Password', 'phone_number': 'Phone Number',
-                  'is_registered': 'Is your Business registered?', 'shipping_address': 'Business Address'},
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'osmows...'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'hello@osmows.ca...'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '********'}),
-            'phone_number': forms.TextInput(attrs={'type': 'tel', 'class': 'form-control', 'placeholder': '5196767230'}),
-            'is_registered': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'shipping_address': forms.Textarea(attrs={'class': 'form-control', 'rows': '3', 'cols': '3'})
-        }
+        fields = ['first_name', 'last_name', 'is_registered', 'phone_number', 'shipping_address', 'username', 'email',
+                  'password1', 'password2']
+        labels = {'first_name': 'First Name', 'last_name': 'Last Name', 'is_registered': 'Is your business registered?',
+                  'phone_number': 'Phone Number', 'shipping_address': 'Shipping Address', 'username': 'Username',
+                  'email': 'Email', 'password1': 'Password', 'password2': 'Confirm Password'}
