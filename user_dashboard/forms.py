@@ -55,7 +55,19 @@ class FilterForm(forms.ModelForm):
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
- 
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if TBUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email is already in use.")
+        return email
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if TBUser.objects.filter(username=username).exists():
+            raise forms.ValidationError("This username is already in use.")
+        return username
+
     class Meta:
         model = TBUser
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
