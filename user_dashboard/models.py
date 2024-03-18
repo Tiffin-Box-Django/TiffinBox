@@ -1,9 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
 
-class TBUser(User):
+class TBUser(AbstractUser):
     CLIENT_TYPE = [
         (0, 'User'),
         (1, 'Business')]
