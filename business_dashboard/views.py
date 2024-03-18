@@ -1,15 +1,19 @@
 from django.shortcuts import render
-
 from business_dashboard.forms import TiffinForm, SignUpForm
 from user_dashboard.models import Tiffin, TBUser
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
     return render(request, 'base.html', {})
 
+@login_required
 def tiffin(request):
-    return render(request, template_name='business_dashboard/tiffin_list.html', context={})
-
+    return render(request, template_name='business_dashboard/tiffin.html', context={})
+@login_required
 def add_tiffin(request):
     msg=''
     if request.method == 'POST':
@@ -31,3 +35,24 @@ def business_profile(request, username):
 def signup(request):
     form = SignUpForm()
     return render(request, "business_dashboard/sign-up.html", {'form': form})
+
+def businessLoginPage(request):
+    if request.method == 'POST':
+        # form = LoginForm(request.POST)
+        form = AuthenticationForm(request,request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            print(username)
+            print(password)
+            user = authenticate(username=username, password=password)
+            print(user)
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'Logged in successfully')
+                return render(request, 'business_dashboard/tiffin.html')
+            else:
+                messages.error(request, 'Username or Password is incorrect!')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'business_dashboard/login.html', {'form': form})
