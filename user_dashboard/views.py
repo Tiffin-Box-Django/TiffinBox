@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from .models import Tiffin, Testimonial, TBUser, Review
-from .forms import ExploreSearchForm, FilterForm
+from .forms import ExploreSearchForm, FilterForm, SignUpForm
 
 
 def explore(request):
