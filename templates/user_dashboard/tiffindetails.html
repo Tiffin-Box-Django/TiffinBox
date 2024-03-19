@@ -5,6 +5,12 @@
 {% block content %}
 <!-- Script for add to cart counter -->
 <script>
+const myModal = document.getElementById('myModal')
+const myInput = document.getElementById('myInput')
+
+myModal.addEventListener('shown.bs.modal', () => {
+  myInput.focus()
+})
     function incrementValue() {
         document.getElementById("counter").innerHTML = String(Number(document.getElementById("counter").innerHTML) + 1);
     }
@@ -107,7 +113,35 @@
 </div>
 <!-- Reviews grid -->
 <div class="container mx-5 mt-4 flex-row" id="reviews-grid">
-    <h5>Customer Reviews</h5>
+    <h5>Customer Reviews(<button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#reviewModal">Write a review</button>)</h5>
+
+    <!-- Modal -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="reviewModalLabel">Write a review</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+            <form class="form-control" method="POST" action="{% url 'user_dashboard:add-review' tiffin.id %}">
+                {% csrf_token %}
+                <label for="review-stars" class="form-label">How many stars would you give this tiffin?</label>
+                <select class="form-select" aria-label="Stars Select" name="review-stars">
+                    <option value="5" selected>⭐⭐⭐⭐⭐</option>
+                    <option value="4">⭐⭐⭐⭐</option>
+                    <option value="3">⭐⭐⭐</option>
+                    <option value="2">⭐⭐</option>
+                    <option value="1">⭐</option>
+                </select>
+                <label for="review-text" class="form-label">What's on your mind?</label>
+                <textarea class="form-control" id="review-text" name="review-text"></textarea>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
     {% if reviews_grid %}
         {% for review_row in reviews_grid %}
         <div class="d-flex justify-content-around">
@@ -130,7 +164,7 @@
         {% if not request.user.is_authenticated %}
         <a href="{% url "user_dashboard:login" %}">Login here</a>
         {% endif %}
-    {%  endif %}
+    {% endif %}
 </div>
 <!-- Recommended tiffins -->
 <div class="container m-2 mt-4 flex-row">
