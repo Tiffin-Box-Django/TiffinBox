@@ -24,7 +24,9 @@
                              class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small">
-                        <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url "business_dashboard:profile"%}">View Profile</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{% url "business_dashboard:edit_profile"%}">Edit Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
