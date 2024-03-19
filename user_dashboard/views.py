@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from .models import Tiffin, Testimonial, TBUser, Review
 from .forms import ExploreSearchForm, FilterForm, SignUpForm
-
+from django.contrib.auth import views as auth_views
 
 def explore(request):
     if request.method == 'POST':
@@ -118,3 +118,9 @@ class UserLogin(LoginView):
 
     def get_success_url(self):
         return self.request.GET.get('next', '/user/explore')
+
+
+def logout(request):
+    ref = request.GET.get('next', '/user')
+    auth_views.auth_logout(request)
+    return redirect(ref)
