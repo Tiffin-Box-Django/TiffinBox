@@ -39,7 +39,7 @@ class Schedule(models.Model):
     frequency = models.IntegerField(choices=choices)
 
     def __str__(self):
-        return dict(self.choices)[self.frequency]
+        return dict(self.choices).get(self.frequency, 'None')
 
     def enum(self):
         return dict(self.choices)[self.frequency]

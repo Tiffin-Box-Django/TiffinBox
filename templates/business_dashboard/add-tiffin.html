@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div style="background-color: rgba(255, 255, 255, 0.9); margin-left: 20em; margin-right: 20em; padding: 2em; border-radius: 1em">
                     <h2 class="font-weight-bold text-center" style="margin-bottom: 1em;">Add Tiffin</h2>
-                    <form method="post" class="mb-3">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% bootstrap_form form layout="floating" size="md" show_help=False show_label=True %}
                         <div class="d-flex justify-content-center">

@@ -14,23 +14,22 @@ def index(request):
 def tiffin(request):
     return render(request, template_name='business_dashboard/tiffin.html', context={})
   
-#@login_required
+@login_required
 def add_tiffin(request):
-    msg = ''
     if request.method == 'POST':
-        form = AddTiffinForm(request.POST)
+        form = AddTiffinForm(request.POST, request.FILES)
         if form.is_valid():
             business_user = request.user.id
-            print(business_user)
             tiffin_item = form.save(commit=False)
             tiffin_item.business_id = TBUser.objects.get(pk=business_user)
+            if 'image' in request.FILES:
+                tiffin_item.image = request.FILES['image']
             tiffin_item.save()
-            msg = 'Tiffin added'
             return redirect('business_dashboard:tiffin')
-        return render(request, 'business_dashboard/add_tiffin.html', {'form': form})
+        return render(request, 'business_dashboard/add-tiffin.html', {'form': form})
     else:
         form = AddTiffinForm()
-    return render(request, 'business_dashboard/add_tiffin.html',{'form': form})
+    return render(request, 'business_dashboard/add-tiffin.html', {'form': form})
 
 # @login_required
 def business_profile(request):
@@ -85,7 +84,7 @@ def businessLoginPage(request):
 def edit_tiffin(request, tiffin_id):
     the_tiffin = get_object_or_404(Tiffin, id=tiffin_id)
     if request.method == 'POST':
-        form = TiffinForm(request.POST)
+        form = EditTiffinForm(request.POST)
         if form.is_valid():
             the_tiffin.tiffin_name = form.cleaned_data['tiffin_name']
             the_tiffin.tiffin_description = form.cleaned_data['tiffin_description']
@@ -110,7 +109,7 @@ def logout_view(request):
 def edit_profile(request):
     user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
     if request.method == "POST":
-        form = EditProfileForm(request.POST, instance=user_profile)
+        form = EditProfileForm(request.POST, request.FILES, instance=user_profile)
         if form.is_valid():
             user_profile.profile_picture = form.cleaned_data['profile_picture']
             user_profile.username = form.cleaned_data['username']
@@ -120,6 +119,8 @@ def edit_profile(request):
             user_profile.phone_number = form.cleaned_data['phone_number']
             user_profile.shipping_address = form.cleaned_data['shipping_address']
             user_profile = form.save(commit=False)
+            if 'image' in request.FILES:
+                user_profile.profile_picture = request.FILES['profile_picture']
             user_profile.save()
             return redirect("business_dashboard:profile")
     else:

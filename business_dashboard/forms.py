@@ -6,20 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 class AddTiffinForm(forms.ModelForm):
     class Meta:
         model = Tiffin
-        fields = ['tiffin_name', 'tiffin_description', 'image', 'meal_type', 'calories', 'price',
-                  'free_delivery_eligible','schedule_id__frequency']
-        labels = {'tiffin_name': 'Tiffin Name', 'tiffin_description': 'Tiffin Description',
-                  'image': 'Image',
-                  'meal_type': 'Meal Type',
-                  'calories': 'Calories',
-                  'price': 'Price',
-                  'free_delivery_eligible': 'Free Delivery',
-                  }
-
-        # def __init__(self, *args, **kwargs):
-        #     super(AddTiffinForm, self).__init__(*args, **kwargs)
-        #     self.fields['schedule_id'] = forms.ModelChoiceField(queryset=Schedule.objects.all(), label='Schedule')
-
+        exclude = ['business_id', 'avg_rating'] #business_id will be fetched from current user who is logged in
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='You must enter a valid email address')

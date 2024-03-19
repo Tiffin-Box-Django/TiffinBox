@@ -48,7 +48,9 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block mt-3"><a href={% url 'business_dashboard:add_tiffin' %}>Add Tiffin></a></button>
+        <div class="d-flex justify-content-center" style="margin-top: 1em">
+            <a href="{% url 'business_dashboard:add_tiffin' %}" class="btn btn-primary">Add Tiffin</a>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -4,7 +4,7 @@
 {% block content %}
     <div style="background-color: #f2f2f2; margin-left: 20em; margin-right: 20em; padding: 2em;">
         <h2 class="font-weight-bold text-center" style="margin-bottom: 1em; margin-top: 1em">Edit Profile</h2>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form form layout="floating" size="md" show_help=False show_label=True %}
         <div class="d-flex justify-content-center">
