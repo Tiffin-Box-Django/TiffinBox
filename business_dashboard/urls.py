@@ -12,5 +12,7 @@ urlpatterns = [
     path('tiffin/edit/<int:tiffin_id>/', views.edit_tiffin, name="edit_tiffin"),
     path('logout/', views.logout_view, name="logout"),
     path('orders/<int:order_status>', views.orders, name="orders"),
-    path('orders/status/update/<int:order_id>', views.update_order_status, name="update_order_status")
+    path('orders/status/update/<int:order_id>', views.update_order_status, name="update_order_status"),
+    path('forgot-password', views.forgot_password, name="forgot_password"),
+    path('reset-password/<slug:code>', views.reset_password, name="reset_password")
 ]

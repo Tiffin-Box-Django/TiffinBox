@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from business_dashboard.forms import TiffinForm, SignUpForm, EditTiffinForm
-from user_dashboard.models import Tiffin, TBUser, Order, OrderItem
-from django.contrib.auth.forms import AuthenticationForm
+from business_dashboard.forms import TiffinForm, SignUpForm, EditTiffinForm, ForgotPassword
+from user_dashboard.models import Tiffin, TBUser, Order, OrderItem, ResetPassword
+from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.http import HttpResponse
+import uuid
 
 
 def index(request):
@@ -155,3 +155,26 @@ def update_order_status(request, order_id):
         return redirect("business_dashboard:orders", int(request.POST['order_status_change']))
     else:
         return redirect("business_dashboard:orders", 0)
+
+
+def forgot_password(request):
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = get_object_or_404(TBUser, email=email)
+            if user.client_type == 1:
+                code = uuid.uuid4()
+                code_object = ResetPassword.objects.create(code=code)
+                code_object.save()
+                print(f"http://localhost:8000/business/reset-password/{code}")
+            else:
+                print("user not business")
+    else:
+        form = ForgotPassword()
+    return render(request, "business_dashboard/forgot-password.html", {"form": form})
+
+
+def reset_password(request, code):
+    code
+    return render(request, "business_dashboard/reset-password.html", {"code": code})

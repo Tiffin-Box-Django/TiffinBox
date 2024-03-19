@@ -52,3 +52,7 @@ class EditTiffinForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditTiffinForm, self).__init__(*args, **kwargs)
         self.fields['schedule_id'] = forms.ModelChoiceField(queryset=Schedule.objects.all(), label='Schedule')
+
+
+class ForgotPassword(forms.Form):
+    email = forms.EmailField(max_length=254, help_text='You must enter a valid email address', label="Registered Email")

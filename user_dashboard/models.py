@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
@@ -123,3 +125,10 @@ class Review(models.Model):
 
     def __str__(self):
         return self.user.username + " " + str(self.rating) + " " + self.comment
+
+
+class ResetPassword(models.Model):
+    code = models.UUIDField(editable=False)
+
+    def __str__(self):
+        return str(self.code)
