@@ -8,7 +8,7 @@ class TBUser(AbstractUser):
         (0, 'User'),
         (1, 'Business')]
 
-    profile_picture = models.TextField(blank=True)
+    profile_picture = models.ImageField(null=True, blank=True, upload_to='images/')
     phone_number = models.CharField(max_length=10, blank=True)
     client_type = models.IntegerField(choices=CLIENT_TYPE, default=0)
     is_registered = models.BooleanField(default=False)
@@ -39,7 +39,7 @@ class Schedule(models.Model):
     frequency = models.IntegerField(choices=choices)
 
     def __str__(self):
-        return f"Schedule: {str(self.frequency)}"
+        return dict(self.choices)[self.frequency]
 
     def enum(self):
         return dict(self.choices)[self.frequency]
@@ -49,7 +49,7 @@ class Tiffin(models.Model):
     MEAL = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
 
     schedule_id = models.ForeignKey(Schedule, on_delete=models.DO_NOTHING)
-    business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
+    business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE, limit_choices_to={"client_type": 1})
     tiffin_name = models.CharField(max_length=50)
     tiffin_description = models.TextField(blank=True)
     image = models.TextField()
@@ -105,6 +105,8 @@ class OrderItem(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.CASCADE)
     tiffin_id = models.ForeignKey(Tiffin, on_delete=models.DO_NOTHING)
     quantity = models.IntegerField(null=False)
+
+
 class Review(models.Model):
     RATINGS = [
         (1, 1),

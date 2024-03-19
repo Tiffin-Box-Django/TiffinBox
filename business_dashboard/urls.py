@@ -8,5 +8,7 @@ urlpatterns = [
     path('tiffin/add', views.add_tiffin, name='add_tiffin'),
     path('profile/<str:username>', views.business_profile, name='profile'),
     path('sign-up/', views.signup, name='sign-up'),
-    path('login', views.businessLoginPage, name='login')
+    path('login', views.businessLoginPage, name='login'),
+    path('tiffin/edit/<int:tiffin_id>/', views.edit_tiffin, name="edit_tiffin"),
+    path('logout/', views.logout_view, name="logout")
 ]

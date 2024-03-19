@@ -25,5 +25,19 @@
         {%  include "footer.html" %}
     {% endblock %}
     {% block scripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const searchIcon = document.querySelector('.search-icon');
+        const searchBox = document.querySelector('.search-box-container');
+
+        searchIcon.addEventListener('mouseover', function () {
+            searchBox.classList.toggle('d-none')
+        });
+
+        searchIcon.addEventListener('click', function () {
+            searchBox.classList.remove('d-none')
+        });
+    });
+    </script>
     {% endblock %}
 {% endblock %}

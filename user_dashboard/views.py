@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from .models import Tiffin, Testimonial, TBUser, Review
 from .forms import ExploreSearchForm, FilterForm, SignUpForm
-
+from django.contrib.auth import views as auth_views
 
 def explore(request):
     if request.method == 'POST':
@@ -128,11 +128,15 @@ def cart(request):
     return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice})
 
 def deleteCartItem(request,id):
-    if request.method == 'GET':
-        dele = Tiffin.objects.get(id=id)
-        dele.delete()
-        return redirect('user_dashboard:cart')
+    dele = Tiffin.objects.get(id=id)
+    dele.delete()
+    return redirect('user_dashboard:cart')
 
 def user_profile(request, username):
     user = TBUser.objects.get(username=username)
     return render(request, 'business_dashboard/profile.html', context={'user': user})
+
+def logout(request):
+    ref = request.GET.get('next', '/user')
+    auth_views.auth_logout(request)
+    return redirect(ref)
