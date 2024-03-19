@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap_icons %}
 
 {% block content %}
 <!-- Script for add to cart counter -->
-    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0"></script>
-
 <script>
     function incrementValue() {
         document.getElementById("counter").innerHTML = String(Number(document.getElementById("counter").innerHTML) + 1);
@@ -16,7 +15,24 @@
             return
         }
         document.getElementById("counter").innerHTML = String(tmp - 1);
-}
+    }
+
+    function addToCart(){
+        {% if is_authenticated %}
+            const tmp = Number(document.getElementById("counter").innerHTML);
+            const resp = fetch(`{% url 'user_dashboard:update-cart' %}?tiffin_id={{ object.id }}&quantity=${tmp}`, {"method": "GET"});
+            resp.then((data) => {
+                if (data.status !== 204){
+                    alert("Some error occured :(");
+                }
+                else {
+                    alert("Item added to cart!");
+                }
+            });
+        {% else %}
+            window.location.href = '{% url 'user_dashboard:login' %}';
+        {% endif %}
+    }
 </script>
 <div class="d-flex flex-column align-items-center">
 <!-- Product Details Area Start -->
@@ -62,13 +78,17 @@
       </div>
       <hr class="hr m-2" />
       <!-- Add to cart -->
-      <div class="row m-2 d-flex flex-row justify-content-around">
+      <div class="row m-2 d-flex flex-row justify-content-around text-center">
         <div class="input-group input-group-lg w-25">
           <input type="button" id="button-minus" class="form-control" value="-" onclick="decrementValue()">
           <span id="counter" class="input-group-text">1</span>
           <input type="button" id="button-plus" class="form-control" value="+" onclick="incrementValue()">
         </div>
-        <a href="#" class="btn btn-lg btn-primary w-25">Add to cart</a>
+        <button class="btn btn-lg btn-primary w-25" id="add-to-cart" onclick="addToCart()">Add to cart</button>
+        {% if is_authenticated %}
+            <button class="btn btn-md btn-secondary" style="width: 20%"
+                    onclick="location.href = '{% url "user_dashboard:add_to_cart" object.id %}';">View your cart</button>
+        {% endif %}
       </div>
       <hr class="hr m-2" />
       <!-- Frequency, meal type, calories -->
@@ -88,22 +108,47 @@
 <!-- Reviews grid -->
 <div class="container mx-5 mt-4 flex-row" id="reviews-grid">
     <h5>Customer Reviews</h5>
-    {% for review_row in reviews_grid %}
-    <div class="d-flex justify-content-around">
-        {% for review in review_row %}
-            <div class="card card-body m-2 p-3">
-                <div class="d-flex justify-content-between">
-                    <span class="fs-5">
-                        {% bs_icon 'person-circle' size='1.2em' %}
-                        {{ review.user__first_name }} {{ review.user__last_name }}</span>
-                    <span>{{ review.created_date|date:'N d, Y' }}</span>
+    {% if reviews_grid %}
+        {% for review_row in reviews_grid %}
+        <div class="d-flex justify-content-around">
+            {% for review in review_row %}
+                <div class="card card-body m-2 p-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="fs-5">
+                            {% bs_icon 'person-circle' size='1.2em' %}
+                            {{ review.user__first_name }} {{ review.user__last_name }}</span>
+                        <span>{{ review.created_date|date:'N d, Y' }}</span>
+                    </div>
+                    <span class="py-1">{% for x in ""|ljust:review.rating %}⭐{% endfor %}</span>
+                    <span class="card-text fs-6">{{ review.comment }}</span>
                 </div>
-                <span class="py-1">{% for x in ""|ljust:review.rating %}⭐{% endfor %}</span>
-                <span class="card-text fs-6">{{ review.comment }}</span>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p> Currently, there are no reviews for this tiffin. You can be the first person to share your experience!
+        {% if not request.user.is_authenticated %}
+        <a href="{% url "user_dashboard:login" %}">Login here</a>
+        {% endif %}
+    {%  endif %}
+</div>
+<!-- Recommended tiffins -->
+<div class="container m-2 mt-4 flex-row">
+    <h5>Recommended tiffins</h5>
+    <div class="row mt-3">
+        {% for rtiffin in recommended_tiffins %}
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <img src="{{ tiffin.image }}" class="card-img-top" alt="{{ rtiffin.tiffin_name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ rtiffin.tiffin_name|truncatechars:20 }}</h5>
+                    <p class="card-text"><small class="text-muted">Price: ${{ rtiffin.price }}</small></p>
+                    <a href="{% url 'user_dashboard:tiffindetails' rtiffin.id %}" class="stretched-link"></a>
+                </div>
             </div>
+        </div>
         {% endfor %}
     </div>
-    {% endfor %}
 </div>
 </div>
 {% endblock %}

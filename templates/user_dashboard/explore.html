@@ -49,7 +49,7 @@ function resetFilterForm() {
                         <div class="card-body">
                             <h5 class="card-title">{{ dish.name|truncatechars:27 }}</h5>
                             <p class="card-text"><small class="text-muted">Price: ${{ dish.price }}</small></p>
-                            <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="btn btn-primary">View Details</a>
+                            <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="stretched-link"></a>
                         </div>
                     </div>
                 </div>

@@ -1,10 +1,12 @@
 from django.contrib.auth.views import LoginView
+from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
-from .models import Tiffin, Testimonial, TBUser, Review
+from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
 from .forms import ExploreSearchForm, FilterForm, SignUpForm
 from django.contrib.auth import views as auth_views
+
 
 def explore(request):
     if request.method == 'POST':
@@ -72,7 +74,42 @@ class TiffinDetails(DetailView):
         if tmp:
             reviews_grid.append(tmp)
         context["reviews_grid"] = reviews_grid
+
+        tiffin_extras = [("Delivery Frequency", kwargs["object"].schedule_id.enum(), "calendar-week"),
+                         ("Meal Plan", dict(kwargs["object"].MEAL)[kwargs["object"].meal_type], "basket"),
+                         ("Calories", kwargs["object"].calories, "lightning")]
+
+        context["tiffin_extras"] = tiffin_extras
+        recommended = Tiffin.objects.exclude(id=self.kwargs["pk"]) \
+                            .filter(business_id__id=kwargs["object"].business_id.id)[:4]
+        context["recommended_tiffins"] = recommended
+        context["is_authenticated"] = self.request.user.is_authenticated
         return context
+
+
+def update_cart(request):
+    response = HttpResponse(status=204)
+    if request.method != "GET":
+        return response
+
+    tiffin_id = request.GET["tiffin_id"]
+    quantity = int(request.GET["quantity"])
+
+    tiffin = Tiffin.objects.get(id=tiffin_id)
+    try:
+        user_order = Order.objects.get(user_id__id=request.user.id, status=0)
+    except Order.DoesNotExist:
+        user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
+        user_order.save()
+
+    try:
+        order_item = OrderItem.objects.get(order_id__id=user_order.id, tiffin_id__id=tiffin.id)
+        order_item.quantity += quantity
+        order_item.save()
+    except OrderItem.DoesNotExist:
+        order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)
+        order_item.save()
+    return response
 
 
 def addcart(request, tiffin_id):
