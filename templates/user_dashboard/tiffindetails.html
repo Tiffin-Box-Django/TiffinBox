@@ -143,6 +143,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ rtiffin.tiffin_name|truncatechars:20 }}</h5>
                     <p class="card-text"><small class="text-muted">Price: ${{ rtiffin.price }}</small></p>
+                    <a href="{% url 'user_dashboard:tiffindetails' rtiffin.id %}" class="stretched-link"></a>
                 </div>
             </div>
         </div>

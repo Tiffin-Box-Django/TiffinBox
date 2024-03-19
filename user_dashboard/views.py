@@ -7,6 +7,7 @@ from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
 from .forms import ExploreSearchForm, FilterForm, SignUpForm
 from django.contrib.auth import views as auth_views
 
+
 def explore(request):
     if request.method == 'POST':
         post_data = request.POST.dict()
@@ -79,7 +80,8 @@ class TiffinDetails(DetailView):
                          ("Calories", kwargs["object"].calories, "lightning")]
 
         context["tiffin_extras"] = tiffin_extras
-        recommended = Tiffin.objects.filter(business_id__id=kwargs["object"].business_id.id)[:4]
+        recommended = Tiffin.objects.exclude(id=self.kwargs["pk"]) \
+                            .filter(business_id__id=kwargs["object"].business_id.id)[:4]
         context["recommended_tiffins"] = recommended
         context["is_authenticated"] = self.request.user.is_authenticated
         return context
