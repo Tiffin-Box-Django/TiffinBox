@@ -7,3 +7,5 @@ tzdata==2024.1
 django-bootstrap-colors==5.2.1
 django-inline-svg==0.1.1
 django-bootstrap-icons==0.8.7
+pillow==10.2.0
+
