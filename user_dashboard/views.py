@@ -72,6 +72,14 @@ class TiffinDetails(DetailView):
         if tmp:
             reviews_grid.append(tmp)
         context["reviews_grid"] = reviews_grid
+
+        tiffin_extras = [("Delivery Frequency", kwargs["object"].schedule_id.enum(), "calendar-week"),
+                         ("Meal Plan", dict(kwargs["object"].MEAL)[kwargs["object"].meal_type], "basket"),
+                         ("Calories", kwargs["object"].calories, "lightning")]
+
+        context["tiffin_extras"] = tiffin_extras
+        recommended = Tiffin.objects.filter(business_id__id=kwargs["object"].business_id.id)[:4]
+        context["recommended_tiffins"] = recommended
         return context
 
 

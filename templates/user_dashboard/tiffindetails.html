@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap_icons %}
 
 {% block content %}
@@ -88,22 +89,46 @@
 <!-- Reviews grid -->
 <div class="container mx-5 mt-4 flex-row" id="reviews-grid">
     <h5>Customer Reviews</h5>
-    {% for review_row in reviews_grid %}
-    <div class="d-flex justify-content-around">
-        {% for review in review_row %}
-            <div class="card card-body m-2 p-3">
-                <div class="d-flex justify-content-between">
-                    <span class="fs-5">
-                        {% bs_icon 'person-circle' size='1.2em' %}
-                        {{ review.user__first_name }} {{ review.user__last_name }}</span>
-                    <span>{{ review.created_date|date:'N d, Y' }}</span>
+    {% if reviews_grid %}
+        {% for review_row in reviews_grid %}
+        <div class="d-flex justify-content-around">
+            {% for review in review_row %}
+                <div class="card card-body m-2 p-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="fs-5">
+                            {% bs_icon 'person-circle' size='1.2em' %}
+                            {{ review.user__first_name }} {{ review.user__last_name }}</span>
+                        <span>{{ review.created_date|date:'N d, Y' }}</span>
+                    </div>
+                    <span class="py-1">{% for x in ""|ljust:review.rating %}⭐{% endfor %}</span>
+                    <span class="card-text fs-6">{{ review.comment }}</span>
                 </div>
-                <span class="py-1">{% for x in ""|ljust:review.rating %}⭐{% endfor %}</span>
-                <span class="card-text fs-6">{{ review.comment }}</span>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p> Currently, there are no reviews for this tiffin. You can be the first person to share your experience!
+        {% if not request.user.is_authenticated %}
+        <a href="{% url "user_dashboard:login" %}">Login here</a>
+        {% endif %}
+    {%  endif %}
+</div>
+<!-- Recommended tiffins -->
+<div class="container m-2 mt-4 flex-row">
+    <h5>Recommended tiffins</h5>
+    <div class="row mt-3">
+        {% for rtiffin in recommended_tiffins %}
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <img src="{{ tiffin.image }}" class="card-img-top" alt="{{ rtiffin.tiffin_name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ rtiffin.tiffin_name|truncatechars:20 }}</h5>
+                    <p class="card-text"><small class="text-muted">Price: ${{ rtiffin.price }}</small></p>
+                </div>
             </div>
+        </div>
         {% endfor %}
     </div>
-    {% endfor %}
 </div>
 </div>
 {% endblock %}
