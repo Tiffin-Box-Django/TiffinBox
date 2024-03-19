@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from business_dashboard.forms import TiffinForm, SignUpForm
+from django.shortcuts import render, redirect, get_object_or_404
+from business_dashboard.forms import TiffinForm, SignUpForm, EditTiffinForm
 from user_dashboard.models import Tiffin, TBUser
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
@@ -77,3 +77,24 @@ def businessLoginPage(request):
     else:
         form = AuthenticationForm()
     return render(request, 'business_dashboard/login.html', {'form': form})
+
+
+def edit_tiffin(request, tiffin_id):
+    the_tiffin = get_object_or_404(Tiffin, id=tiffin_id)
+    if request.method == 'POST':
+        form = TiffinForm(request.POST)
+        if form.is_valid():
+            the_tiffin.tiffin_name = form.cleaned_data['tiffin_name']
+            the_tiffin.tiffin_description = form.cleaned_data['tiffin_description']
+            the_tiffin.meal_type = form.cleaned_data['meal_type']
+            the_tiffin.calories = form.cleaned_data['calories']
+            the_tiffin.price = form.cleaned_data['price']
+            the_tiffin.free_delivery_eligible = form.cleaned_data['free_delivery_eligible']
+            the_tiffin.save()
+            return redirect("business_dashboard:index")
+
+        return render(request, 'business_dashboard/edit-tiffin.html', {"tiffin_id": tiffin_id, 'form': form})
+    else:
+        form = EditTiffinForm(instance=the_tiffin, initial={'schedule_id': the_tiffin.schedule_id})
+
+    return render(request, "business_dashboard/edit-tiffin.html", {"tiffin_id": tiffin_id, 'form': form})
