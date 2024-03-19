@@ -37,7 +37,7 @@ class SignUpForm(UserCreationForm):
         model = TBUser
         fields = ['first_name', 'last_name', 'is_registered', 'phone_number', 'shipping_address', 'username', 'email', 'password1', 'password2', 'profile_picture']
         labels = {'first_name': 'First Name', 'last_name': 'Last Name', 'is_registered': 'Is your business registered?',
-                  'phone_number': 'Phone Number', 'shipping_address': 'Shipping Address', 'username': 'Username',
+                  'phone_number': 'Phone Number', 'shipping_address': 'Business Address', 'username': 'Username',
                   'email': 'Email', 'password1': 'Password', 'password2': 'Confirm Password'}
 
 

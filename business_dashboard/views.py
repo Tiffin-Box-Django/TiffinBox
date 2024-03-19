@@ -9,7 +9,10 @@ from django.contrib.auth import logout
 
 
 def index(request):
-    return redirect("business_dashboard:login")
+    if request.user.is_authenticated:
+        return redirect("business_dashboard:tiffin")
+    else:
+        return redirect("business_dashboard:login")
 
 @login_required
 def tiffin(request):
@@ -35,6 +38,9 @@ def business_profile(request, username):
 
 
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect("business_dashboard:index")
+
     special_characters = '"!@#$%^&*()-+?=,<>/"'
     if request.method == 'POST':
         # we have request.FILES for image files upload
@@ -60,6 +66,9 @@ def signup(request):
     return render(request, "business_dashboard/sign-up.html", {'form': form})
 
 def businessLoginPage(request):
+    if request.user.is_authenticated:
+        return redirect("business_dashboard:index")
+
     if request.method == 'POST':
         # form = LoginForm(request.POST)
         form = AuthenticationForm(request,request.POST)
