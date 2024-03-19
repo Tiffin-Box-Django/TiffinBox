@@ -1,8 +1,9 @@
 from django.contrib.auth.views import LoginView
+from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
-from .models import Tiffin, Testimonial, TBUser, Review
+from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
 from .forms import ExploreSearchForm, FilterForm, SignUpForm
 from django.contrib.auth import views as auth_views
 
@@ -81,6 +82,27 @@ class TiffinDetails(DetailView):
         recommended = Tiffin.objects.filter(business_id__id=kwargs["object"].business_id.id)[:4]
         context["recommended_tiffins"] = recommended
         return context
+
+
+def update_cart(request, tiffin_id):
+    response = HttpResponse(status=204)
+    if request.method != "GET":
+        return response
+    tiffin = Tiffin.objects.get(id=tiffin_id)
+    try:
+        user_order = Order.objects.get(user_id__id=request.user.id, status=0)
+    except Order.DoesNotExist:
+        user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
+        user_order.save()
+
+    try:
+        order_item = OrderItem.objects.get(order_id__id=user_order.id, tiffin_id__id=tiffin.id)
+        order_item.quantity += 1
+        order_item.save()
+    except OrderItem.DoesNotExist:
+        order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)
+        order_item.save()
+    return response
 
 
 def addcart(request, tiffin_id):

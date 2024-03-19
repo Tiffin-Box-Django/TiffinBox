@@ -63,13 +63,16 @@
       </div>
       <hr class="hr m-2" />
       <!-- Add to cart -->
-      <div class="row m-2 d-flex flex-row justify-content-around">
+      <div class="row m-2 d-flex flex-row justify-content-around text-center">
         <div class="input-group input-group-lg w-25">
           <input type="button" id="button-minus" class="form-control" value="-" onclick="decrementValue()">
           <span id="counter" class="input-group-text">1</span>
           <input type="button" id="button-plus" class="form-control" value="+" onclick="incrementValue()">
         </div>
-        <a href="#" class="btn btn-lg btn-primary w-25">Add to cart</a>
+        <a class="btn btn-lg btn-primary w-25" href="{% url "user_dashboard:update-cart" object.id %}"
+           id="liveToastBtn">Add to cart</a>
+        <button class="btn btn-md btn-secondary" style="width: 20%"
+                onclick="location.href = '{% url "user_dashboard:add_to_cart" object.id %}';">View your cart</button>
       </div>
       <hr class="hr m-2" />
       <!-- Frequency, meal type, calories -->
