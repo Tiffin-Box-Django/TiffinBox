@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
@@ -122,6 +124,11 @@ def add_review(request, tiffinid: int):
     tmp = Review(user=TBUser.objects.get(id=request.user.id), comment=request.POST["review-text"],
                  rating=int(request.POST["review-stars"]), tiffin=Tiffin.objects.get(id=tiffinid))
     tmp.save()
+
+    tmp = Tiffin.objects.get(id=tiffinid)
+    tmp.avg_rating = Decimal(Review.objects.filter(tiffin=tmp).aggregate(Avg('rating'))["rating__avg"])
+    tmp.save()
+
     return redirect("user_dashboard:tiffindetails", tiffinid)
 
 
