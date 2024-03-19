@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from django.views.generic.detail import DetailView
@@ -81,12 +82,13 @@ class TiffinDetails(DetailView):
 
         context["tiffin_extras"] = tiffin_extras
         recommended = Tiffin.objects.exclude(id=self.kwargs["pk"]) \
-                            .filter(business_id__id=kwargs["object"].business_id.id)[:4]
+                          .filter(business_id__id=kwargs["object"].business_id.id)[:4]
         context["recommended_tiffins"] = recommended
         context["is_authenticated"] = self.request.user.is_authenticated
         return context
 
 
+@login_required
 def update_cart(request):
     response = HttpResponse(status=204)
     if request.method != "GET":
@@ -110,6 +112,17 @@ def update_cart(request):
         order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)
         order_item.save()
     return response
+
+
+@login_required
+def add_review(request, tiffinid: int):
+    if request.method != "POST":
+        return HttpResponse(status=204)
+
+    tmp = Review(user=TBUser.objects.get(id=request.user.id), comment=request.POST["review-text"],
+                 rating=int(request.POST["review-stars"]), tiffin=Tiffin.objects.get(id=tiffinid))
+    tmp.save()
+    return redirect("user_dashboard:tiffindetails", tiffinid)
 
 
 def addcart(request, tiffin_id):
