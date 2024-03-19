@@ -156,22 +156,22 @@ def signup(request):
             username = cleaned_data.get('username')
             if any(char.isdigit() or not char.isalnum() for char in username):
                 form.add_error('username', 'Username must contain only alphanumeric characters.')
-                return render(request, 'registration/signup.html', {'form': form})
+                return render(request, 'user_dashboard/signup.html', {'form': form})
 
             # Save the user
             user = form.save()
             user.set_password(form.cleaned_data['password1'])
             user.save()
-            return redirect('/user/login')  # Redirect to login page after successful signup
+            return redirect('/user/login/')  # Redirect to login page after successful signup
         else:
-            return render(request, 'registration/signup.html', {'form': form, 'error': form.errors})
+            return render(request, 'user_dashboard/signup.html', {'form': form, 'error': form.errors})
     else:
         form = SignUpForm()
-    return render(request, 'registration/signup.html', {'form': form})
+    return render(request, 'user_dashboard/signup.html', {'form': form})
 
 
 class UserLogin(LoginView):
-    template_name = 'registration/login.html'
+    template_name = 'user_dashboard/login.html'
 
     def get_success_url(self):
         return self.request.GET.get('next', '/user/explore/')
