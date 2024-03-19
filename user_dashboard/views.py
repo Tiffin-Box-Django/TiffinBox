@@ -154,10 +154,10 @@ class UserLogin(LoginView):
     template_name = 'registration/login.html'
 
     def get_success_url(self):
-        return self.request.GET.get('next', '/user/explore')
+        return self.request.GET.get('next', '/user/explore/')
 
 
 def logout(request):
-    ref = request.GET.get('next', '/user')
+    ref = request.GET.get('next', '/user/')
     auth_views.auth_logout(request)
     return redirect(ref)
