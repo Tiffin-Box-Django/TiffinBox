@@ -81,13 +81,18 @@ class TiffinDetails(DetailView):
         context["tiffin_extras"] = tiffin_extras
         recommended = Tiffin.objects.filter(business_id__id=kwargs["object"].business_id.id)[:4]
         context["recommended_tiffins"] = recommended
+        context["is_authenticated"] = self.request.user.is_authenticated
         return context
 
 
-def update_cart(request, tiffin_id):
+def update_cart(request):
     response = HttpResponse(status=204)
     if request.method != "GET":
         return response
+
+    tiffin_id = request.GET["tiffin_id"]
+    quantity = int(request.GET["quantity"])
+
     tiffin = Tiffin.objects.get(id=tiffin_id)
     try:
         user_order = Order.objects.get(user_id__id=request.user.id, status=0)
@@ -97,7 +102,7 @@ def update_cart(request, tiffin_id):
 
     try:
         order_item = OrderItem.objects.get(order_id__id=user_order.id, tiffin_id__id=tiffin.id)
-        order_item.quantity += 1
+        order_item.quantity += quantity
         order_item.save()
     except OrderItem.DoesNotExist:
         order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)

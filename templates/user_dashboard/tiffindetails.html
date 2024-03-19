@@ -4,8 +4,6 @@
 
 {% block content %}
 <!-- Script for add to cart counter -->
-    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.0"></script>
-
 <script>
     function incrementValue() {
         document.getElementById("counter").innerHTML = String(Number(document.getElementById("counter").innerHTML) + 1);
@@ -17,7 +15,24 @@
             return
         }
         document.getElementById("counter").innerHTML = String(tmp - 1);
-}
+    }
+
+    function addToCart(){
+        {% if is_authenticated %}
+            const tmp = Number(document.getElementById("counter").innerHTML);
+            const resp = fetch(`{% url 'user_dashboard:update-cart' %}?tiffin_id={{ object.id }}&quantity=${tmp}`, {"method": "GET"});
+            resp.then((data) => {
+                if (data.status !== 204){
+                    alert("Some error occured :(");
+                }
+                else {
+                    alert("Item added to cart!");
+                }
+            });
+        {% else %}
+            window.location.href = '{% url 'user_dashboard:login' %}';
+        {% endif %}
+    }
 </script>
 <div class="d-flex flex-column align-items-center">
 <!-- Product Details Area Start -->
@@ -69,10 +84,11 @@
           <span id="counter" class="input-group-text">1</span>
           <input type="button" id="button-plus" class="form-control" value="+" onclick="incrementValue()">
         </div>
-        <a class="btn btn-lg btn-primary w-25" href="{% url "user_dashboard:update-cart" object.id %}"
-           id="liveToastBtn">Add to cart</a>
-        <button class="btn btn-md btn-secondary" style="width: 20%"
-                onclick="location.href = '{% url "user_dashboard:add_to_cart" object.id %}';">View your cart</button>
+        <button class="btn btn-lg btn-primary w-25" id="add-to-cart" onclick="addToCart()">Add to cart</button>
+        {% if is_authenticated %}
+            <button class="btn btn-md btn-secondary" style="width: 20%"
+                    onclick="location.href = '{% url "user_dashboard:add_to_cart" object.id %}';">View your cart</button>
+        {% endif %}
       </div>
       <hr class="hr m-2" />
       <!-- Frequency, meal type, calories -->
