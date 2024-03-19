@@ -57,7 +57,7 @@ class FilterForm(forms.ModelForm):
     class Meta:
         model = Tiffin
         exclude = ["image", "tiffin_name", "tiffin_description", "schedule_id", "business_id"]
-        widgets = {"meal_type": forms.CheckboxSelectMultiple(choices=Tiffin.MEAL),
+        widgets = {"meal_type": forms.Select(choices=Tiffin.MEAL),
                    "avg_rating": forms.CheckboxSelectMultiple(choices=RATING_CHOICES),
                    "price": forms.RadioSelect(choices=create_price_range()),
                    "calories": forms.RadioSelect(choices=create_calorie_range())}

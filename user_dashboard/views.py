@@ -50,8 +50,8 @@ def explore(request):
                                   "business": tiffin.business_id.first_name + tiffin.business_id.last_name,
                                   "rating": list(range(int(round(tiffin.avg_rating)))),
                                   "price": tiffin.price})
-    search_form = ExploreSearchForm()
-    filters_form = FilterForm(initial={"free_delivery_eligible": False})
+    search_form = ExploreSearchForm(request.GET) if request.GET else ExploreSearchForm()
+    filters_form = FilterForm(initial=request.POST)
 
     return render(request, 'user_dashboard/explore.html',
                   {'searchForm': search_form, 'filtersForm': filters_form,
