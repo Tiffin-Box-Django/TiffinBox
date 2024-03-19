@@ -9,7 +9,7 @@
                     style="color: #F3274C">business</span>
                 today!</h2>
 
-            <form method="post" novalidate>
+            <form method="post" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
                 {% bootstrap_form form layout="floating" size="lg" show_help=False show_label=True %}
                 <button type="submit" class="btn btn-primary btn-block mt-3 w-100">Sign Up</button>

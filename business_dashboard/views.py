@@ -5,10 +5,11 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 
 def index(request):
-    return render(request, 'base.html', {})
+    return redirect("business_dashboard:login")
 
 @login_required
 def tiffin(request):
@@ -36,7 +37,8 @@ def business_profile(request, username):
 def signup(request):
     special_characters = '"!@#$%^&*()-+?=,<>/"'
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        # we have request.FILES for image files upload
+        form = SignUpForm(request.POST, request.FILES)
 
         #verify the username
         username = request.POST['username']
@@ -78,7 +80,7 @@ def businessLoginPage(request):
         form = AuthenticationForm()
     return render(request, 'business_dashboard/login.html', {'form': form})
 
-
+@login_required
 def edit_tiffin(request, tiffin_id):
     the_tiffin = get_object_or_404(Tiffin, id=tiffin_id)
     if request.method == 'POST':
@@ -98,3 +100,8 @@ def edit_tiffin(request, tiffin_id):
         form = EditTiffinForm(instance=the_tiffin, initial={'schedule_id': the_tiffin.schedule_id})
 
     return render(request, "business_dashboard/edit-tiffin.html", {"tiffin_id": tiffin_id, 'form': form})
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect("business_dashboard:login")

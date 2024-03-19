@@ -140,3 +140,6 @@ BOOTSTRAP_THEME_COLORS = ['#f3274c', '#f3274c', '#f3274c']
 SVG_DIRS = [
     os.path.join(BASE_DIR, 'static/svg')
 ]
+
+MEDIA_ROOT = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

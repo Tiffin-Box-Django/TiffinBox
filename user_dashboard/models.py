@@ -8,7 +8,7 @@ class TBUser(AbstractUser):
         (0, 'User'),
         (1, 'Business')]
 
-    profile_picture = models.TextField(blank=True)
+    profile_picture = models.ImageField(null=True, blank=True, upload_to='images/')
     phone_number = models.CharField(max_length=10, blank=True)
     client_type = models.IntegerField(choices=CLIENT_TYPE, default=0)
     is_registered = models.BooleanField(default=False)
