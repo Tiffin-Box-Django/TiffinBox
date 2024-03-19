@@ -39,7 +39,7 @@ class Schedule(models.Model):
     frequency = models.IntegerField(choices=choices)
 
     def __str__(self):
-        return f"Schedule: {str(self.frequency)}"
+        return dict(self.choices)[self.frequency]
 
     def enum(self):
         return dict(self.choices)[self.frequency]

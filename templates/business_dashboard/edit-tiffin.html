@@ -1,0 +1,16 @@
+{% extends "business_dashboard/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+
+    <div style="background-color: #f5edef; padding-top: 5em; padding-bottom: 5em">
+        <div style="box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; margin-left: 15em; margin-right: 15em; padding: 3em; background-color: white">
+            <h3 class="w-100 text-center" style="font-size: 2.5rem; margin-bottom: 1em">Edit Tiffin</h3>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% bootstrap_form form layout="floating" size="lg" show_help=False show_label=True %}
+                <button type="submit" class="btn btn-primary btn-block mt-3 w-100">Edit Tiffin</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
