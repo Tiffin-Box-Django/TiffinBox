@@ -49,7 +49,7 @@ class Tiffin(models.Model):
     MEAL = [(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')]
 
     schedule_id = models.ForeignKey(Schedule, on_delete=models.DO_NOTHING)
-    business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
+    business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE, limit_choices_to={"client_type": 1})
     tiffin_name = models.CharField(max_length=50)
     tiffin_description = models.TextField(blank=True)
     image = models.TextField()
