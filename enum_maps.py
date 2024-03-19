@@ -1,0 +1,1 @@
+MEAL = dict([(0, 'VEG'), (1, 'NON-VEG'), (2, 'VEGAN')])

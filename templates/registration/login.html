@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block content %}
+<div class="container mt-5 p-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-8 p-5"  style="background-color: #f2f2f2;">
+      <h2 class="text-center">Sign In</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% bootstrap_form form layout="floating" size="lg" show_help=False show_label=True %}
+        <!-- Show errors -->
+        {% for field in form %}
+          {% if field.errors %}
+            <ul class="errorlist">
+              {% for error in field.errors %}
+                <li class="text-danger">{{ field }} {{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block mt-3 w-100">Sign Up</button>
+      </form>
+      <p class="text-center mt-3">New Member? <a href="{% url 'user_dashboard:signup' %}">Sign Up</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

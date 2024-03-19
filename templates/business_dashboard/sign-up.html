@@ -1,0 +1,19 @@
+{% extends "business_dashboard/base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+    <div style="background-image: url('/static/img/food-bg.jpeg');">
+        <div style="background-color: #f2f2f2; margin-left: 15em; margin-right: 15em; padding: 2em;">
+            <h2 class="font-weight-bold text-center" style="margin-bottom: 1em">Register your <span
+                    style="color: #F3274C">business</span>
+                today!</h2>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% bootstrap_form form layout="floating" size="lg" show_help=False show_label=True %}
+                <button type="submit" class="btn btn-primary btn-block mt-3 w-100">Sign Up</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
