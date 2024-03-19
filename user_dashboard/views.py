@@ -2,7 +2,7 @@ from django.contrib.auth.views import LoginView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
-from .models import Tiffin, Testimonial, TBUser, Review
+from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
 from .forms import ExploreSearchForm, FilterForm, SignUpForm
 from django.contrib.auth import views as auth_views
 
@@ -121,16 +121,23 @@ class UserLogin(LoginView):
 
 def cart(request):
     #tiffins = Tiffin.objects.filter(id = 1)  # Query all Tiffin objects for demonstration
-    tiffins = Tiffin.objects.all()  # Query all Tiffin objects for demonstration
+    tiffins = OrderItem.objects.filter(order_id__status= 4)  # Query all Tiffin objects for demonstration
     totalPrice = 0
     for tiffin in tiffins:
-        totalPrice = tiffin.price + totalPrice
+        totalPrice = tiffin.order_id.total_price + totalPrice
     return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice})
 
 def deleteCartItem(request,id):
-    dele = Tiffin.objects.get(id=id)
+    dele = OrderItem.objects.get(id=id)
     dele.delete()
     return redirect('user_dashboard:cart')
+
+def placeOrder(request,id):
+    order = OrderItem.objects.get(id=id)
+    order.order_id.status = 'Order Placed'
+    order.save()
+
+    return redirect('user_dashboard:placeOrder')
 
 def user_profile(request, username):
     user = TBUser.objects.get(username=username)

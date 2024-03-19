@@ -17,18 +17,18 @@
               <div class="card-body p-4">
                 <div class="row align-items-center">
                   <div class="col-md-2">
-                    <img src="{{ tiffin.image }}" class="img-fluid" alt="Tiffin Image">
+                    <img src="{{ tiffin.tiffin_id.image }}" class="img-fluid" alt="Tiffin Image">
                   </div>
                   <div class="col-md-2 d-flex justify-content-center">
                     <div>
                       <p class="small text-muted mb-4 pb-2">Name</p>
-                      <p class="lead fw-normal mb-0">{{ tiffin.tiffin_name }}</p>
+                      <p class="lead fw-normal mb-0">{{ tiffin.tiffin_id.tiffin_name }}</p>
                     </div>
                   </div>
                   <div class="col-md-2 d-flex justify-content-center">
                     <div>
                       <p class="small text-muted mb-4 pb-2">Description</p>
-                      <p class="lead fw-normal mb-0">{{ tiffin.tiffin_description }}</p>
+                      <p class="lead fw-normal mb-0">{{ tiffin.tiffin_id.tiffin_description }}</p>
                     </div>
                   </div>
                   <div class="col-md-2 d-flex justify-content-center">
@@ -40,7 +40,7 @@
                   <div class="col-md-2 d-flex justify-content-center">
                     <div>
                       <p class="small text-muted mb-4 pb-2">Price</p>
-                      <p class="lead fw-normal mb-0">${{ tiffin.price }}</p>
+                      <p class="lead fw-normal mb-0">${{ tiffin.tiffin_id.price }}</p>
                     </div>
                   </div>
                   <div class="col-md-2 d-flex justify-content-center">
@@ -66,6 +66,10 @@
 
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-light btn-lg me-2">Continue shopping</button>
+              <form action="{% url 'user_dashboard:placeOrder' tiffins.first.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Place Order</button>
+              </form>
             <button type="button" class="btn btn-primary btn-lg">Place Order</button>
           </div>
 
