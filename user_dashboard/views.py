@@ -1,10 +1,15 @@
+from decimal import Decimal
+
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
-from .models import Tiffin, Testimonial, TBUser, Review
+from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
 from .forms import ExploreSearchForm, FilterForm, SignUpForm
 from django.contrib.auth import views as auth_views
+
 
 def explore(request):
     if request.method == 'POST':
@@ -45,8 +50,8 @@ def explore(request):
                                   "business": tiffin.business_id.first_name + tiffin.business_id.last_name,
                                   "rating": list(range(int(round(tiffin.avg_rating)))),
                                   "price": tiffin.price})
-    search_form = ExploreSearchForm()
-    filters_form = FilterForm(initial={"free_delivery_eligible": False})
+    search_form = ExploreSearchForm(request.GET) if request.GET else ExploreSearchForm()
+    filters_form = FilterForm(initial=request.POST)
 
     return render(request, 'user_dashboard/explore.html',
                   {'searchForm': search_form, 'filtersForm': filters_form,
@@ -72,7 +77,59 @@ class TiffinDetails(DetailView):
         if tmp:
             reviews_grid.append(tmp)
         context["reviews_grid"] = reviews_grid
+
+        tiffin_extras = [("Delivery Frequency", kwargs["object"].schedule_id.enum(), "calendar-week"),
+                         ("Meal Plan", dict(kwargs["object"].MEAL)[kwargs["object"].meal_type], "basket"),
+                         ("Calories", kwargs["object"].calories, "lightning")]
+
+        context["tiffin_extras"] = tiffin_extras
+        recommended = Tiffin.objects.exclude(id=self.kwargs["pk"]) \
+                          .filter(business_id__id=kwargs["object"].business_id.id)[:4]
+        context["recommended_tiffins"] = recommended
+        context["is_authenticated"] = self.request.user.is_authenticated
         return context
+
+
+@login_required
+def update_cart(request):
+    response = HttpResponse(status=204)
+    if request.method != "GET":
+        return response
+
+    tiffin_id = request.GET["tiffin_id"]
+    quantity = int(request.GET["quantity"])
+
+    tiffin = Tiffin.objects.get(id=tiffin_id)
+    try:
+        user_order = Order.objects.get(user_id__id=request.user.id, status=0)
+    except Order.DoesNotExist:
+        user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
+        user_order.save()
+
+    try:
+        order_item = OrderItem.objects.get(order_id__id=user_order.id, tiffin_id__id=tiffin.id)
+        order_item.quantity += quantity
+        order_item.save()
+    except OrderItem.DoesNotExist:
+        order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)
+        order_item.save()
+    return response
+
+
+@login_required
+def add_review(request, tiffinid: int):
+    if request.method != "POST":
+        return HttpResponse(status=204)
+
+    tmp = Review(user=TBUser.objects.get(id=request.user.id), comment=request.POST["review-text"],
+                 rating=int(request.POST["review-stars"]), tiffin=Tiffin.objects.get(id=tiffinid))
+    tmp.save()
+
+    tmp = Tiffin.objects.get(id=tiffinid)
+    tmp.avg_rating = Decimal(Review.objects.filter(tiffin=tmp).aggregate(Avg('rating'))["rating__avg"])
+    tmp.save()
+
+    return redirect("user_dashboard:tiffindetails", tiffinid)
 
 
 def addcart(request, tiffin_id):
@@ -117,10 +174,10 @@ class UserLogin(LoginView):
     template_name = 'registration/login.html'
 
     def get_success_url(self):
-        return self.request.GET.get('next', '/user/explore')
+        return self.request.GET.get('next', '/user/explore/')
 
 
 def logout(request):
-    ref = request.GET.get('next', '/user')
+    ref = request.GET.get('next', '/user/')
     auth_views.auth_logout(request)
     return redirect(ref)

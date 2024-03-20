@@ -10,18 +10,26 @@
         </div>
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="#" class="nav-link px-2 link-secondary">Orders</a></li>
-            <li><a href="#" class="nav-link px-2 link-secondary">Tiffins</a></li>
+            {% if request.user.is_authenticated %}
+                <li><a href="{% url "business_dashboard:orders" 0 %}" class="nav-link px-2 link-secondary">Orders</a></li>
+                <li><a href="#" class="nav-link px-2 link-secondary">Tiffins</a></li>
+            {% endif %}
         </ul>
 
-    
+
         {% if request.user.is_authenticated %}
             <div class="col-md-1 text-end">
                 <div class="dropdown">
                     <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle"
                        data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ request.user.profile_picture.url }}" alt="mdo" width="40" height="40"
-                             class="rounded-circle">
+                        {% if not request.user.profile_picture %}
+                            <img src="https://t3.ftcdn.net/jpg/05/16/27/58/360_F_516275801_f3Fsp17x6HQK0xQgDQEELoTuERO4SsWV.jpg"
+                                 alt="mdo" width="40" height="40"
+                                 class="rounded-circle">
+                        {% else %}
+                            <img src="{{ request.user.profile_picture.url }}" alt="mdo" width="40" height="40"
+                                 class="rounded-circle">
+                        {% endif %}
                     </a>
                     <ul class="dropdown-menu text-small">
                         <li><a class="dropdown-item" href="{% url "business_dashboard:profile"%}">View Profile</a>

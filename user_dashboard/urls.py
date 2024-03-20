@@ -11,4 +11,6 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('login/', views.UserLogin.as_view(), name='login'),
     path('logout/', views.logout, name='logout'),
+    path('update-cart/', views.update_cart, name='update-cart'),
+    path('add-review/<int:tiffinid>', views.add_review, name='add-review'),
 ]

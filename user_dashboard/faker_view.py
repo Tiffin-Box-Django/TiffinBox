@@ -26,9 +26,10 @@ def insert_fake_data(request):
     for idx in range(7):
         profile = fake.simple_profile()
         tmp = TBUser(username=profile["username"], first_name=profile["name"], email=profile["mail"],
-                     password="admin@1234", client_type=0,
+                     client_type=0,
                      profile_picture="https://static3.bigstockphoto.com/thumbs/9/1/7/small2/71941423.jpg",
                      shipping_address=profile["address"], is_registered=False)
+        tmp.set_password("admin@1234")
         try:
             tmp.save()
         except IntegrityError:

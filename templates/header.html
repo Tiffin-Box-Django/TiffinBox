@@ -1,10 +1,14 @@
 {% load django_bootstrap5  %}
 {% load static %}
+{% load svg %}
 
 <nav class="navbar navbar-expand border">
     <div class="container">
         <a href="/" class="navbar-brand">
-            <img src="{% static "img/logo.jpeg" %}" alt="TiffinBox logo" style="width: 150px; height: 50px">
+            <a href="{% url "user_dashboard:landing" %}"
+               class="d-inline-flex link-body-emphasis text-decoration-none">
+                {% svg 'logo' %}
+            </a>
         </a>
 
         <ul class="navbar-nav">

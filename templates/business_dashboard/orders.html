@@ -1,0 +1,88 @@
+{% extends "business_dashboard/base.html" %}
+
+{% block content %}
+    <div class="container" style="margin-bottom: 4em">
+        <h3 style="margin-top: 1.5em; margin-bottom: 0.5em">Orders - {{ order_type }}</h3>
+
+        <div class="btn-group" role="group" aria-label="Basic mixed styles example" style="margin-bottom: 1em">
+            <button type="button" class="btn btn-primary"
+                    onclick="location.href='{% url "business_dashboard:orders" 4 %}';"><i class="fa fa-home"></i>&nbsp;
+                &nbsp; &nbsp;All
+            </button>
+            <button type="button" class="btn btn-warning"
+                    onclick="location.href='{% url "business_dashboard:orders" 1 %}';"><i class="fa fa-bars"></i>&nbsp;
+                &nbsp; &nbsp;Order Placed
+            </button>
+            <button type="button" class="btn btn-secondary"
+                    onclick="location.href='{% url "business_dashboard:orders" 2 %}';"><i class="fa fa-truck"></i>&nbsp;
+                &nbsp; &nbsp;Shipped
+            </button>
+            <button type="button" class="btn btn-success"
+                    onclick="location.href='{% url "business_dashboard:orders" 0 %}';"><i
+                    class="fa fa-check-circle"></i>&nbsp; &nbsp; &nbsp;Delivered
+            </button>
+            <button type="button" class="btn btn-danger"
+                    onclick="location.href='{% url "business_dashboard:orders" 3 %}';"><i
+                    class="fa fa-times-circle"></i>&nbsp; &nbsp; &nbsp;Cancelled
+            </button>
+        </div>
+
+        {% if orders %}
+            <table class="table table-striped table-hover table-bordered">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Shipping Address</th>
+                    <th>Phone Number</th>
+                    <th>Payment Method</th>
+                    <th>Tiffin</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Order Date</th>
+                    <th style="width:12%">Status</th>
+                </tr>
+                {% for order in orders %}
+                    <tr>
+                        <td style="vertical-align:middle">{{ order.2.id }}</td>
+                        <td style="vertical-align:middle">{{ order.2.order_id.user_id.first_name }} {{ order.2.order_id.user_id.last_name }}</td>
+                        <td style="vertical-align:middle">{{ order.2.order_id.shipping_address }}</td>
+                        <td style="vertical-align:middle">{{ order.2.order_id.phone_number }}</td>
+                        <td style="vertical-align:middle">{{ order.1 }}</td>
+                        <td style="vertical-align:middle">{{ order.2.tiffin_id.tiffin_name }}</td>
+                        <td style="vertical-align:middle">{{ order.2.quantity }}</td>
+                        <td style="vertical-align:middle">${{ order.2.order_id.total_price }}</td>
+                        <td style="vertical-align:middle">{{ order.2.order_id.created_date }}</td>
+                        <td>
+                            <form method="post" action="{% url "business_dashboard:update_order_status" order.2.id %}">
+                                {% csrf_token %}
+                                <select class="form-select" name="order_status_change" onchange="this.form.submit()" {% if order.2.order_id.status == 0 %}disabled{% endif %}>
+                                    <option {% if order.2.order_id.status == 2 %} selected {% endif %} value="2">Shipped</option>
+                                    <option {% if order.2.order_id.status == 0 %} selected {% endif %} value="0">Delivered</option>
+                                    <option {% if order.2.order_id.status == 3 %} selected {% endif %} value="3">Cancel</option>
+                                </select>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+        {% else %}
+            <table class="table table-striped table-hover">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Shipping Address</th>
+                    <th>Phone Number</th>
+                    <th>Payment Method</th>
+                    <th>Tiffin</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Order Date</th>
+                    <th>Status</th>
+                </tr>
+            </table>
+
+            <span>You currently have no orders</span>
+        {% endif %}
+    </div>
+{% endblock %}

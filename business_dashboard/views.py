@@ -1,14 +1,19 @@
 from django.db.migrations import serializer
 from django.shortcuts import render, redirect, get_object_or_404
-from business_dashboard.forms import AddTiffinForm, SignUpForm, EditTiffinForm, EditProfileForm
-from user_dashboard.models import Tiffin, TBUser
+from business_dashboard.forms import TiffinForm, SignUpForm, EditTiffinForm, EditProfileForm
+from user_dashboard.models import Tiffin, TBUser, Order, OrderItem
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.http import HttpResponse
 
 
 def index(request):
-    return redirect("business_dashboard:login")
+    if request.user.is_authenticated:
+        return redirect("business_dashboard:tiffin")
+    else:
+        return redirect("business_dashboard:login")
 
 @login_required
 def tiffin(request):
@@ -38,6 +43,9 @@ def business_profile(request):
 
 
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect("business_dashboard:index")
+
     special_characters = '"!@#$%^&*()-+?=,<>/"'
     if request.method == 'POST':
         # we have request.FILES for image files upload
@@ -63,6 +71,9 @@ def signup(request):
     return render(request, "business_dashboard/sign-up.html", {'form': form})
 
 def businessLoginPage(request):
+    if request.user.is_authenticated:
+        return redirect("business_dashboard:index")
+
     if request.method == 'POST':
         msg = ''
         form = AuthenticationForm(request,request.POST)
@@ -106,6 +117,7 @@ def logout_view(request):
     logout(request)
     return redirect("business_dashboard:login")
 
+  
 def edit_profile(request):
     user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
     if request.method == "POST":
@@ -127,6 +139,43 @@ def edit_profile(request):
         form = EditProfileForm(instance=user_profile)
     return render(request, "business_dashboard/edit-profile.html", {'user_profile': user_profile, 'form': form})
 
+  
+@login_required
+def orders(request, order_status):
+    # 0 1 2 3
+    if order_status == 0:
+        order_type = "Delivered"
+        order_items = OrderItem.objects.filter(order_id__status=0).order_by("-order_id__created_date")
+    elif order_status == 1:
+        order_type = "Order Placed"
+        order_items = OrderItem.objects.filter(order_id__status=1).order_by("-order_id__created_date")
+    elif order_status == 2:
+        order_type = "Shipped"
+        order_items = OrderItem.objects.filter(order_id__status=2).order_by("-order_id__created_date")
+    elif order_status == 3:
+        order_type = "Cancelled"
+        order_items = OrderItem.objects.filter(order_id__status=3).order_by("-order_id__created_date")
+    else:
+        order_type = "All"
+        order_items = OrderItem.objects.all().order_by("-order_id__created_date")
+
+    updated_orders = []
+
+    for order in order_items:
+        updated_orders.append((dict(order.order_id.ORDER_STATUS)[order.order_id.status], dict(order.order_id.PAYMENT_TYPES)[order.order_id.payment_method], order))
+
+    return render(request, "business_dashboard/orders.html", {"order_type": order_type, "orders": updated_orders})
 
 
+@login_required
+def update_order_status(request, order_id):
+    if request.method == "POST":
+        the_order = OrderItem.objects.get(id=order_id)
+        order_item = Order.objects.get(id=the_order.order_id.id)
+
+        order_item.status = int(request.POST['order_status_change'])
+        order_item.save()
+        return redirect("business_dashboard:orders", int(request.POST['order_status_change']))
+    else:
+        return redirect("business_dashboard:orders", 0)
 
