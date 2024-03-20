@@ -1,12 +1,10 @@
-from django.db.migrations import serializer
 from django.shortcuts import render, redirect, get_object_or_404
-from business_dashboard.forms import TiffinForm, SignUpForm, EditTiffinForm, EditProfileForm
+from business_dashboard.forms import SignUpForm, EditTiffinForm, EditProfileForm, AddTiffinForm
 from user_dashboard.models import Tiffin, TBUser, Order, OrderItem
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.http import HttpResponse
 
 
 def index(request):
