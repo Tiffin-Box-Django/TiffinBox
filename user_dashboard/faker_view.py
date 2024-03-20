@@ -1,9 +1,9 @@
 from faker import Faker
 from django.db.utils import IntegrityError
 from django.http import HttpResponse
-from .models import TBUser, Schedule, Tiffin
+from .models import TBUser, Schedule, Tiffin, Review
 
-from random import choice
+from random import choice, choices
 
 fake = Faker()
 
@@ -15,6 +15,7 @@ def insert_fake_data(request):
                    "https://static.vecteezy.com/system/resources/previews/000/403/516/original/modern-company-logo-design-vector.jpg"),
                   ("kaurs_kitchen", "Kaur's Kitchen Tiffins", "kar@kk.ca", "admin@1234",
                    "https://images.creativemarket.com/0.1.0/ps/7262394/1820/1214/m1/fpnw/wm0/dining-restaurant-logo-design-inspiration-.jpg?1573169154&s=f5468f33601a341466e0fb5dc1da8c4d")]
+    business_ids = (1, len(businesses))
     for ele in businesses:
         tmp = TBUser(username=ele[0], first_name=ele[1], email=ele[2], password=ele[3], client_type=1,
                      profile_picture=ele[4], shipping_address=fake.address(), is_registered=True)
@@ -23,7 +24,8 @@ def insert_fake_data(request):
         except IntegrityError:
             pass
 
-    for idx in range(7):
+    user_ids = (len(business_ids), len(business_ids) + 7)
+    for _ in range(*user_ids):
         profile = fake.simple_profile()
         tmp = TBUser(username=profile["username"], first_name=profile["name"], email=profile["mail"],
                      client_type=0,
@@ -42,12 +44,25 @@ def insert_fake_data(request):
         except IntegrityError:
             pass
 
-    for _ in range(5):
+    tiffin_ids = (1, 10)
+    for _ in range(*tiffin_ids):
+        bid = choice(range(*business_ids))
+        print(bid)
         tmp = Tiffin(schedule_id=Schedule.objects.get(id=choice(range(1, 5))),
                      image="https://res.cloudinary.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/hmuhx7mgytvwcvkb17h6",
-                     business_id=TBUser(id=choice(range(1, 4))), tiffin_name=fake.name(),
+                     business_id=TBUser.objects.get(id=choice(range(*business_ids))), tiffin_name=fake.name(),
                      tiffin_description=fake.text(), meal_type=choice(range(3)), calories=choice(range(100, 300)),
                      price=choice(range(50)), free_delivery_eligible=choice([True, False]), avg_rating=choice(range(6)))
         tmp.save()
 
+    # add reviews
+    # select users
+    for user_id in range(*user_ids):
+        # select tiffins
+        for tiffin_id in range(*tiffin_ids):
+            tmp = Review(user=TBUser.objects.get(id=user_id),
+                         tiffin=Tiffin.objects.get(id=tiffin_id),
+                         rating=choice(range(5)),
+                         comment=fake.text())
+            tmp.save()
     return HttpResponse(content={"message": "OK"})
