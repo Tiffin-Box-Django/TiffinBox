@@ -13,6 +13,11 @@ border-radius: 10px;
     <div class="row justify-content-center">
         <div class="col d-flex justify-content-center align-items-center mt-5 mb-5 p-4">
                 <div class="col-md-4 col-lg-4 p-4 rounded shadow bg-white">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
                         <h2 class="text-center mb-3">Login</h2>
                         <form method="post" novalidate>
                             {% csrf_token %}
@@ -23,13 +28,6 @@ border-radius: 10px;
                           </div>
                                 <button type="submit" class="btn btn-primary w-100">Login</button>
                         </form>
-                        {% if messages %}
-                            <ul class="messages">
-                            {% for message in messages %}
-                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                            {% endfor %}
-                            </ul>
-                        {% endif %}
                         <div class="mt-4 text-center">
                             <a href={% url 'business_dashboard:login' %}>Business Log In</a>
                         </div>
