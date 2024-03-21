@@ -2,13 +2,12 @@ from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.urls import reverse
 from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
-from .forms import ExploreSearchForm, FilterForm, SignUpForm
+from .forms import ExploreSearchForm, FilterForm, SignUpForm, EditProfileForm
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib import messages
@@ -19,6 +18,8 @@ from django.utils.encoding import force_bytes, force_str
 from .tokens import account_activation_token
 from django.core.mail import send_mail
 
+
+searchForm = ExploreSearchForm()
 
 def explore(request):
     if request.method == 'POST':
@@ -59,8 +60,8 @@ def explore(request):
                                   "business": tiffin.business_id.first_name + tiffin.business_id.last_name,
                                   "rating": list(range(int(round(tiffin.avg_rating)))),
                                   "price": tiffin.price})
-    search_form = ExploreSearchForm()
-    filters_form = FilterForm(initial={"free_delivery_eligible": False})
+    search_form = ExploreSearchForm(request.GET) if request.GET else ExploreSearchForm()
+    filters_form = FilterForm(initial=request.POST)
 
     return render(request, 'user_dashboard/explore.html',
                   {'searchForm': search_form, 'filtersForm': filters_form,
@@ -99,17 +100,64 @@ class TiffinDetails(DetailView):
         return context
 
 
+@login_required
+def update_cart(request):
+    response = HttpResponse(status=204)
+    if request.method != "GET":
+        return response
+
+    tiffin_id = request.GET["tiffin_id"]
+    quantity = int(request.GET["quantity"])
+
+    tiffin = Tiffin.objects.get(id=tiffin_id)
+    try:
+        user_order = Order.objects.get(user_id__id=request.user.id, status=0)
+    except Order.DoesNotExist:
+        user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
+        user_order.save()
+
+    try:
+        order_item = OrderItem.objects.get(order_id__id=user_order.id, tiffin_id__id=tiffin.id)
+        order_item.quantity += quantity
+        order_item.save()
+    except OrderItem.DoesNotExist:
+        order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)
+        order_item.save()
+    return response
+
+
+@login_required
+def add_review(request, tiffinid: int):
+    if request.method != "POST":
+        return HttpResponse(status=204)
+
+    tmp = Review(user=TBUser.objects.get(id=request.user.id), comment=request.POST["review-text"],
+                 rating=int(request.POST["review-stars"]), tiffin=Tiffin.objects.get(id=tiffinid))
+    tmp.save()
+
+    tmp = Tiffin.objects.get(id=tiffinid)
+    tmp.avg_rating = Decimal(Review.objects.filter(tiffin=tmp).aggregate(Avg('rating'))["rating__avg"])
+    tmp.save()
+
+    return redirect("user_dashboard:tiffindetails", tiffinid)
+
+
 def addcart(request, tiffin_id):
     return None
 
 
 def landing(request):
-    top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
-    top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by(
-        '-avg_rating')[:3]
-    testimonials = Testimonial.objects.all()
-    return render(request, 'user_dashboard/landing.html',
-                  {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses})
+    if request.method == 'POST':
+        form = ExploreSearchForm(request.POST)
+        if form.is_valid():
+            return redirect('user_dashboard:explore')
+    else:
+        form = ExploreSearchForm()
+        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
+        top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by('-avg_rating')[:3]
+        testimonials = Testimonial.objects.all()
+        return render(request, 'user_dashboard/landing.html',
+                  {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses, 'searchForm': form})
 
 
 def signup(request):
@@ -124,14 +172,14 @@ def signup(request):
             activateEmail(request, user)
             messages.success(request, 'Please check your email to confirm your registration.')
             # Redirect to login page after successful signup
-            return redirect('user_dashboard:login')
+            return redirect('user_dashboard:login')  
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
-            return render(request, 'user_dashboard/signup.html', {'form': form, 'error': form.errors})
+            return render(request, 'user_dashboard/signup.html', {'form': form, 'error': form.errors, 'searchForm': searchForm})
     else:
         form = SignUpForm()
-    return render(request, 'user_dashboard/signup.html', {'form': form})
+    return render(request, 'user_dashboard/signup.html', {'form': form, 'searchForm': searchForm})
 
 
 def activateEmail(request, user):
@@ -161,6 +209,11 @@ def activate(request, uidb64, token):
 
 class UserLogin(LoginView):
     template_name = 'user_dashboard/login.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["searchForm"] = searchForm
+        return context
 
     def get_success_url(self):
         return self.request.GET.get('next', '/')
@@ -195,9 +248,30 @@ def OrderHistory(request):
 
 def user_profile(request, username):
     user = TBUser.objects.get(username=username)
-    return render(request, 'business_dashboard/profile.html', context={'user': user})
+    return render(request, 'user_dashboard/profile.html', context={'user': user})
 
 def logout(request):
     ref = request.GET.get('next', '/')
     auth_views.auth_logout(request)
     return redirect(ref)
+
+def edit_profile(request):
+    user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
+    if request.method == "POST":
+        form = EditProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            user_profile.profile_picture = form.cleaned_data['profile_picture']
+            user_profile.username = form.cleaned_data['username']
+            user_profile.first_name = form.cleaned_data['first_name']
+            user_profile.last_name = form.cleaned_data['last_name']
+            user_profile.email = form.cleaned_data['email']
+            user_profile.phone_number = form.cleaned_data['phone_number']
+            user_profile.shipping_address = form.cleaned_data['shipping_address']
+            user_profile = form.save(commit=False)
+            if 'image' in request.FILES:
+                user_profile.profile_picture = request.FILES['profile_picture']
+            user_profile.save()
+            return redirect("business_dashboard:profile")
+    else:
+        form = EditProfileForm(instance=user_profile)
+    return render(request, "user_dashboard/edit-profile.html", {'user_profile': user_profile, 'form': form})

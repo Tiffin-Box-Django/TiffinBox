@@ -10,7 +10,7 @@
 {% load static %}
     <!-- Custom css header -->
     <link rel="stylesheet" href="{% static 'styles/base.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <!-- This is helping us override the bootstrap css theme colors -->
     <link rel="stylesheet" type="text/css" href="{% url 'colors' %}">
 {% endblock %}
@@ -25,19 +25,5 @@
         {%  include "footer.html" %}
     {% endblock %}
     {% block scripts %}
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        const searchIcon = document.querySelector('.search-icon');
-        const searchBox = document.querySelector('.search-box-container');
-
-        searchIcon.addEventListener('mouseover', function () {
-            searchBox.classList.toggle('d-none')
-        });
-
-        searchIcon.addEventListener('click', function () {
-            searchBox.classList.remove('d-none')
-        });
-    });
-    </script>
     {% endblock %}
 {% endblock %}

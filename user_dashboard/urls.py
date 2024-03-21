@@ -17,5 +17,7 @@ urlpatterns = [
     path('OrderHistory/', views.OrderHistory, name='OrderHistory'),
     path('update-cart/', views.update_cart, name='update-cart'),
     path('add-review/<int:tiffinid>', views.add_review, name='add-review'),
-    path('activate/<uidb64>/<token>', views.activate, name='activate')
+    path('activate/<uidb64>/<token>', views.activate, name='activate'),
+    path('profile/', views.user_profile, name='profile'),
+    path('edit-profile/', views.edit_profile, name='profile'),
 ]
