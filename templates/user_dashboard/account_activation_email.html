@@ -1,0 +1,17 @@
+{% autoescape off %}
+
+Hello {{ user }},
+
+Welcome to TiffinBox, your go-to destination for delicious and convenient tiffin services!! We're thrilled to have you join our community of food enthusiasts.   
+    
+To complete your registration and unlock the full potential of your TiffinBox account, please click the link below to verify your email address:
+
+http://{{ domain }}{% url 'user_dashboard:activate' uidb64=uid token=token %}
+    
+If you did not request this registration or believe it to be in error, please disregard this email.
+
+Thank you for choosing TiffinBox. We're excited to embark on this culinary journey with you!
+
+Happy Eating,
+The TiffinBox Team.
+{% endautoescape %}
