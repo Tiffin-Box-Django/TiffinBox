@@ -13,6 +13,7 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('cart/', views.cart, name='cart'),
     path('deleteCartItem/<int:id>/', views.deleteCartItem, name='deleteCartItem'),
-    path('placeOrder/<int:id>/', views.placeOrder, name='placeOrder'),
+    path('placeOrder/', views.placeOrder, name='placeOrder'),
+    path('OrderHistory/', views.OrderHistory, name='OrderHistory'),
 ]
 

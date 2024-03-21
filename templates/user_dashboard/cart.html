@@ -1,11 +1,20 @@
 <!-- cart.html -->
-
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+        .card {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Adding shadow to cards */
+        }
+    </style>
+</head>
 {% extends 'base.html' %}
 
 {% block title %}Cart - Tiffin Service{% endblock %}
 
 {% block content %}
-<section class="vh-100" style="background-color: #fdccbc;">
+<section class="vh-100" style="background-color: #f9f9f9;"> <!-- Changing background color to off-white -->
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col">
@@ -46,7 +55,7 @@
                   <div class="col-md-2 d-flex justify-content-center">
                     <div>
                       <p class="small text-muted mb-4 pb-2">Remove</p>
-                      <a class="lead fw-normal mb-0" href="/user/deleteCartItem/{{ tiffin.id }}/">remove</a>
+                      <a class="lead fw-normal mb-0" href="/user/deleteCartItem/{{ tiffin.id }}/"><i class="fas fa-trash-alt"></i></a>
                     </div>
                   </div>
                 </div>
@@ -66,11 +75,11 @@
 
           <div class="d-flex justify-content-end">
             <button type="button" class="btn btn-light btn-lg me-2">Continue shopping</button>
-              <form action="{% url 'user_dashboard:placeOrder' tiffins.first.id %}" method="post">
+              <form action="{% url 'user_dashboard:placeOrder'%}" method="post">
                 {% csrf_token %}
-                <button type="submit">Place Order</button>
+                <button type="submit"class="btn btn-primary btn-lg" >Place Order</button>
               </form>
-            <button type="button" class="btn btn-primary btn-lg">Place Order</button>
+
           </div>
 
         {% else %}

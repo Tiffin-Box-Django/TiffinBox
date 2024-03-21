@@ -1,4 +1,5 @@
 from django.contrib.auth.views import LoginView
+from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
@@ -119,12 +120,14 @@ class UserLogin(LoginView):
     def get_success_url(self):
         return self.request.GET.get('next', '/user/explore')
 
+
 def cart(request):
     #tiffins = Tiffin.objects.filter(id = 1)  # Query all Tiffin objects for demonstration
-    tiffins = OrderItem.objects.filter(order_id__status= 4)  # Query all Tiffin objects for demonstration
+    #tiffins = OrderItem.objects.filter(order_id__status= 4, order_id__user_id= request.user.id)  # Query all Tiffin objects for demonstration
+    tiffins = OrderItem.objects.filter(order_id__status= 4 )
     totalPrice = 0
     for tiffin in tiffins:
-        totalPrice = tiffin.order_id.total_price + totalPrice
+        totalPrice = tiffin.tiffin_id.price + totalPrice
     return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice})
 
 def deleteCartItem(request,id):
@@ -132,12 +135,18 @@ def deleteCartItem(request,id):
     dele.delete()
     return redirect('user_dashboard:cart')
 
-def placeOrder(request,id):
-    order = OrderItem.objects.get(id=id)
-    order.order_id.status = 'Order Placed'
-    order.save()
+def placeOrder(request):
+    #tiffins = OrderItem.objects.filter(order_id__status=4,order_id__user_id=request.user.id)  # Query all Tiffin objects for demonstration
+    tiffins = Order.objects.filter(status=4)  # Query all Tiffin objects for demonstration
 
-    return redirect('user_dashboard:placeOrder')
+    for order in tiffins:
+        order.status = 1
+        order.save()
+    return render(request, 'user_dashboard/placeOrder.html')
+
+def OrderHistory(request):
+  orderHistory = Order.objects.filter(user_id = request.user.id)
+
 
 def user_profile(request, username):
     user = TBUser.objects.get(username=username)
