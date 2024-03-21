@@ -13,5 +13,6 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('update-cart/', views.update_cart, name='update-cart'),
     path('add-review/<int:tiffinid>', views.add_review, name='add-review'),
-    path('activate/<uidb64>/<token>', views.activate, name='activate')
+    path('activate/<uidb64>/<token>', views.activate, name='activate'),
+    path('profile/', views.profile, name='profile'),
 ]

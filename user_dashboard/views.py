@@ -19,6 +19,8 @@ from .tokens import account_activation_token
 from django.core.mail import send_mail
 
 
+searchForm = ExploreSearchForm()
+
 def explore(request):
     if request.method == 'POST':
         post_data = request.POST.dict()
@@ -145,12 +147,17 @@ def addcart(request, tiffin_id):
 
 
 def landing(request):
-    top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
-    top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by(
-        '-avg_rating')[:3]
-    testimonials = Testimonial.objects.all()
-    return render(request, 'user_dashboard/landing.html',
-                  {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses})
+    if request.method == 'POST':
+        form = ExploreSearchForm(request.POST)
+        if form.is_valid():
+            return redirect('user_dashboard:explore')
+    else:
+        form = ExploreSearchForm()
+        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
+        top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by('-avg_rating')[:3]
+        testimonials = Testimonial.objects.all()
+        return render(request, 'user_dashboard/landing.html',
+                  {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses, 'searchForm': form})
 
 
 def signup(request):
@@ -169,10 +176,10 @@ def signup(request):
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
-            return render(request, 'user_dashboard/signup.html', {'form': form, 'error': form.errors})        
+            return render(request, 'user_dashboard/signup.html', {'form': form, 'error': form.errors, 'searchForm': searchForm})
     else:
         form = SignUpForm()
-    return render(request, 'user_dashboard/signup.html', {'form': form})
+    return render(request, 'user_dashboard/signup.html', {'form': form, 'searchForm': searchForm})
 
 
 def activateEmail(request, user):
@@ -203,6 +210,11 @@ def activate(request, uidb64, token):
 class UserLogin(LoginView):
     template_name = 'user_dashboard/login.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["searchForm"] = searchForm
+        return context
+
     def get_success_url(self):
         return self.request.GET.get('next', '/')
 
@@ -211,3 +223,7 @@ def logout(request):
     ref = request.GET.get('next', '/')
     auth_views.auth_logout(request)
     return redirect(ref)
+
+
+def profile(request):
+    return None
