@@ -19,15 +19,15 @@
 <section id="top-tiffins" class="tiffins">
     <div class="container">
         <h2 class="text-center">Top Tiffins</h2>
-        <div class="row">
+        <div class="row justify-content-center">
             {% for tiffin in top_tiffins %}
-            <div class="col-md-3 m-2">
-                <div class="card p-3" style="width: 18rem;">
+            <div class="col-md-3 m-2" style="width: 18rem;">
+                <div class="card rounded">
                     <img src="{{ tiffin.image }}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{ tiffin.tiffin_name }}</h5>
-                        <p class="card-text">{{ tiffin.tiffin_description }}</p>
-                        <a href="#" class="btn btn-primary">Edit</a>
+                        <p class="card-text"><small class="text-muted">{{ tiffin.tiffin_description|truncatechars:50 }}</small></p>
+                        <a href="{% url 'user_dashboard:tiffindetails' tiffin.id %}" class="stretched-link"></a>
                     </div>
                 </div>
             </div>
@@ -39,15 +39,15 @@
 <section id="top-businesses" class="businesses">
     <div class="container">
         <h2 class="text-center">Top Businesses</h2>
-        <div class="row">
+        <div class="row justify-content-center">
             {% for business in top_businesses %}
-            <div class="col-md-4 m-2">
-                <div class="card p-3" style="width: 18rem;">
+            <div class="col-md-3 m-2">
+                <div class="card rounded">
                     <img src="{{ business.profile_picture }}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{ business.first_name }} {{ business.last_name }}</h5>
-                        <p class="card-text">{{ business.shipping_address }}</p>
-                        <a href="#" class="btn btn-primary">Edit</a>
+                        <p class="card-text"><small class="text-muted">{{ business.shipping_address }}</small></p>
+                        <a href="#" class="stretched-link"></a>
                     </div>
                 </div>
             </div>
@@ -56,9 +56,10 @@
     </div>
 </section>
 <!-- Testimonials Section -->
+{% if testimonials %}
 <section class="testimonials">
     <div class="container">
-        <h2>What Our Customers Say</h2>
+        <h2 class="text-center">What Our Customers Say</h2>
         <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
               {% for testimonial in testimonials %}
@@ -91,7 +92,7 @@
           </div>  
     </div>
 </section>
-
+{% endif %}
 
 
 

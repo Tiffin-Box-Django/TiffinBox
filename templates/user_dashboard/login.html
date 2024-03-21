@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block content %}
+<div class="container-fluid p-0 m-0"
+style="
+background-image: url('{% static 'img/img1.png' %}');
+background-size: cover;
+background-position: center;
+padding: 20px;
+border-radius: 10px;
+">
+    <div class="row justify-content-center">
+        <div class="col d-flex justify-content-center align-items-center mt-5 mb-5 p-4">
+                <div class="col-md-4 col-lg-4 p-4 rounded shadow bg-white">
+                        <h2 class="text-center mb-3">Login</h2>
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            {% bootstrap_form form layout="floating" size="md" show_help=False show_label=True %}
+                             <!-- forgot password link -->
+                        <div class="my-2">
+                            <a href="{% url 'reset_password' %}">Forgot Password?</a>
+                          </div>
+                                <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </form>
+                        {% if messages %}
+                            <ul class="messages">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="mt-4 text-center">
+                            <a href={% url 'business_dashboard:login' %}>Business Log In</a>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            Haven't registered yet? <a href={% url 'user_dashboard:signup' %}>Sign Up</a>
+                        </div>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

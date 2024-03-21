@@ -1,5 +1,6 @@
 .hero {
     background-size: cover;
+    background-image: url('../../img/landingimage2.jpg');
     background-position: center;
     color: #fff;
     padding: 100px 0;
@@ -19,7 +20,7 @@
     margin-bottom: 40px;
 }
 
-.tiffins {
+.tiffins, .businesses, .testimonials {
     margin: 20px;
     background-color: #f8f9fa;
     padding: 40px 0;

@@ -1,12 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from business_dashboard.forms import TiffinForm, SignUpForm, EditTiffinForm
+from business_dashboard.forms import SignUpForm, EditTiffinForm, EditProfileForm, AddTiffinForm
 from user_dashboard.models import Tiffin, TBUser, Order, OrderItem
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.http import HttpResponse
 
 
 def index(request):
@@ -21,20 +19,24 @@ def tiffin(request):
   
 @login_required
 def add_tiffin(request):
-    msg = ''
     if request.method == 'POST':
-        form = TiffinForm(request.POST)
+        form = AddTiffinForm(request.POST, request.FILES)
         if form.is_valid():
+            business_user = request.user.id
             tiffin_item = form.save(commit=False)
+            tiffin_item.business_id = TBUser.objects.get(pk=business_user)
+            if 'image' in request.FILES:
+                tiffin_item.image = request.FILES['image']
             tiffin_item.save()
-            msg = 'Tiffin added'
+            return redirect('business_dashboard:tiffin')
+        return render(request, 'business_dashboard/add-tiffin.html', {'form': form})
     else:
-        form = TiffinForm()
-    return render(request, 'business_dashboard/add_tiffin.html', context={'form': form, 'msg': msg})
+        form = AddTiffinForm()
+    return render(request, 'business_dashboard/add-tiffin.html', {'form': form})
 
-
-def business_profile(request, username):
-    user = TBUser.objects.get(username=username)
+# @login_required
+def business_profile(request):
+    user = get_object_or_404(TBUser, username=request.user.username, is_active=True)
     return render(request, 'business_dashboard/profile.html', context={'user': user})
 
 
@@ -71,21 +73,18 @@ def businessLoginPage(request):
         return redirect("business_dashboard:index")
 
     if request.method == 'POST':
-        # form = LoginForm(request.POST)
+        msg = ''
         form = AuthenticationForm(request,request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            print(username)
-            print(password)
             user = authenticate(username=username, password=password)
-            print(user)
-            if user is not None:
+            if user is not None and user.client_type == 1:
                 login(request, user)
-                messages.success(request, 'Logged in successfully')
-                return render(request, 'business_dashboard/tiffin.html')
+                return redirect('business_dashboard:tiffin')
             else:
-                messages.error(request, 'Username or Password is incorrect!')
+                msg = 'Invalid Username or Password!' #This message is being overridden by the error message from AuthenticationForm
+                return render(request, 'business_dashboard/login.html', {'msg': msg})
     else:
         form = AuthenticationForm()
     return render(request, 'business_dashboard/login.html', {'form': form})
@@ -116,7 +115,29 @@ def logout_view(request):
     logout(request)
     return redirect("business_dashboard:login")
 
+  
+def edit_profile(request):
+    user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
+    if request.method == "POST":
+        form = EditProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            user_profile.profile_picture = form.cleaned_data['profile_picture']
+            user_profile.username = form.cleaned_data['username']
+            user_profile.first_name = form.cleaned_data['first_name']
+            user_profile.last_name = form.cleaned_data['last_name']
+            user_profile.email = form.cleaned_data['email']
+            user_profile.phone_number = form.cleaned_data['phone_number']
+            user_profile.shipping_address = form.cleaned_data['shipping_address']
+            user_profile = form.save(commit=False)
+            if 'image' in request.FILES:
+                user_profile.profile_picture = request.FILES['profile_picture']
+            user_profile.save()
+            return redirect("business_dashboard:profile")
+    else:
+        form = EditProfileForm(instance=user_profile)
+    return render(request, "business_dashboard/edit-profile.html", {'user_profile': user_profile, 'form': form})
 
+  
 @login_required
 def orders(request, order_status):
     # 0 1 2 3
@@ -155,3 +176,4 @@ def update_order_status(request, order_id):
         return redirect("business_dashboard:orders", int(request.POST['order_status_change']))
     else:
         return redirect("business_dashboard:orders", 0)
+
