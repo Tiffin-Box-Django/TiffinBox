@@ -20,29 +20,43 @@
     margin-bottom: 40px;
 }
 
-.tiffins, .businesses, .testimonials {
+.tiffins, .businesses {
     margin: 20px;
     background-color: #f8f9fa;
     padding: 40px 0;
     border-radius: 10px;
 }
 
-.carousel-caption {
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    position: relative;
-    left: auto;
-    right: auto;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+#testimonials {
+  position: relative;
 }
-.carousel-caption img {
-    height: 200px;
-    width: 200px;
-    border-radius: 50%;
+
+.testimonial-top,
+.testimonial-bottom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  z-index: -1; /* Ensure the layers are behind the content */
 }
-.carousel-caption .content {
-    align-items: center;
+
+.testimonial-top {
+  background-color: #333333; /* Dark shade color */
+}
+
+.section-heading {
+    font-size: 35px;
+}
+
+
+.testimonial-bottom {
+  background-color: #ffffff; /* White color */
+  top: 50%;
+  z-index: -1; /* Ensure the layers are behind the content */
+}
+
+.testimonial-card {
+  position: relative;
+  z-index: 1; /* Ensure the cards are above the layers */
 }
