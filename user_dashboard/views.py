@@ -1,11 +1,24 @@
+from decimal import Decimal
+
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.urls import reverse
+from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
 from .forms import ExploreSearchForm, FilterForm, SignUpForm
 from django.contrib.auth import views as auth_views
+from django.contrib.auth import views as auth_views, get_user_model
+from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from .tokens import account_activation_token
+from django.core.mail import send_mail
+
 
 def explore(request):
     if request.method == 'POST':
@@ -73,6 +86,16 @@ class TiffinDetails(DetailView):
         if tmp:
             reviews_grid.append(tmp)
         context["reviews_grid"] = reviews_grid
+
+        tiffin_extras = [("Delivery Frequency", kwargs["object"].schedule_id.enum(), "calendar-week"),
+                         ("Meal Plan", dict(kwargs["object"].MEAL)[kwargs["object"].meal_type], "basket"),
+                         ("Calories", kwargs["object"].calories, "lightning")]
+
+        context["tiffin_extras"] = tiffin_extras
+        recommended = Tiffin.objects.exclude(id=self.kwargs["pk"]) \
+                          .filter(business_id__id=kwargs["object"].business_id.id)[:4]
+        context["recommended_tiffins"] = recommended
+        context["is_authenticated"] = self.request.user.is_authenticated
         return context
 
 
@@ -93,32 +116,54 @@ def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            # Custom validation logic
-            cleaned_data = form.cleaned_data
-
-            # Check if username contains any special characters
-            username = cleaned_data.get('username')
-            if any(char.isdigit() or not char.isalnum() for char in username):
-                form.add_error('username', 'Username must contain only alphanumeric characters.')
-                return render(request, 'registration/signup.html', {'form': form})
-
             # Save the user
-            user = form.save()
+            user = form.save(commit=False)
+            user.is_active=False
             user.set_password(form.cleaned_data['password1'])
             user.save()
-            return redirect('/user/login')  # Redirect to login page after successful signup
+            activateEmail(request, user)
+            messages.success(request, 'Please check your email to confirm your registration.')
+            # Redirect to login page after successful signup
+            return redirect('user_dashboard:login')
         else:
-            return render(request, 'registration/signup.html', {'form': form, 'error': form.errors})
+            for error in list(form.errors.values()):
+                messages.error(request, error)
+            return render(request, 'user_dashboard/signup.html', {'form': form, 'error': form.errors})
     else:
         form = SignUpForm()
-    return render(request, 'registration/signup.html', {'form': form})
+    return render(request, 'user_dashboard/signup.html', {'form': form})
+
+
+def activateEmail(request, user):
+    mail_subject = 'Activate Your TiffinBox Account Now!'
+    message = render_to_string("user_dashboard/account_activation_email.html", {'user': user.first_name, 'domain': get_current_site(request).domain, 'uid': urlsafe_base64_encode(force_bytes(user.pk)), 'token': account_activation_token.make_token(user), 'protocol': 'https' if request.is_secure() else 'http'})
+    send_mail(mail_subject, message, 'raholsarvy@gmail.com', [user.email])
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        # messages.success(request, "Thank you for your email confirmation. Please login your account.")
+        messages.success(request, "Cheers! Your email verification is a success. Please Login & start ordering your favorite Tiffins now!")
+        return redirect('user_dashboard:login')
+    else:
+        messages.error(request, "Unfortunately, the activation link has expired.")
+    return redirect('user_dashboard:landing')
 
 
 class UserLogin(LoginView):
-    template_name = 'registration/login.html'
+    template_name = 'user_dashboard/login.html'
 
     def get_success_url(self):
-        return self.request.GET.get('next', '/user/explore')
+        return self.request.GET.get('next', '/')
 
 
 def cart(request):
@@ -153,6 +198,6 @@ def user_profile(request, username):
     return render(request, 'business_dashboard/profile.html', context={'user': user})
 
 def logout(request):
-    ref = request.GET.get('next', '/user')
+    ref = request.GET.get('next', '/')
     auth_views.auth_logout(request)
     return redirect(ref)

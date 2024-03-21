@@ -14,6 +14,11 @@
                 {% bootstrap_form form layout="floating" size="lg" show_help=False show_label=True %}
                 <button type="submit" class="btn btn-primary btn-block mt-3 w-100">Sign Up</button>
             </form>
+            <div class="mt-4" style="display: flex; justify-content: center">
+                 <span class="text-center">
+                            Already a business registered with us? <a href={% url 'business_dashboard:login' %}>Login</a>
+                        </span>
+            </div>
         </div>
     </div>
 {% endblock %}

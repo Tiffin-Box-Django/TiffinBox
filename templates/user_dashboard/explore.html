@@ -8,7 +8,7 @@
 <script>
 function resetFilterForm() {
    let frm = document.getElementById('filter-form');
-   frm.reset(); 
+   frm.reset();
    frm.submit();
 }
 </script>
@@ -24,15 +24,17 @@ function resetFilterForm() {
                     <form method="POST" action="{% url 'user_dashboard:explore' %}" id="filter-form">
                         {% csrf_token %}
                         {% bootstrap_form filtersForm %}
-                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                        <button type="reset" class="btn btn-primary" onclick="resetFilterForm()">Reset Filters</button>
+                        <button type="submit" class="btn btn-outline-primary">Apply Filters</button>
+                    </form>
+                    <form method="GET" action="{% url 'user_dashboard:explore' %}" id="filter-form">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1em;">Reset Filters</button>
                     </form>
                 </div>
             </div>
         </div>
         <div class="col-md-9">
             <!-- Search text filter -->
-            <form method="GET" class="row">
+            <form method="GET" class="row" novalidate>
                 <div class="col-md-11 p-0">
                     {% bootstrap_form searchForm %}
                 </div>
@@ -49,7 +51,7 @@ function resetFilterForm() {
                         <div class="card-body">
                             <h5 class="card-title">{{ dish.name|truncatechars:27 }}</h5>
                             <p class="card-text"><small class="text-muted">Price: ${{ dish.price }}</small></p>
-                            <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="btn btn-primary">View Details</a>
+                            <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="stretched-link"></a>
                         </div>
                     </div>
                 </div>

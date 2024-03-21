@@ -15,5 +15,7 @@ urlpatterns = [
     path('deleteCartItem/<int:id>/', views.deleteCartItem, name='deleteCartItem'),
     path('placeOrder/', views.placeOrder, name='placeOrder'),
     path('OrderHistory/', views.OrderHistory, name='OrderHistory'),
+    path('update-cart/', views.update_cart, name='update-cart'),
+    path('add-review/<int:tiffinid>', views.add_review, name='add-review'),
+    path('activate/<uidb64>/<token>', views.activate, name='activate')
 ]
-

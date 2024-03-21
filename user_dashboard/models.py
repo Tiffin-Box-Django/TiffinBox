@@ -39,7 +39,7 @@ class Schedule(models.Model):
     frequency = models.IntegerField(choices=choices)
 
     def __str__(self):
-        return dict(self.choices)[self.frequency]
+        return dict(self.choices).get(self.frequency, 'None')
 
     def enum(self):
         return dict(self.choices)[self.frequency]
@@ -52,7 +52,7 @@ class Tiffin(models.Model):
     business_id = models.ForeignKey(TBUser, on_delete=models.CASCADE, limit_choices_to={"client_type": 1})
     tiffin_name = models.CharField(max_length=50)
     tiffin_description = models.TextField(blank=True)
-    image = models.TextField()
+    image = models.ImageField(null=True, blank=True, upload_to='images/')
     meal_type = models.IntegerField(choices=MEAL, blank=True)
     calories = models.IntegerField(blank=True)
     price = models.DecimalField(max_digits=4, decimal_places=2, blank=True)

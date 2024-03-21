@@ -19,15 +19,15 @@
 <section id="top-tiffins" class="tiffins">
     <div class="container">
         <h2 class="text-center">Top Tiffins</h2>
-        <div class="row">
+        <div class="row justify-content-center">
             {% for tiffin in top_tiffins %}
-            <div class="col-md-3 m-2">
-                <div class="card p-3" style="width: 18rem;">
+            <div class="col-md-3 m-2" style="width: 18rem;">
+                <div class="card rounded">
                     <img src="{{ tiffin.image }}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{ tiffin.tiffin_name }}</h5>
-                        <p class="card-text">{{ tiffin.tiffin_description }}</p>
-                        <a href="#" class="btn btn-primary">Edit</a>
+                        <p class="card-text"><small class="text-muted">{{ tiffin.tiffin_description|truncatechars:50 }}</small></p>
+                        <a href="{% url 'user_dashboard:tiffindetails' tiffin.id %}" class="stretched-link"></a>
                     </div>
                 </div>
             </div>
@@ -39,15 +39,15 @@
 <section id="top-businesses" class="businesses">
     <div class="container">
         <h2 class="text-center">Top Businesses</h2>
-        <div class="row">
+        <div class="row justify-content-center">
             {% for business in top_businesses %}
-            <div class="col-md-4 m-2">
-                <div class="card p-3" style="width: 18rem;">
+            <div class="col-md-3 m-2">
+                <div class="card rounded">
                     <img src="{{ business.profile_picture }}" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title">{{ business.first_name }} {{ business.last_name }}</h5>
-                        <p class="card-text">{{ business.shipping_address }}</p>
-                        <a href="#" class="btn btn-primary">Edit</a>
+                        <p class="card-text"><small class="text-muted">{{ business.shipping_address }}</small></p>
+                        <a href="#" class="stretched-link"></a>
                     </div>
                 </div>
             </div>
@@ -56,47 +56,68 @@
     </div>
 </section>
 <!-- Testimonials Section -->
-<section class="testimonials">
+{% if testimonials %}
+<section id="testimonials" class="py-5 position-relative">
+    <div class="testimonial-top"></div> <!-- This will be the dark shade color -->
     <div class="container">
-        <h2>What Our Customers Say</h2>
-        <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-              {% for testimonial in testimonials %}
-              <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %} aria-label="Slide {{ forloop.counter }}">
-              </button>
-              {% endfor %}
+        <div class="row justify-content-center text-white">
+            <div class="col-lg-8 text-center mb-5">
+                <h2 class="section-heading mb-3">Our Happy Customers</h2>
+                <p class="company-intro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Proin
+                    congue ullamcorper justo, nec maximus lorem mattis id. Vivamus fringilla mi id neque pulvinar, ac
+                    facilisis nisi finibus.</p>
             </div>
-            <div class="carousel-inner">
-              {% for testimonial in testimonials %}
-              <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="2000">
-                <div class="carousel-caption card-body">
-                    <img src="{% static 'img/breakfast.jpg' %}"  alt="...">
-                    <!-- <img src="{% static 'img/customer1.jpg' %}" alt="Customer 1"> -->
-                    <div class="content">
-                      <h5>{{ testimonial.user.first_name }} {{ testimonial.user.last_name }}</h5>
-                      <p>{{ testimonial.comment }}</p>
+        </div>
+        <div id="carouselMultiItemExample" class="carousel slide carousel-dark text-center" data-bs-ride="carousel"
+            data-bs-interval="10000">
+            <div class="carousel-inner py-4">
+                {% for i in testimonials|slice:":6" %}
+                {% if forloop.first or forloop.counter0|divisibleby:3 %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            {% endif %}
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="card testimonial-card h-100">
+                                    <img class="card-img-top mx-auto rounded-circle shadow mb-4"
+                                        src="{{ i.user.profile_picture }}" alt="avatar"
+                                        style="width: 100px; height: 100px;" />
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-3">{{ i.user.first_name }} {{ i.user.last_name }}</h5>
+                                        <p class="card-text text-muted" id="testimonial-comment">
+                                            <i class="fas fa-quote-left pe-2"></i>
+                                            <span class="comment">{{ i.comment }}</span>
+                                            <i class="fas fa-quote-right ps-2"></i>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if forloop.last or forloop.counter0|add:1|divisibleby:3 %}
+                        </div>
                     </div>
                 </div>
-              </div>
-              {% endfor %}
+                {% endif %}
+                {% endfor %}
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
+            <button class="carousel-control-prev position-absolute top-50 translate-middle-y" type="button"
+                data-bs-target="#carouselMultiItemExample" data-bs-slide="prev" style="left: 3%;">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
+            <button class="carousel-control-next position-absolute top-50 translate-middle-y" type="button"
+                data-bs-target="#carouselMultiItemExample" data-bs-slide="next" style="right: 3%;">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
             </button>
-          </div>  
+        </div>
     </div>
+    <div class="testimonial-bottom"></div> <!-- This will be the white color -->
 </section>
+{% endif %}
 
 
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 <script src="{% static 'js/user_dashboard/landing.js' %}"></script>
+<!-- font awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
 {% endblock %}

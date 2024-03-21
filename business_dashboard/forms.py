@@ -3,20 +3,10 @@ from user_dashboard.models import Tiffin, TBUser, Schedule
 from django.contrib.auth.forms import UserCreationForm
 
 
-class TiffinForm(forms.ModelForm):
+class AddTiffinForm(forms.ModelForm):
     class Meta:
         model = Tiffin
-        fields = ['tiffin_name', 'tiffin_description', 'image', 'meal_type', 'calories', 'price',
-                  'free_delivery_eligible']
-        labels = {'tiffin_name': 'Tiffin Name',
-                  'tiffin_description': 'Tiffin Description',
-                  'image': 'Image',
-                  'meal_type': 'Meal Type',
-                  'calories': 'Calories',
-                  'price': 'Price',
-                  'free_delivery_eligible': 'Free Delivery'
-                  }
-
+        exclude = ['business_id', 'avg_rating'] #business_id will be fetched from current user who is logged in
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='You must enter a valid email address')
@@ -37,7 +27,7 @@ class SignUpForm(UserCreationForm):
         model = TBUser
         fields = ['first_name', 'last_name', 'is_registered', 'phone_number', 'shipping_address', 'username', 'email', 'password1', 'password2', 'profile_picture']
         labels = {'first_name': 'First Name', 'last_name': 'Last Name', 'is_registered': 'Is your business registered?',
-                  'phone_number': 'Phone Number', 'shipping_address': 'Shipping Address', 'username': 'Username',
+                  'phone_number': 'Phone Number', 'shipping_address': 'Business Address', 'username': 'Username',
                   'email': 'Email', 'password1': 'Password', 'password2': 'Confirm Password'}
 
 
@@ -52,3 +42,8 @@ class EditTiffinForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(EditTiffinForm, self).__init__(*args, **kwargs)
         self.fields['schedule_id'] = forms.ModelChoiceField(queryset=Schedule.objects.all(), label='Schedule')
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = TBUser
+        fields = ['profile_picture', 'username','first_name', 'last_name', 'email', 'phone_number', 'shipping_address']
