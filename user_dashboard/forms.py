@@ -82,3 +82,8 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = TBUser
         fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2']
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = TBUser
+        fields = ['profile_picture', 'username','first_name', 'last_name', 'email', 'phone_number', 'shipping_address']
