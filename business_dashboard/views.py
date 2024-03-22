@@ -178,3 +178,7 @@ def update_order_status(request, order_id):
     else:
         return redirect("business_dashboard:orders", 0)
 
+
+@login_required
+def tiffin_detail(request, tiffin_id):
+    return render(request, "business_dashboard/tiffin-detail.html")

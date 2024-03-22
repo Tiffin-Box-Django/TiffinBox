@@ -13,5 +13,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
     path('profile/edit/', views.edit_profile, name="edit_profile"),
     path('orders/<int:order_status>/', views.orders, name="orders"),
-    path('orders/status/update/<int:order_id>/', views.update_order_status, name="update_order_status")
+    path('orders/status/update/<int:order_id>/', views.update_order_status, name="update_order_status"),
+    path('tiffin/detail/<int:tiffin_id>', views.tiffin_detail, name='tiffin_detail')
 ]
