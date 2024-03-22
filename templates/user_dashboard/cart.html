@@ -101,11 +101,11 @@
           <div class="d-flex justify-content-end">
               <form action="{% url 'user_dashboard:explore'%}" method="post">
                   {% csrf_token %}
-                  <button type="button" class="btn btn-light btn-lg me-2">Continue shopping</button>
+                  <button type="submit" class="btn btn-light btn-lg me-2">Continue shopping</button>
               </form>
               <form action="{% url 'user_dashboard:placeOrder'%}" method="post">
                 {% csrf_token %}
-                <button type="submit"class="btn btn-primary btn-lg" >Place Order</button>
+                <button type="submit" class="btn btn-primary btn-lg" >Place Order</button>
               </form>
 
           </div>
