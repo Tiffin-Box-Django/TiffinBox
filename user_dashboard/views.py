@@ -1,24 +1,23 @@
 from decimal import Decimal
 
+from django.contrib import messages
+from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponse
-from django.urls import reverse
-from django.views.generic.detail import DetailView
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Avg
-from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
-from .forms import ExploreSearchForm, FilterForm, SignUpForm, EditProfileForm
-from django.contrib.auth import views as auth_views
-from django.contrib.auth import views as auth_views, get_user_model
-from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from .tokens import account_activation_token
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect
+from django.db.models import Avg
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views.generic.detail import DetailView
+
+from .forms import ExploreSearchForm, FilterForm, SignUpForm, EditProfileForm
+from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
+from .tokens import account_activation_token
 
 searchForm = ExploreSearchForm()
 
@@ -42,7 +41,7 @@ def explore(request):
             post_data.pop("price")
 
         if post_data.get('free_delivery_eligible'):
-            if post_data['free_delivery_eligible'] == "on":
+            if "on" in post_data['free_delivery_eligible']:
                 post_data['free_delivery_eligible'] = True
             else:
                 post_data['free_delivery_eligible'] = False
