@@ -1,48 +1,50 @@
-{% extends 'business_dashboard/base.html'%}
+{% extends 'business_dashboard/base.html' %}
 {% block content %}
-    <div class="container mx-auto text-center">
-        <h1 class="mb-4 mt-3">Profile Summary</h1>
-    </div>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-2">
-                <img src="{{ request.user.profile_picture.url }}" class="rounded-circle" style="max-width: 200px; height: 200px;margin-bottom: 2em" alt="Profile Picture">
+    <div class="container py-5">
+        <h1 class="text-center mb-4" style="color: #F3274C">Profile Summary</h1>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-4 text-center">
+                <img src="{{ request.user.profile_picture.url }}" class="rounded-circle img-fluid" style="max-width: 300px; height: 300px;" alt="Profile Picture">
             </div>
-        </div>
-        <div class="row justify-content-center mt-3">
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="col" style="margin-bottom: 1em">
-                        <p><strong>Phone Number:</strong></p>
+            <div class="col-md-8">
+            <div class="row mb-3">
+                    <div class="col-md-3 text-md-right">
+                        <strong>Business Username:</strong>
                     </div>
-                    <div class="col-md-8">
-                        <span class="form-control">{{ user.phone_number }}</span>
+                    <div class="col-md-9">
+                        {{ user.username }}
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col" style="margin-bottom: 1em">
-                        <p><strong>Registered?</strong></p>
+                <div class="row mb-3">
+                    <div class="col-md-3 text-md-right">
+                        <strong>Phone Number:</strong>
                     </div>
-                    <div class="col-md-8">
-                        <span class="form-control">
+                    <div class="col-md-9">
+                        {{ user.phone_number }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 text-md-right">
+                        <strong>Registered:</strong>
+                    </div>
+                    <div class="col-md-9">
                             {% if user.is_registered %}
                                 Yes
                             {% else %}
                                 No
                             {% endif %}
-                        </span>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <p><strong>Address:</strong></p>
+                <div class="row mb-3">
+                    <div class="col-md-3 text-md-right">
+                        <strong>Address:</strong>
                     </div>
-                    <div class="col-md-8">
-                        <span class="form-control">{{ user.shipping_address }}</span>
+                    <div class="col-md-9">
+                        {{ user.shipping_address }}
                     </div>
                 </div>
-                <div class="d-flex justify-content-center" style="margin-top: 1em">
-                    <a href="{% url 'business_dashboard:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+                <div class="d-flex justify-content-start">
+                    <a href="{% url 'business_dashboard:edit_profile' %}" class="btn btn-primary mt-3">Edit Profile</a>
                 </div>
             </div>
         </div>

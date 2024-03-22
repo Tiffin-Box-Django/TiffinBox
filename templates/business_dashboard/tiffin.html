@@ -1,29 +1,40 @@
 {% extends 'business_dashboard/base.html'%}
 {% block content %}
-<div class="container">
-<div class="flex-container d-flex justify-content-between align-items-center">
-    <h2 style="margin-top: 1em ; margin-bottom: 1em">Tiffin List</h2>
-    <a href="{% url 'business_dashboard:add_tiffin' %}" class="btn btn-primary">Add Tiffin</a>
-</div>
-    <div class="row">
-        <div class="input-group col-md-4">
-            <input class="form-control py-2 border-right-0 border" type="search" value="Search" id="example-search-input">
+    <div class="container">
+        <div class="flex-container d-flex justify-content-between align-items-center">
+            <h2 style="margin-top: 1em ; margin-bottom: 1em; color: #F3274C">Tiffin List</h2>
+            <a href="{% url 'business_dashboard:add_tiffin' %}" class="btn btn-primary">Add Tiffin</a>
         </div>
-    </div>
-           <div class="row mt-3">
-                {% for dish in tiffins %}
+        <div class="row">
+            <div class="input-group col-md-4">
+                <input class="form-control py-2 border-right-0 border" type="search" value="Search" id="example-search-input"/>
+            </div>
+        </div>
+        <div class="row mt-3">
+            {% for dish in tiffins %}
                 <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="{{ dish.image }}" class="card-img-top" alt="{{ dish.tiffin_name }}">
+                    <div class="card h-100">
+                        <img src="{{ dish.image.url}}" class="card-img-top" alt="{{ dish.tiffin_name }}" style="height: 300px; object-fit: cover;">
                         <div class="card-body">
-                            <h5 class="card-title">{{ dish.name|truncatechars:27 }}</h5>
-                            <p class="card-text"><small class="text-muted">Price: ${{ dish.price }}</small></p>
-                            <a href="{% url 'business_dashboard:profile' %}" class="stretched-link"></a>
+                            <div class="text-white category-tage text-center px-3 py-1 rounded position-absolute"
+                                 style="top: 10px; left: 10px;
+                                         {% if dish.category == "NON-VEG" %}
+                                            background-color: red;
+                                         {% else %}
+                                            background-color: #1e832a;
+                                         {% endif %}">
+                                    {{ dish.category }}</div>
+                                    <h5 class="card-title mb-0">{{ dish.tiffin_name }}</h5>
+                                    <p>{{ dish.tiffin_description }}</p>
+                                    <div class="d-flex justify-content-between flex-lg-wrap">
+                                        <p class="text-muted fs-5 mb-0">Price: {{ dish.price }}</p>
+    {#                                  This link must be replaced to be redirected to each tiffin details page#}
+                                        <a href="{% url 'business_dashboard:profile' %}" class="stretched-link"></a>
+                                    </div>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
-            </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endblock %}
