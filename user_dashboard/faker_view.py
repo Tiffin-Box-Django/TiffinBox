@@ -62,7 +62,7 @@ def insert_fake_data(request):
             tmp = Review(user=TBUser.objects.get(id=user_id),
                          tiffin=Tiffin.objects.get(id=tiffin_id),
                          rating=choice(range(1, 6)),
-                         comment=fake.text())
+                         comment=fake.text()[:150])
             tmp.save()
 
     # testimonials

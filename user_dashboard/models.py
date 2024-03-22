@@ -60,6 +60,9 @@ class Tiffin(models.Model):
     free_delivery_eligible = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
+    def meal_name(self):
+        return dict(self.MEAL)[self.meal_type]
+
     def __str__(self):
         return self.tiffin_name + " " + str(self.meal_type) + " " + str(self.price)
 

@@ -80,6 +80,9 @@ class TiffinDetails(DetailView):
                                                                             "comment", "rating", "created_date")
         reviews_grid, tmp = [], []
         for idx, review in enumerate(reviews):
+            if review["user__profile_picture"].startswith("image"):
+                review["user__profile_picture"] = f"http://{self.request.get_host()}/{review['user__profile_picture']}"
+
             if idx % 3 != 0 or idx == 0:
                 tmp.append(review)
             else:
@@ -262,7 +265,7 @@ def edit_profile(request):
             if 'image' in request.FILES:
                 user_profile.profile_picture = request.FILES['profile_picture']
             user_profile.save()
-            return redirect("user_dashboard:mainprofile")
+            return redirect("user_dashboard:profile")
     else:
         form = EditProfileForm(instance=user_profile)
 
