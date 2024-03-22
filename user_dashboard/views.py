@@ -107,47 +107,66 @@ class TiffinDetails(DetailView):
         return context
 
 
-class BusinessDetails(DetailView):
-    model = TBUser
-    template_name = 'user_dashboard/businessdetails.html'
- 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        business = self.get_object()
-        if business.client_type == 1:  # Assuming client_type=1 represents businesses
-            tiffins = Tiffin.objects.filter(business_id=business)
-            context['business'] = business
-            context['tiffins'] = tiffins
-            context["is_authenticated"] = self.request.user.is_authenticated
-            context['filtersForm'] = FilterForm()
-            context['searchForm'] = ExploreSearchForm()
-            return context
- 
-    def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            filters_form = FilterForm(request.POST)
-            if filters_form.is_valid():
-                post_data = filters_form.cleaned_data
-                if post_data.get("avg_rating"):
-                    post_data["avg_rating"] = float(post_data["avg_rating"])
-                if post_data.get("calories"):
-                    calories = [int(c.strip()) for c in post_data["calories"].split("-")]
-                    post_data["calories__gt"] = float(calories[0])
-                    post_data["calories__lt"] = float(calories[1])
-                    post_data.pop("calories")
-                if post_data.get("price"):
-                    prices = [int(c.strip().replace("$", "")) for c in post_data["price"].split("-")]
-                    post_data["price__gt"] = float(prices[0])
-                    post_data["price__lt"] = float(prices[1])
-                    post_data.pop("price")
-                if post_data.get('free_delivery_eligible'):
-                    post_data['free_delivery_eligible'] = post_data['free_delivery_eligible'] == "on"
-                tiffins = Tiffin.objects.filter(
-                    **{k: v for k, v in post_data.items() if v != '' and v is not None})
-                context = self.get_context_data(**kwargs)
-                context['tiffins'] = tiffins
-                return render(request, 'user_dashboard/businessdetails.html', context)
-        return HttpResponseRedirect(request.path_info)
+def business_details(request, pk):
+    business = get_object_or_404(TBUser, pk=pk)
+
+    print(business.pk)
+
+    if business.client_type != 1:
+        pass
+
+    tiffins = Tiffin.objects.filter(business_id=business.pk)
+
+    print(tiffins.count())
+
+    if request.method == 'POST':
+        # filters_form = FilterForm(request.POST)
+        post_data = request.POST.dict()
+        if post_data.get('meal_type'):
+            tiffins = tiffins.filter(meal_type=post_data['meal_type'])
+            print(tiffins.count())
+
+        if post_data.get("avg_rating"):
+            post_data["avg_rating"] = float(post_data["avg_rating"])
+
+        if post_data.get("calories"):
+            calories = [int(c.strip()) for c in post_data["calories"].split("-")]
+            post_data["calories__gte"] = float(calories[0])
+            post_data["calories__lte"] = float(calories[1])
+            post_data.pop("calories")
+
+        if post_data.get("price"):
+            prices = [int(c.strip().replace("$", "")) for c in post_data["price"].split("-")]
+            post_data["price__gte"] = float(prices[0])
+            post_data["price__lte"] = float(prices[1])
+            post_data.pop("price")
+
+        if post_data.get('free_delivery_eligible'):
+            if post_data['free_delivery_eligible'] == "on":
+                post_data['free_delivery_eligible'] = True
+            else:
+                post_data['free_delivery_eligible'] = False
+
+        post_data.pop("csrfmiddlewaretoken")
+        tiffins = tiffins.filter(
+            **{k: v for k, v in post_data.items() if v != '' and v is not None})
+
+        filters_form = FilterForm(initial=request.POST)
+        
+    else:
+        filters_form = FilterForm()
+
+    print("Updated tiffin counts", tiffins.count())
+
+    context = {
+        'business': business,
+        'tiffins': tiffins,
+        'is_authenticated': request.user.is_authenticated,
+        'filtersForm': filters_form,
+        'searchForm': ExploreSearchForm(),
+    }  
+
+    return render(request, 'user_dashboard/businessdetails.html', context)
 
 
 @login_required
@@ -200,7 +219,8 @@ def landing(request):
             return redirect('user_dashboard:explore')
     else:
         form = ExploreSearchForm()
-        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
+        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5
+                      ]
         top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(
             client_type=1).order_by('-avg_rating')[:3]
         testimonials = Testimonial.objects.all()
