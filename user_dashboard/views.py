@@ -212,10 +212,10 @@ def landing(request):
             return redirect('user_dashboard:explore')
     else:
         form = ExploreSearchForm()
-        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5
+        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:4
                       ]
         top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(
-            client_type=1).order_by('-avg_rating')[:3]
+            client_type=1).order_by('-avg_rating')[:4]
         testimonials = Testimonial.objects.all()
         return render(request, 'user_dashboard/landing.html',
                       {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses,
@@ -348,6 +348,6 @@ def edit_profile(request):
 
 
 def logout(request):
-    ref = request.GET.get('next', '/')
+    ref = request.GET.get('next', '/login')
     auth_views.auth_logout(request)
     return redirect(ref)
