@@ -15,4 +15,5 @@ urlpatterns = [
     path('add-review/<int:tiffinid>', views.add_review, name='add-review'),
     path('activate/<uidb64>/<token>', views.activate, name='activate'),
     path('profile/', views.profile, name='profile'),
+    path('businessdetails/<int:pk>/', views.BusinessDetails.as_view(), name='businessdetails')
 ]
