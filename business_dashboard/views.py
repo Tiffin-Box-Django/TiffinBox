@@ -15,7 +15,8 @@ def index(request):
 
 @login_required
 def tiffin(request):
-    return render(request, template_name='business_dashboard/tiffin.html', context={})
+        tiffins = Tiffin.objects.filter(business_id__id=request.user.id)
+        return render(request, template_name='business_dashboard/tiffin.html', context={'tiffins': tiffins})
   
 @login_required
 def add_tiffin(request):

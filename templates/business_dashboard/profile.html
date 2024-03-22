@@ -24,7 +24,13 @@
                         <p><strong>Registered?</strong></p>
                     </div>
                     <div class="col-md-8">
-                        <span class="form-control">{{ user.is_registered }}</span>
+                        <span class="form-control">
+                            {% if user.is_registered %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
                 <div class="row">
