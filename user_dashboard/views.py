@@ -110,21 +110,16 @@ class TiffinDetails(DetailView):
 def business_details(request, pk):
     business = get_object_or_404(TBUser, pk=pk)
 
-    print(business.pk)
-
     if business.client_type != 1:
         pass
 
     tiffins = Tiffin.objects.filter(business_id=business.pk)
-
-    print(tiffins.count())
 
     if request.method == 'POST':
         # filters_form = FilterForm(request.POST)
         post_data = request.POST.dict()
         if post_data.get('meal_type'):
             tiffins = tiffins.filter(meal_type=post_data['meal_type'])
-            print(tiffins.count())
 
         if post_data.get("avg_rating"):
             post_data["avg_rating"] = float(post_data["avg_rating"])
@@ -155,8 +150,6 @@ def business_details(request, pk):
         
     else:
         filters_form = FilterForm()
-
-    print("Updated tiffin counts", tiffins.count())
 
     context = {
         'business': business,

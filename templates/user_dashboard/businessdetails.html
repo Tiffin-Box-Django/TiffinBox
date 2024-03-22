@@ -25,9 +25,8 @@ function resetFilterForm() {
                         {% csrf_token %}
                         {% bootstrap_form filtersForm %}
                         <button type="submit" class="btn btn-outline-primary">Apply Filters</button>
-                        <input type="hidden" name="filter_applied" value="true">
                     </form>
-                    <form method="GET" action="{% url 'user_dashboard:explore' %}" id="filter-form">
+                    <form method="GET" action="{% url 'user_dashboard:businessdetails' business.id %}" id="filter-form">
                         <button type="submit" class="btn btn-primary" style="margin-top: 1em;">Reset Filters</button>
                     </form>
                 </div>
@@ -50,17 +49,27 @@ function resetFilterForm() {
             <!-- List of dishes as cards -->
             <div class="row mt-3">
               {% for tiffin in tiffins %}
-              <div class="col-md-3 mb-4">
-                  <div class="card">
-                      <img src="{{ tiffin.image }}" class="card-img-top" alt="{{ tiffin.tiffin_name }}">
-                      <div class="card-body">
-                          <h5 class="card-title">{{ tiffin.tiffin_name }}</h5>
-                          <p class="card-text">{{ tiffin.tiffin_description }}</p>
-                          <p class="card-text">Price: ${{ tiffin.price }}</p>
-                          <a href="{% url 'user_dashboard:tiffindetails' tiffin.id %}" class="stretched-link"></a>
-                      </div>
-                  </div>
-              </div>
+              <div class="col-md-4 my-2">
+                <div class="rounded position-relative item">
+                        <img src="{{ tiffin.image }}" class="img-fluid w-100 rounded-top" alt="">
+                    <div class="text-white category-tage text-center px-3 py-1 rounded position-absolute"
+                         style="top: 10px; left: 10px;
+                         {% if tiffin.neal_name == "NON-VEG" %}
+                             background-color: red;
+                         {% else %}
+                            background-color: #1e832a;
+                         {% endif %}">
+                    {{ tiffin.meal_name }}</div>
+                    <div class="p-3 border border-secondary border-top-0 rounded-bottom">
+                        <h5>{{ tiffin.tiffin_name }}</h5>
+                        <p>{{ tiffin.tiffin_description }}</p>
+                        <div class="d-flex justify-content-between flex-lg-wrap">
+                            <p class="text-muted fs-5 mb-0">Price: {{ tiffin.price }}</p>
+                            <a href="{% url 'user_dashboard:tiffindetails' tiffin.id %}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
               {% empty %}
               <div class="col-md-12">
                   <p>No tiffins found for this business.</p>
