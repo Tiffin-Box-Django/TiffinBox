@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from business_dashboard.forms import SignUpForm, EditTiffinForm, EditProfileForm, AddTiffinForm
-from user_dashboard.models import Tiffin, TBUser, Order, OrderItem
+from user_dashboard.models import Tiffin, TBUser, Order, OrderItem, Review
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -181,4 +181,27 @@ def update_order_status(request, order_id):
 
 @login_required
 def tiffin_detail(request, tiffin_id):
-    return render(request, "business_dashboard/tiffin-detail.html")
+    n_reviews = Review.objects.filter(tiffin_id=tiffin_id).count()
+    the_tiffin = Tiffin.objects.get(pk=tiffin_id)
+
+    reviews = Review.objects.filter(tiffin_id=tiffin_id).values("user__first_name", "user__last_name",
+                                                                        "comment", "rating", "created_date",
+                                                                        "user__profile_picture")
+    reviews_grid, tmp = [], []
+    for idx, review in enumerate(reviews):
+        if review["user__profile_picture"].startswith("image"):
+            review["user__profile_picture"] = f"http://{request.get_host()}/{review['user__profile_picture']}"
+
+        if idx % 3 != 0 or idx == 0:
+            tmp.append(review)
+        else:
+            reviews_grid.append(tmp)
+            tmp = [review]
+    if tmp:
+        reviews_grid.append(tmp)
+
+    tiffin_extras = [("Delivery Frequency", the_tiffin.schedule_id.enum(), "calendar-week"),
+                     ("Meal Plan", dict(the_tiffin.MEAL)[the_tiffin.meal_type], "basket"),
+                     ("Calories", the_tiffin.calories, "lightning")]
+
+    return render(request, "business_dashboard/tiffin-detail.html", {'tiffin': the_tiffin, "n_reviews": n_reviews, "tiffin_extras": tiffin_extras, "reviews_grid": reviews_grid})

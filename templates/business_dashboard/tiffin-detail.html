@@ -1,5 +1,144 @@
 {% extends "business_dashboard/base.html" %}
+{% load bootstrap_icons %}
 
 {% block content %}
+    <div class="d-flex flex-column align-items-center">
+        <!-- Product Details Area Start -->
+        <div class="container mx-5 flex-row">
+            <div class="row m-4">
+                <div class="col-md-5">
+                    <img class="img-fluid" src="{{ tiffin.image }}" alt=""/>
+                </div>
+                <div class="col-md-7">
 
+                    <div class="row m-2">
+                        <div class="col-md-12">
+                            <div style="display: flex; align-items: center; justify-content: space-between">
+                                <h2 class="fs-2">{{ tiffin.tiffin_name }}</h2>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                            id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {% bs_icon "pen" size='1.2em' %}
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><a class="dropdown-item" href="#">Edit Tiffin</a></li>
+                                        <li><a class="dropdown-item" href="#">Delete Tiffin</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row m-2">
+                        <div class="col-md-12" style="margin-top: -10px">
+                            <a class="m-0"><span>{{ tiffin.business_id.first_name }}</span>
+                                <span>{{ tiffin.business_id.last_name }}</span></a>
+                        </div>
+                    </div>
+
+                    <div class="row m-2">
+                        <div class="col-md-12">
+                          <span class="m-0">
+                            {% for x in ""|ljust:tiffin.avg_rating %}
+                                ⭐
+                            {% endfor %}
+                              <a href="#reviews-grid" class="text-muted">({{ n_reviews }} Reviews )</a>
+                          </span>
+                        </div>
+                    </div>
+
+                    <div class="row m-2">
+                        <div class="col-md-12">
+                            <p class="fs-3 m-0">${{ tiffin.price }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row m-2">
+                        <div class="col-md-12">
+                            <p class="fs-6">{{ tiffin.tiffin_description }}</p>
+                        </div>
+                    </div>
+                    <hr class="hr m-2"/>
+
+                    <div class="row mt-4">
+                        {% for label, value, icon in tiffin_extras %}
+                            <div class="col-4">
+                                <div class="card card-body py-2">
+                                    <div style="display: flex;">
+                                        {% bs_icon icon size='1.2em' %}
+                                        <p class="card-title fw-bold" style="margin-left: 0.2em">{{ label }}</p>
+                                    </div>
+
+                                    <p class="card-text">{{ value }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-5 mt-4 flex-row" id="reviews-grid">
+            <div>
+                <h5 style="display: flex; align-items: center;">Customer Reviews</h5>
+            </div>
+            {% if reviews_grid %}
+                {% for review_row in reviews_grid %}
+                    <div class="row">
+                        {% for review in review_row %}
+                            <div class="col-md-4">
+                                <div class="card card-body m-2 p-3">
+                                    <div class="d-flex justify-content-between">
+                                        {% if review.user__profile_picture %}
+                                            <span>
+                                                <img src="{{ review.user__profile_picture }}" alt="h" width="35px"
+                                                     height="35px" class="p-0 m-0">
+                                                {{ review.user__first_name }} {{ review.user__last_name }}
+                                            </span>
+                                        {% else %}
+                                            <span class="fs-5">{% bs_icon 'person-circle' size='1.2em' %}{{ review.user__first_name }} {{ review.user__last_name }}</span>
+                                        {% endif %}
+                                        <span>{{ review.created_date|date:'N d, Y' }}</span>
+                                    </div>
+                                    <span class="py-1">{% for x in ""|ljust:review.rating %}⭐{% endfor %}</span>
+                                    <span class="card-text fs-6">{{ review.comment|truncatechars:150 }}</span>
+
+                                    <button class="btn btn-outline-primary"
+                                            style="margin-top: 1em;" data-bs-toggle="modal"
+                                            data-bs-target="#delete-review-modal">{% bs_icon 'trash' size='1.2em' %}
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p> Currently, there are no reviews for this tiffin.
+            {% endif %}
+        </div>
+
+        <!-- Delete review modal -->
+        <div class="modal fade" id="delete-review-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delete Review</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this review? This action cannot be reversed.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                        <form>
+                            <button type="button" class="btn btn-primary">Delete Review</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
