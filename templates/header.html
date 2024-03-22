@@ -65,7 +65,6 @@
             <div class="modal-body">
                 <form method="post" novalidate>
                     {% csrf_token %}
-                    {% bootstrap_form searchForm layout="vertical" size="lg" show_help=False show_label=True %}
                     <button type="submit" class="btn btn-primary btn-block mt-3 w-100">Search</button>
                 </form>
             </div>
