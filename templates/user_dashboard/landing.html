@@ -47,7 +47,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ business.first_name }} {{ business.last_name }}</h5>
                         <p class="card-text"><small class="text-muted">{{ business.shipping_address }}</small></p>
-                        <a href="#" class="stretched-link"></a>
+                        <a href="{% url 'user_dashboard:businessdetails' business.id %}" class="stretched-link"></a>
                     </div>
                 </div>
             </div>

@@ -17,6 +17,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from .tokens import account_activation_token
 from django.core.mail import send_mail
+from django.http import HttpResponseRedirect
 
 searchForm = ExploreSearchForm()
 
@@ -106,6 +107,61 @@ class TiffinDetails(DetailView):
         return context
 
 
+def business_details(request, pk):
+    business = get_object_or_404(TBUser, pk=pk)
+
+    if business.client_type != 1:
+        pass
+
+    tiffins = Tiffin.objects.filter(business_id=business.pk)
+
+    if request.method == 'POST':
+        # filters_form = FilterForm(request.POST)
+        post_data = request.POST.dict()
+        if post_data.get('meal_type'):
+            tiffins = tiffins.filter(meal_type=post_data['meal_type'])
+
+        if post_data.get("avg_rating"):
+            post_data["avg_rating"] = float(post_data["avg_rating"])
+
+        if post_data.get("calories"):
+            calories = [int(c.strip()) for c in post_data["calories"].split("-")]
+            post_data["calories__gte"] = float(calories[0])
+            post_data["calories__lte"] = float(calories[1])
+            post_data.pop("calories")
+
+        if post_data.get("price"):
+            prices = [int(c.strip().replace("$", "")) for c in post_data["price"].split("-")]
+            post_data["price__gte"] = float(prices[0])
+            post_data["price__lte"] = float(prices[1])
+            post_data.pop("price")
+
+        if post_data.get('free_delivery_eligible'):
+            if post_data['free_delivery_eligible'] == "on":
+                post_data['free_delivery_eligible'] = True
+            else:
+                post_data['free_delivery_eligible'] = False
+
+        post_data.pop("csrfmiddlewaretoken")
+        tiffins = tiffins.filter(
+            **{k: v for k, v in post_data.items() if v != '' and v is not None})
+
+        filters_form = FilterForm(initial=request.POST)
+        
+    else:
+        filters_form = FilterForm()
+
+    context = {
+        'business': business,
+        'tiffins': tiffins,
+        'is_authenticated': request.user.is_authenticated,
+        'filtersForm': filters_form,
+        'searchForm': ExploreSearchForm(),
+    }  
+
+    return render(request, 'user_dashboard/businessdetails.html', context)
+
+
 @login_required
 def update_cart(request):
     response = HttpResponse(status=204)
@@ -156,7 +212,8 @@ def landing(request):
             return redirect('user_dashboard:explore')
     else:
         form = ExploreSearchForm()
-        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
+        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5
+                      ]
         top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(
             client_type=1).order_by('-avg_rating')[:3]
         testimonials = Testimonial.objects.all()
