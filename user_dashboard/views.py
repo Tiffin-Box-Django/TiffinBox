@@ -18,8 +18,8 @@ from django.utils.encoding import force_bytes, force_str
 from .tokens import account_activation_token
 from django.core.mail import send_mail
 
-
 searchForm = ExploreSearchForm()
+
 
 def explore(request):
     if request.method == 'POST':
@@ -29,14 +29,14 @@ def explore(request):
 
         if post_data.get("calories"):
             calories = [int(c.strip()) for c in post_data["calories"].split("-")]
-            post_data["calories__gt"] = float(calories[0])
-            post_data["calories__lt"] = float(calories[1])
+            post_data["calories__gte"] = float(calories[0])
+            post_data["calories__lte"] = float(calories[1])
             post_data.pop("calories")
 
         if post_data.get("price"):
             prices = [int(c.strip().replace("$", "")) for c in post_data["price"].split("-")]
-            post_data["price__gt"] = float(prices[0])
-            post_data["price__lt"] = float(prices[1])
+            post_data["price__gte"] = float(prices[0])
+            post_data["price__lte"] = float(prices[1])
             post_data.pop("price")
 
         if post_data.get('free_delivery_eligible'):
@@ -157,10 +157,12 @@ def landing(request):
     else:
         form = ExploreSearchForm()
         top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
-        top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by('-avg_rating')[:3]
+        top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(
+            client_type=1).order_by('-avg_rating')[:3]
         testimonials = Testimonial.objects.all()
         return render(request, 'user_dashboard/landing.html',
-                  {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses, 'searchForm': form})
+                      {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses,
+                       'searchForm': form})
 
 
 def signup(request):
@@ -169,17 +171,18 @@ def signup(request):
         if form.is_valid():
             # Save the user
             user = form.save(commit=False)
-            user.is_active=False
+            user.is_active = False
             user.set_password(form.cleaned_data['password1'])
             user.save()
             activateEmail(request, user)
             messages.success(request, 'Please check your email to confirm your registration.')
             # Redirect to login page after successful signup
-            return redirect('user_dashboard:login')  
+            return redirect('user_dashboard:login')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
-            return render(request, 'user_dashboard/signup.html', {'form': form, 'error': form.errors, 'searchForm': searchForm})
+            return render(request, 'user_dashboard/signup.html',
+                          {'form': form, 'error': form.errors, 'searchForm': searchForm})
     else:
         form = SignUpForm()
     return render(request, 'user_dashboard/signup.html', {'form': form, 'searchForm': searchForm})
@@ -187,8 +190,13 @@ def signup(request):
 
 def activateEmail(request, user):
     mail_subject = 'Activate Your TiffinBox Account Now!'
-    message = render_to_string("user_dashboard/account_activation_email.html", {'user': user.first_name, 'domain': get_current_site(request).domain, 'uid': urlsafe_base64_encode(force_bytes(user.pk)), 'token': account_activation_token.make_token(user), 'protocol': 'https' if request.is_secure() else 'http'})
+    message = render_to_string("user_dashboard/account_activation_email.html",
+                               {'user': user.first_name, 'domain': get_current_site(request).domain,
+                                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                                'token': account_activation_token.make_token(user),
+                                'protocol': 'https' if request.is_secure() else 'http'})
     send_mail(mail_subject, message, 'raholsarvy@gmail.com', [user.email])
+
 
 def activate(request, uidb64, token):
     User = get_user_model()
@@ -203,7 +211,8 @@ def activate(request, uidb64, token):
         user.save()
 
         # messages.success(request, "Thank you for your email confirmation. Please login your account.")
-        messages.success(request, "Cheers! Your email verification is a success. Please Login & start ordering your favorite Tiffins now!")
+        messages.success(request,
+                         "Cheers! Your email verification is a success. Please Login & start ordering your favorite Tiffins now!")
         return redirect('user_dashboard:login')
     else:
         messages.error(request, "Unfortunately, the activation link has expired.")
@@ -229,15 +238,17 @@ def cart(request):
     totalPrice = 0
     for tiffin in tiffins:
         totalPrice = tiffin.tiffin_id.price + totalPrice
-    return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice    })
+    return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice})
 
-def deleteCartItem(request,id):
+
+def deleteCartItem(request, id):
     dele = OrderItem.objects.get(id=id)
     dele.delete()
     return redirect('user_dashboard:cart')
 
+
 def placeOrder(request):
-    #tiffins = OrderItem.objects.filter(order_id__status=4,order_id__user_id=request.user.id)  # Query all Tiffin objects for demonstration
+    # tiffins = OrderItem.objects.filter(order_id__status=4,order_id__user_id=request.user.id)  # Query all Tiffin objects for demonstration
     tiffins = Order.objects.filter(status=4)  # Query all Tiffin objects for demonstration
 
     for order in tiffins:
@@ -245,13 +256,16 @@ def placeOrder(request):
         order.save()
     return render(request, 'user_dashboard/placeOrder.html')
 
+
 def OrderHistory(request):
-  orderHistory = Order.objects.filter(user_id = request.user.id)
-  return  render(request,'user_dashboard/orderHistory.html')
+    orderHistory = Order.objects.filter(user_id=request.user.id)
+    return render(request, 'user_dashboard/orderHistory.html')
+
 
 def user_profile(request):
     user = get_object_or_404(TBUser, username=request.user.username, is_active=True)
     return render(request, 'user_dashboard/profile.html', context={'user': user})
+
 
 def edit_profile(request):
     user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
