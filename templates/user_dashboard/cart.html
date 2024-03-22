@@ -68,7 +68,7 @@
                   <div class="col-md-2 d-flex justify-content-center">
                     <div>
                       <p class="small text-muted mb-4 pb-2">Quantity</p>
-                      <p class="lead fw-normal mb-0">1</p> <!-- You may need to adjust this based on your actual cart quantity -->
+                      <p class="lead fw-normal mb-0">{{ tiffin.quantity }}</p> <!-- You may need to adjust this based on your actual cart quantity -->
                     </div>
                   </div>
                   <div class="col-md-2 d-flex justify-content-center">
@@ -80,7 +80,7 @@
                   <div class="col-md-2 d-flex justify-content-center">
                     <div>
                       <p class="small text-muted mb-4 pb-2">Remove</p>
-                      <a class="lead fw-normal mb-0" href="/user/deleteCartItem/{{ tiffin.id }}/"><i class="fas fa-trash-alt"></i></a>
+                      <a class="lead fw-normal mb-0" href="{% url 'user_dashboard:deleteCartItem' tiffin.id %}"><i class="fas fa-trash-alt"></i></a>
                     </div>
                   </div>
                 </div>

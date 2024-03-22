@@ -58,6 +58,7 @@ def explore(request):
     for tiffin in tiffins:
         formatted_tiffins.append({"id": tiffin.id, "name": tiffin.tiffin_name, "photo": tiffin.image,
                                   "business": tiffin.business_id.first_name + tiffin.business_id.last_name,
+                                  "category": tiffin.meal_name(),
                                   "rating": list(range(int(round(tiffin.avg_rating)))),
                                   "price": tiffin.price})
     search_form = ExploreSearchForm(request.GET) if request.GET else ExploreSearchForm()
@@ -215,9 +216,9 @@ class UserLogin(LoginView):
 
 
 def cart(request):
-    #tiffins = Tiffin.objects.filter(id = 1)  # Query all Tiffin objects for demonstration
-    #tiffins = OrderItem.objects.filter(order_id__status= 4, order_id__user_id= request.user.id)  # Query all Tiffin objects for demonstration
-    tiffins = OrderItem.objects.filter(order_id__status= 4 )
+    # tiffins = Tiffin.objects.filter(id = 1)  # Query all Tiffin objects for demonstration
+    # tiffins = OrderItem.objects.filter(order_id__status= 4, order_id__user_id= request.user.id)  # Query all Tiffin objects for demonstration
+    tiffins = OrderItem.objects.filter(order_id__user_id__id=request.user.id, order_id__status=4)
     totalPrice = 0
     for tiffin in tiffins:
         totalPrice = tiffin.tiffin_id.price + totalPrice
