@@ -9,3 +9,5 @@ django-inline-svg==0.1.1
 django-bootstrap-icons==0.8.7
 pillow==10.2.0
 faker==24.3.0
+django-auto-logout==0.5.1
+pytz==2024.1
