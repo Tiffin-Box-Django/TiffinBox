@@ -124,5 +124,8 @@ class Review(models.Model):
     comment = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = (('user', 'tiffin',),)
+
     def __str__(self):
         return self.user.username + " " + str(self.rating) + " " + self.comment

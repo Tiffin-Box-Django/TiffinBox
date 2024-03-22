@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
+from django.urls import reverse
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
@@ -103,7 +104,11 @@ class TiffinDetails(DetailView):
                           .filter(business_id__id=kwargs["object"].business_id.id)[:4]
         context["recommended_tiffins"] = recommended
         context["is_authenticated"] = self.request.user.is_authenticated
-        # messages.success(self.request, "Item(s) added to cart!")
+        if self.request.GET.get("disallow") == "true":
+            context["disallow"] = True
+        else:
+            context["disallow"] = False
+        messages.success(self.request, "Item(s) added to cart!")
         return context
 
 
@@ -194,6 +199,14 @@ def add_review(request, tiffinid: int):
     if request.method != "POST":
         return HttpResponse(status=204)
 
+    if request.session.get("reviewed_tiffins"):
+        if tiffinid in request.session["reviewed_tiffins"]:
+            return redirect(reverse("user_dashboard:tiffindetails", kwargs={"pk": 3}) + "?disallow=true")
+        else:
+            request.session["reviewed_tiffins"].append(tiffinid)
+    else:
+        request.session["reviewed_tiffins"] = [tiffinid]
+
     tmp = Review(user=TBUser.objects.get(id=request.user.id), comment=request.POST["review-text"],
                  rating=int(request.POST["review-stars"]), tiffin=Tiffin.objects.get(id=tiffinid))
     tmp.save()
@@ -202,7 +215,7 @@ def add_review(request, tiffinid: int):
     tmp.avg_rating = Decimal(Review.objects.filter(tiffin=tmp).aggregate(Avg('rating'))["rating__avg"])
     tmp.save()
 
-    return redirect("user_dashboard:tiffindetails", tiffinid)
+    return redirect("user_dashboard:tiffindetails", pk=tiffinid)
 
 
 def landing(request):
