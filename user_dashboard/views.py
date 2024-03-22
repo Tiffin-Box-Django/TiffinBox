@@ -226,7 +226,7 @@ def cart(request):
     totalPrice = 0
     for tiffin in tiffins:
         totalPrice = tiffin.tiffin_id.price + totalPrice
-    return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice})
+    return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice    })
 
 def deleteCartItem(request,id):
     dele = OrderItem.objects.get(id=id)
@@ -244,16 +244,11 @@ def placeOrder(request):
 
 def OrderHistory(request):
   orderHistory = Order.objects.filter(user_id = request.user.id)
+  return  render(request,'user_dashboard/orderHistory.html')
 
-
-def user_profile(request, username):
-    user = TBUser.objects.get(username=username)
+def user_profile(request):
+    user = get_object_or_404(TBUser, username=request.user.username, is_active=True)
     return render(request, 'user_dashboard/profile.html', context={'user': user})
-
-def logout(request):
-    ref = request.GET.get('next', '/')
-    auth_views.auth_logout(request)
-    return redirect(ref)
 
 def edit_profile(request):
     user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
@@ -271,7 +266,14 @@ def edit_profile(request):
             if 'image' in request.FILES:
                 user_profile.profile_picture = request.FILES['profile_picture']
             user_profile.save()
-            return redirect("business_dashboard:profile")
+            return redirect("user_dashboard:mainprofile")
     else:
         form = EditProfileForm(instance=user_profile)
+
     return render(request, "user_dashboard/edit-profile.html", {'user_profile': user_profile, 'form': form})
+
+
+def logout(request):
+    ref = request.GET.get('next', '/')
+    auth_views.auth_logout(request)
+    return redirect(ref)

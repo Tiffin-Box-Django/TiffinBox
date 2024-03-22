@@ -1,44 +1,30 @@
-{% extends 'user_dashboard/base.html'%}
+{% extends 'base.html'%}
+<head>
+    <link rel="stylesheet" href="../../static/styles/user_dashboard/profile.css">
+</head>
 {% block content %}
-    <div class="container mx-auto text-center">
-        <h1 class="mb-4 mt-3">Profile Summary</h1>
-    </div>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-2">
-                <img src="{{ request.user.profile_picture.url }}" class="rounded-circle" style="max-width: 200px; height: 200px;margin-bottom: 2em" alt="Profile Picture">
-            </div>
-        </div>
-        <div class="row justify-content-center mt-3">
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="col" style="margin-bottom: 1em">
-                        <p><strong>Phone Number:</strong></p>
+    <div class="container-fluid bg-light py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h1 class="card-title text-center mb-4">Profile Summary</h1>
+                            <div class="text-center">
+                                <img src="{{ request.user.profile_picture.url }}" class="rounded-circle img-fluid profile-picture" alt="Profile Picture">
+                            </div>
+                            <div class="profile-info mt-4">
+                                <p><strong>Name:</strong> {{ user.first_name }}</p>
+                                <p><strong>Email:</strong> {{ user.email }}</p>
+                                <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
+                                <p><strong>Address:</strong> {{ user.shipping_address }}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-8">
-                        <span class="form-control">{{ user.phone_number }}</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col" style="margin-bottom: 1em">
-                        <p><strong>Registered?</strong></p>
-                    </div>
-                    <div class="col-md-8">
-                        <span class="form-control">{{ user.is_registered }}</span>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <p><strong>Address:</strong></p>
-                    </div>
-                    <div class="col-md-8">
-                        <span class="form-control">{{ user.shipping_address }}</span>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center" style="margin-top: 1em">
-                    <a href="{% url 'user_dashboard:placeOrder:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
+
+
