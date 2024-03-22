@@ -58,7 +58,7 @@ def explore(request):
     for tiffin in tiffins:
         formatted_tiffins.append({"id": tiffin.id, "name": tiffin.tiffin_name, "photo": tiffin.image,
                                   "business": tiffin.business_id.first_name + tiffin.business_id.last_name,
-                                  "category": tiffin.meal_name()
+                                  "category": tiffin.meal_name(),
                                   "rating": list(range(int(round(tiffin.avg_rating)))),
                                   "price": tiffin.price})
     search_form = ExploreSearchForm(request.GET) if request.GET else ExploreSearchForm()
