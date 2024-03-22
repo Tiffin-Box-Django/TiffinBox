@@ -7,7 +7,7 @@ from django.views.generic.detail import DetailView
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
-from .forms import ExploreSearchForm, FilterForm, SignUpForm
+from .forms import ExploreSearchForm, FilterForm, SignUpForm, EditProfileForm
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib import messages
@@ -58,6 +58,7 @@ def explore(request):
     for tiffin in tiffins:
         formatted_tiffins.append({"id": tiffin.id, "name": tiffin.tiffin_name, "photo": tiffin.image,
                                   "business": tiffin.business_id.first_name + tiffin.business_id.last_name,
+                                  "category": tiffin.meal_name(),
                                   "rating": list(range(int(round(tiffin.avg_rating)))),
                                   "price": tiffin.price})
     search_form = ExploreSearchForm(request.GET) if request.GET else ExploreSearchForm()
@@ -142,10 +143,6 @@ def add_review(request, tiffinid: int):
     return redirect("user_dashboard:tiffindetails", tiffinid)
 
 
-def addcart(request, tiffin_id):
-    return None
-
-
 def landing(request):
     if request.method == 'POST':
         form = ExploreSearchForm(request.POST)
@@ -219,11 +216,61 @@ class UserLogin(LoginView):
         return self.request.GET.get('next', '/')
 
 
+def cart(request):
+    # tiffins = Tiffin.objects.filter(id = 1)  # Query all Tiffin objects for demonstration
+    # tiffins = OrderItem.objects.filter(order_id__status= 4, order_id__user_id= request.user.id)  # Query all Tiffin objects for demonstration
+    tiffins = OrderItem.objects.filter(order_id__user_id__id=request.user.id, order_id__status=4)
+    totalPrice = 0
+    for tiffin in tiffins:
+        totalPrice = tiffin.tiffin_id.price + totalPrice
+    return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice    })
+
+def deleteCartItem(request,id):
+    dele = OrderItem.objects.get(id=id)
+    dele.delete()
+    return redirect('user_dashboard:cart')
+
+def placeOrder(request):
+    #tiffins = OrderItem.objects.filter(order_id__status=4,order_id__user_id=request.user.id)  # Query all Tiffin objects for demonstration
+    tiffins = Order.objects.filter(status=4)  # Query all Tiffin objects for demonstration
+
+    for order in tiffins:
+        order.status = 1
+        order.save()
+    return render(request, 'user_dashboard/placeOrder.html')
+
+def OrderHistory(request):
+  orderHistory = Order.objects.filter(user_id = request.user.id)
+  return  render(request,'user_dashboard/orderHistory.html')
+
+def user_profile(request):
+    user = get_object_or_404(TBUser, username=request.user.username, is_active=True)
+    return render(request, 'user_dashboard/profile.html', context={'user': user})
+
+def edit_profile(request):
+    user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
+    if request.method == "POST":
+        form = EditProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            user_profile.profile_picture = form.cleaned_data['profile_picture']
+            user_profile.username = form.cleaned_data['username']
+            user_profile.first_name = form.cleaned_data['first_name']
+            user_profile.last_name = form.cleaned_data['last_name']
+            user_profile.email = form.cleaned_data['email']
+            user_profile.phone_number = form.cleaned_data['phone_number']
+            user_profile.shipping_address = form.cleaned_data['shipping_address']
+            user_profile = form.save(commit=False)
+            if 'image' in request.FILES:
+                user_profile.profile_picture = request.FILES['profile_picture']
+            user_profile.save()
+            return redirect("user_dashboard:profile")
+    else:
+        form = EditProfileForm(instance=user_profile)
+
+    return render(request, "user_dashboard/edit-profile.html", {'user_profile': user_profile, 'form': form})
+
+
 def logout(request):
     ref = request.GET.get('next', '/')
     auth_views.auth_logout(request)
     return redirect(ref)
-
-
-def profile(request):
-    return None

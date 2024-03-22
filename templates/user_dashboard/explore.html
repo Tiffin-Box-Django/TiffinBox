@@ -45,13 +45,17 @@ function resetFilterForm() {
             <!-- List of dishes as cards -->
             <div class="row mt-3">
                 {% for dish in tiffins %}
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="{{ dish.photo }}" class="card-img-top" alt="{{ dish.name }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ dish.name|truncatechars:27 }}</h5>
-                            <p class="card-text"><small class="text-muted">Price: ${{ dish.price }}</small></p>
-                            <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="stretched-link"></a>
+                <div class="col-md-4 col-lg-4 col-xl-4 my-2">
+                    <div class="rounded position-relative item">
+                            <img src="{{ dish.photo }}" class="img-fluid w-100 rounded-top" alt="">
+                        <div class="text-white category-tage text-center px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px; background-color: #f3274c;">{{ dish.category }}</div>
+                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                            <h5>{{ dish.name }}</h5>
+                            <p>{{ dish.description }}</p>
+                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                <p class="text-muted fs-5 mb-0">Price: {{ dish.price }}</p>
+                                <a href="{% url 'user_dashboard:tiffindetails' dish.id %}" class="stretched-link"></a>
+                            </div>
                         </div>
                     </div>
                 </div>

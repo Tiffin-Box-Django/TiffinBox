@@ -60,20 +60,23 @@ class Tiffin(models.Model):
     free_delivery_eligible = models.BooleanField(default=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
+    def meal_name(self):
+        return dict(self.MEAL)[self.meal_type]
+
     def __str__(self):
         return self.tiffin_name + " " + str(self.meal_type) + " " + str(self.price)
 
 
 class Order(models.Model):
     PAYMENT_TYPES = [(0, "Credit Card"), (1, "Debit Card"), (2, "Cash"), (3, "Interac")]
-    ORDER_STATUS = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled")]
+    ORDER_STATUS = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled"), (4,"Cart")]
 
     user_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=4, decimal_places=2)
     shipping_address = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=10)
     payment_method = models.IntegerField(choices=PAYMENT_TYPES, default=0)
-    status = models.IntegerField(choices=ORDER_STATUS, default=0)
+    status = models.IntegerField(choices=ORDER_STATUS, default=4)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
 
