@@ -179,11 +179,11 @@ def update_cart(request):
         user_order.save()
 
     try:
-        order_item = OrderItem.objects.get(order_id=Order.objects.get(id=user_order.id), tiffin_id__id=tiffin.id)
+        order_item = OrderItem.objects.get(order_id=Order.objects.get(id=user_order.id), tiffin_id=tiffin)
         order_item.quantity += quantity
         order_item.save()
     except OrderItem.DoesNotExist:
-        order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)
+        order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=quantity)
         order_item.save()
     messages.success(request, "your")
     return response
