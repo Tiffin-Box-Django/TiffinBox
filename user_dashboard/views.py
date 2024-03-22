@@ -77,9 +77,13 @@ class TiffinDetails(DetailView):
         context = super().get_context_data(**kwargs)
         context["review_counts"] = Review.objects.filter(tiffin_id=self.kwargs["pk"]).count()
         reviews = Review.objects.filter(tiffin_id=self.kwargs["pk"]).values("user__first_name", "user__last_name",
-                                                                            "comment", "rating", "created_date")
+                                                                            "comment", "rating", "created_date",
+                                                                            "user__profile_picture")
         reviews_grid, tmp = [], []
         for idx, review in enumerate(reviews):
+            if review["user__profile_picture"].startswith("image"):
+                review["user__profile_picture"] = f"http://{self.request.get_host()}/{review['user__profile_picture']}"
+
             if idx % 3 != 0 or idx == 0:
                 tmp.append(review)
             else:
@@ -98,6 +102,7 @@ class TiffinDetails(DetailView):
                           .filter(business_id__id=kwargs["object"].business_id.id)[:4]
         context["recommended_tiffins"] = recommended
         context["is_authenticated"] = self.request.user.is_authenticated
+        # messages.success(self.request, "Item(s) added to cart!")
         return context
 
 
@@ -124,6 +129,7 @@ def update_cart(request):
     except OrderItem.DoesNotExist:
         order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)
         order_item.save()
+    messages.success(request, "your")
     return response
 
 
