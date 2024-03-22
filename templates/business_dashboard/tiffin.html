@@ -1,56 +1,29 @@
 {% extends 'business_dashboard/base.html'%}
 {% block content %}
 <div class="container">
-    <h1 style="margin-top: 4px">Tiffin List</h1>
+<div class="flex-container d-flex justify-content-between align-items-center">
+    <h2 style="margin-top: 1em ; margin-bottom: 1em">Tiffin List</h2>
+    <a href="{% url 'business_dashboard:add_tiffin' %}" class="btn btn-primary">Add Tiffin</a>
+</div>
     <div class="row">
         <div class="input-group col-md-4">
-            <input class="form-control py-2 border-right-0 border" type="search" value="search" id="example-search-input">
+            <input class="form-control py-2 border-right-0 border" type="search" value="Search" id="example-search-input">
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-md-4 mb-4">
-            <div class="card p-3" style="width: 18rem;">
-                <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Mini Tiffin</h5>
-                    <p class="card-text">Cauliflower Fry and Rotis</p>
-                    <a href="#" class="btn btn-primary">Edit</a>
+           <div class="row mt-3">
+                {% for dish in tiffins %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ dish.image }}" class="card-img-top" alt="{{ dish.tiffin_name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ dish.name|truncatechars:27 }}</h5>
+                            <p class="card-text"><small class="text-muted">Price: ${{ dish.price }}</small></p>
+                            <a href="{% url 'business_dashboard:profile' %}" class="stretched-link"></a>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card p-3" style="width: 18rem;">
-                <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Mini Tiffin</h5>
-                    <p class="card-text">Cauliflower Fry and Rotis</p>
-                    <a href="#" class="btn btn-primary">Edit</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card p-3" style="width: 18rem;">
-                <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Mini Tiffin</h5>
-                    <p class="card-text">Cauliflower Fry and Rotis</p>
-                    <a href="#" class="btn btn-primary">Edit</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card p-3" style="width: 18rem;">
-                <img src="https://media.istockphoto.com/id/666181654/photo/indian-vegetarian-office-or-school-lunch-box-or-tiffin-with-north-indian-or-maharashtrian.jpg?s=1024x1024&w=is&k=20&c=QQ7ZxxkGCBP7A3Q-BcOXD34XcX-RU9uEY0sAlX0LyNM=" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Mini Tiffin</h5>
-                    <p class="card-text">Cauliflower Fry and Rotis</p>
-                    <a href="#" class="btn btn-primary">Edit</a>
-                </div>
-            </div>
-        </div>
-        <div class="d-flex justify-content-center" style="margin-top: 1em">
-            <a href="{% url 'business_dashboard:add_tiffin' %}" class="btn btn-primary">Add Tiffin</a>
-        </div>
     </div>
 </div>
 {% endblock %}
