@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from business_dashboard.forms import SignUpForm, EditTiffinForm, EditProfileForm, AddTiffinForm
-from user_dashboard.models import Tiffin, TBUser, Order, OrderItem
+from user_dashboard.models import Tiffin, TBUser, Order, OrderItem, Review
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-
+import urllib.parse
 
 def index(request):
     if request.user.is_authenticated:
@@ -178,3 +179,71 @@ def update_order_status(request, order_id):
     else:
         return redirect("business_dashboard:orders", 0)
 
+
+def redirect_params(url, tiffin_id, params=None):
+    response = redirect(url, tiffin_id)
+    if params:
+        query_string = urllib.parse.urlencode(params)
+        response['Location'] += '?' + query_string
+    return response
+
+
+@login_required
+def delete_tiffin_review(request):
+    if request.method != "POST":
+        return HttpResponse(status=204)
+
+    the_review = Review.objects.get(id=request.POST['reviewId'])
+    the_review.delete()
+
+    your_params = {
+        'status': 'review_removed'
+    }
+    return redirect_params("business_dashboard:tiffin_detail", the_review.tiffin_id, your_params)
+
+
+@login_required
+def tiffin_detail_delete_tiffin(request):
+    if request.method != "POST":
+        return HttpResponse(status=204)
+
+    the_tiffin = Tiffin.objects.get(id=request.POST['tiffin_id'])
+    the_tiffin.delete()
+
+    return redirect("business_dashboard:tiffin")
+
+@login_required
+def tiffin_detail(request, tiffin_id):
+    print(f"query: {request.GET.get('status')}")
+    the_tiffin = Tiffin.objects.get(pk=tiffin_id)
+
+    if request.user.id != the_tiffin.business_id.id:
+        return redirect("business_dashboard:tiffin")
+
+    n_reviews = Review.objects.filter(tiffin_id=tiffin_id).count()
+
+    reviews = Review.objects.filter(tiffin_id=tiffin_id).values("user__first_name", "user__last_name",
+                                                                        "comment", "rating", "created_date",
+                                                                        "user__profile_picture", "id")
+    reviews_grid, tmp = [], []
+    for idx, review in enumerate(reviews):
+        if review["user__profile_picture"].startswith("image"):
+            review["user__profile_picture"] = f"http://{request.get_host()}/{review['user__profile_picture']}"
+
+        if idx % 3 != 0 or idx == 0:
+            tmp.append(review)
+        else:
+            reviews_grid.append(tmp)
+            tmp = [review]
+    if tmp:
+        reviews_grid.append(tmp)
+
+    tiffin_extras = [("Delivery Frequency", the_tiffin.schedule_id.enum(), "calendar-week"),
+                     ("Meal Plan", dict(the_tiffin.MEAL)[the_tiffin.meal_type], "basket"),
+                     ("Calories", the_tiffin.calories, "lightning")]
+
+    review_removed_alert = False
+    if request.GET.get('status') == 'review_removed':
+        review_removed_alert = True
+
+    return render(request, "business_dashboard/tiffin-detail.html", {'tiffin': the_tiffin, "n_reviews": n_reviews, "tiffin_extras": tiffin_extras, "reviews_grid": reviews_grid, "review_removed_alert": review_removed_alert})

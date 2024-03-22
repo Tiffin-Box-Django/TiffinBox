@@ -29,7 +29,7 @@
                                     <div class="d-flex justify-content-between flex-lg-wrap">
                                         <p class="text-muted fs-5 mb-0">Price: {{ dish.price }}</p>
     {#                                  This link must be replaced to be redirected to each tiffin details page#}
-                                        <a href="{% url 'business_dashboard:profile' %}" class="stretched-link"></a>
+                                        <a href="{% url 'business_dashboard:tiffin_detail' dish.id %}" class="stretched-link"></a>
                                     </div>
                         </div>
                     </div>
