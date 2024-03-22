@@ -117,13 +117,13 @@ def update_cart(request):
 
     tiffin = Tiffin.objects.get(id=tiffin_id)
     try:
-        user_order = Order.objects.get(user_id__id=request.user.id, status=0)
+        user_order = Order.objects.get(user_id=TBUser.objects.get(id=request.user.id), status=4)
     except Order.DoesNotExist:
         user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
         user_order.save()
 
     try:
-        order_item = OrderItem.objects.get(order_id__id=user_order.id, tiffin_id__id=tiffin.id)
+        order_item = OrderItem.objects.get(order_id=Order.objects.get(id=user_order.id), tiffin_id__id=tiffin.id)
         order_item.quantity += quantity
         order_item.save()
     except OrderItem.DoesNotExist:

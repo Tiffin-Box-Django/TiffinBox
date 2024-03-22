@@ -69,7 +69,7 @@ class Tiffin(models.Model):
 
 class Order(models.Model):
     PAYMENT_TYPES = [(0, "Credit Card"), (1, "Debit Card"), (2, "Cash"), (3, "Interac")]
-    ORDER_STATUS = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled"), (4,"Cart")]
+    ORDER_STATUS = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled"), (4, "Cart")]
 
     user_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=4, decimal_places=2)
