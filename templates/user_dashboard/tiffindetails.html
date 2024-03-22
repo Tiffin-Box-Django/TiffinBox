@@ -96,7 +96,7 @@
                         </button>
                         {% if is_authenticated %}
                             <button class="btn btn-md btn-secondary" style="width: 20%"
-                                    onclick="location.href = '{% url "user_dashboard:add_to_cart" object.id %}';">View
+                                    onclick="location.href = '{% url "user_dashboard:cart" %}';">View
                                 your cart
                             </button>
                         {% endif %}
