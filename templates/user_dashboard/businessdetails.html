@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+ 
+{% load static %}
+{% load django_bootstrap5  %}
+ 
+{% block content %}
+<!-- Script to reset and submit form -->
+<script>
+function resetFilterForm() {
+   let frm = document.getElementById('filter-form');
+   frm.reset();
+   frm.submit();
+}
+</script>
+<link rel="stylesheet" href="{% static 'styles/user_dashboard/explore.css' %}">
+<div class="d-flex flex-column align-items-center">
+<div class="container m-2 flex-row">
+    <div class="row">
+        <div class="col-md-3 w-25">
+            <div class="card">
+                <h5 class="card-header">Filters</h5>
+                <div class="card-body">
+                    <!-- All filter -->
+                    <form method="POST" action="{% url 'user_dashboard:businessdetails' business.id %}" id="filter-form">
+                        {% csrf_token %}
+                        {% bootstrap_form filtersForm %}
+                        <button type="submit" class="btn btn-outline-primary">Apply Filters</button>
+                        <input type="hidden" name="filter_applied" value="true">
+                    </form>
+                    <form method="GET" action="{% url 'user_dashboard:explore' %}" id="filter-form">
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1em;">Reset Filters</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+          <!-- Business details div -->
+          <div class="row">
+            <div class="col-md-12">
+              <h2 class="fs-2">{{ business.first_name }} {{ business.last_name }}</h2>
+            </div>
+          </div>
+          <!-- Business description -->
+          <div class="row">
+            <div class="col-md-12">
+              <p class="fs-5 m-0">{{ business.shipping_address }}</p>
+            </div>
+          </div>
+         
+            <!-- List of dishes as cards -->
+            <div class="row mt-3">
+              {% for tiffin in tiffins %}
+              <div class="col-md-3 mb-4">
+                  <div class="card">
+                      <img src="{{ tiffin.image }}" class="card-img-top" alt="{{ tiffin.tiffin_name }}">
+                      <div class="card-body">
+                          <h5 class="card-title">{{ tiffin.tiffin_name }}</h5>
+                          <p class="card-text">{{ tiffin.tiffin_description }}</p>
+                          <p class="card-text">Price: ${{ tiffin.price }}</p>
+                          <a href="{% url 'user_dashboard:tiffindetails' tiffin.id %}" class="stretched-link"></a>
+                      </div>
+                  </div>
+              </div>
+              {% empty %}
+              <div class="col-md-12">
+                  <p>No tiffins found for this business.</p>
+              </div>
+              {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
