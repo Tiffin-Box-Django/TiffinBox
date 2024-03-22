@@ -1,1 +1,61 @@
 {% extends 'base.html' %}
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Set background color */
+        }
+
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .confirmation-message {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff; /* Set heading color */
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="confirmation-message">
+            <h1>Order Placed Successfully!</h1>
+            <p>Your order has been confirmed. Thank you for shopping with us!</p>
+            <p>You will receive an email confirmation shortly.</p>
+            <a href="/" class="btn btn-lg">Continue Shopping</a>
+        </div>
+    </div>
+</body>
+{% endblock %}
+

@@ -5,6 +5,32 @@
         .card {
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Adding shadow to cards */
         }
+        .empty-cart-message {
+            margin-top: 50px;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background-color: #f8f9fa;
+        }
+
+        .empty-cart-message p {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .empty-cart-message a.btn {
+            font-size: 18px;
+            border-radius: 5px;
+            padding: 10px 20px;
+            background-color: #ff0051;
+            color: #fff;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .empty-cart-message a.btn:hover {
+            background-color: #b3001b;
+        }
     </style>
 </head>
 {% extends 'base.html' %}
@@ -18,9 +44,8 @@
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col">
-        <p><span class="h2">Shopping Cart </span><span class="h4">({{ tiffins|length }} items in your cart)</span></p>
-
         {% if tiffins %}
+             <p><span class="h2">Shopping Cart </span><span class="h4">({{ tiffins|length }} items in your cart)</span></p>
           {% for tiffin in tiffins %}
             <div class="card mb-4">
               <div class="card-body p-4">
@@ -74,7 +99,10 @@
           </div>
 
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-light btn-lg me-2">Continue shopping</button>
+              <form action="{% url 'user_dashboard:explore'%}" method="post">
+                  {% csrf_token %}
+                  <button type="button" class="btn btn-light btn-lg me-2">Continue shopping</button>
+              </form>
               <form action="{% url 'user_dashboard:placeOrder'%}" method="post">
                 {% csrf_token %}
                 <button type="submit"class="btn btn-primary btn-lg" >Place Order</button>
@@ -83,9 +111,10 @@
           </div>
 
         {% else %}
-          <div class="text-center">
+          <div class="empty-cart-message text-center">
             <p class="lead">Your cart is empty.</p>
             <p>Start adding items to your cart to see them here.</p>
+            <a href="{% url 'user_dashboard:explore' %}" class="btn btn-primary btn-lg">Start Shopping</a>
           </div>
         {% endif %}
       </div>

@@ -141,11 +141,6 @@ def add_review(request, tiffinid: int):
 
     return redirect("user_dashboard:tiffindetails", tiffinid)
 
-
-def addcart(request, tiffin_id):
-    return None
-
-
 def landing(request):
     if request.method == 'POST':
         form = ExploreSearchForm(request.POST)
@@ -271,7 +266,6 @@ def edit_profile(request):
         form = EditProfileForm(instance=user_profile)
 
     return render(request, "user_dashboard/edit-profile.html", {'user_profile': user_profile, 'form': form})
-
 
 def logout(request):
     ref = request.GET.get('next', '/')
