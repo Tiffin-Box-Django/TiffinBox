@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.generic.detail import DetailView
+from TiffinBox.settings import EMAIL_HOST_USER
 
 from .forms import ExploreSearchForm, FilterForm, SignUpForm, EditProfileForm
 from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
@@ -194,6 +195,9 @@ def update_cart(request):
         user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
         user_order.save()
 
+    user_order.total_price += tiffin.price * quantity
+    user_order.save()
+
     try:
         order_item = OrderItem.objects.get(order_id=Order.objects.get(id=user_order.id), tiffin_id=tiffin)
         order_item.quantity += quantity
@@ -290,7 +294,7 @@ def activateEmail(request, user):
                                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                                 'token': account_activation_token.make_token(user),
                                 'protocol': 'https' if request.is_secure() else 'http'})
-    send_mail(mail_subject, message, 'raholsarvy@gmail.com', [user.email])
+    send_mail(mail_subject, message, EMAIL_HOST_USER, [user.email])
 
 
 def activate(request, uidb64, token):
@@ -321,6 +325,14 @@ class UserLogin(LoginView):
         return {"username": self.request.COOKIES['uname']} if self.request.COOKIES.get('uname') else {}
 
     def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        try:
+            user = TBUser.objects.get(username=username)
+            if user.client_type == 1:
+                messages.error(self.request, "Business owners, Please login here.")
+                return redirect('business_dashboard:login')
+        except TBUser.DoesNotExist:
+            pass
         # Set session data upon successful login
         user = form.get_user()
         self.request.session['user_id'] = user.id
@@ -363,9 +375,13 @@ def placeOrder(request):
     return render(request, 'user_dashboard/placeOrder.html')
 
 
-def OrderHistory(request):
-    orderHistory = Order.objects.filter(user_id=request.user.id)
-    return render(request, 'user_dashboard/orderHistory.html')
+def order_history(request):
+    orderItems = OrderItem.objects.filter(order_id__user_id__id=request.user.id).exclude(order_id__status=4)
+    orderHistory = Order.objects.filter(user_id__id=request.user.id).exclude(status=4).order_by('-created_date')
+    for order in orderHistory:
+        order.orderitem_set.set(orderItems.filter(order_id=order.id))
+
+    return render(request, 'user_dashboard/orderHistory.html', {'orderHistory': orderHistory})
 
 
 def user_profile(request):

@@ -1,2 +1,55 @@
+<!-- order_history.html -->
 {% extends 'base.html' %}
-
+{% block content %}
+<div class="container mt-5">
+    <h1>Order History</h1>
+    {% if orderHistory %}
+    <div class="container mt-3">
+      <div id="accordion">
+        {% for order in orderHistory %}
+        <div class="card">
+          <div class="card-header">
+            <a class="btn d-flex" data-bs-toggle="collapse" href="#collapse{{ order.id }}">
+                <!-- show order id and date on left and status on right -->
+                <div class="flex-grow-1 text-start">
+                    Order ID: {{ order.id }}
+                    <br>
+                    Date: {{ order.created_date | date }}
+                </div>
+                <div class="flex-shrink-0">{{ order.statusname }}</div>
+            </a>
+          </div>
+          <div id="collapse{{ order.id }}" class="collapse" data-bs-parent="#accordion">
+            <div class="card-body">
+              <div class="d-flex">
+                <div class="flex-grow-1 text-start">
+                  <strong>Item</strong>
+              </div>
+              <div class="flex-shrink-0"><strong>Price/Quantity</strong></div>
+              </div>
+              <hr>
+                {% for item in order.orderitem_set.all %}
+                <div class="d-flex">
+                  <div class="flex-grow-1 text-start">
+                    {{ item.tiffin_id.tiffin_name }}
+                </div>
+                <div class="flex-shrink-0">{{ item.tiffin_id.price }} x {{ item.quantity }}</div>
+                </div>
+                <hr>
+                {% endfor %}
+                <p ><strong>Total: ${{ order.total_price }}</strong></p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    {% else %}
+    <div class="empty-cart-message text-center">
+        <p class="lead">No orders found.</p>
+    </div>
+    {% endif %}
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
