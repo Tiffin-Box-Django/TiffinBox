@@ -202,7 +202,6 @@ def update_cart(request):
     except OrderItem.DoesNotExist:
         order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=quantity)
         order_item.save()
-    messages.success(request, "your")
     return response
 
 
