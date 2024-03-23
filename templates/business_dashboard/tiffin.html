@@ -21,13 +21,8 @@
             <img src="{{ dish.image.url}}" class="card-img-top" alt="{{ dish.tiffin_name }}" style="height: 300px; object-fit: cover;">
             <div class="card-body">
                <div class="text-white category-tag text-center px-2 py-2 rounded position-absolute"
-               style="top: 1em; left: 1em;
-               {% if dish.category == "NON-VEG" %}
-               background-color: red;
-               {% else %}
-               background-color: #1e832a;
-               {% endif %}">
-               {{ dish.category }}
+               {% if dish.meal_type == 1 %}style="top: 1em; left: 1em; background-color: red !important;" {% else %} style="top: 1em; left: 1em; background-color: #1e832a !important;" {% endif %}>
+               {% if dish.meal_type == 0 %} VEG {% elif dish.meal_type == 1 %} NON-VEG {% else %} VEGAN {% endif %}
                 </div>
                 <h5 class="card-title mb-0">{{ dish.tiffin_name }}</h5>
                 <p>{{ dish.tiffin_description | truncatewords:20 }}</p>
@@ -35,7 +30,7 @@
                 <p class="fs-5">Price: {{ dish.price }}</p>
                 </div>
                 <div class="d-flex">
-                  <a href="{% url 'business_dashboard:profile' %}" class="btn btn-primary" style="margin-right: 1em">View
+                  <a href="{% url 'business_dashboard:tiffin_detail' dish.id %}" class="btn btn-primary" style="margin-right: 1em">View
                   </a>
                     <a href="{% url 'business_dashboard:edit_tiffin' dish.id %}" class="btn btn-primary" style="margin-right: 1em">Edit
                   </a>
