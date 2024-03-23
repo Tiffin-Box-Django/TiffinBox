@@ -193,7 +193,7 @@ def update_order_status(request, order_id):
         return redirect("business_dashboard:orders", 0)
 
 def about_us(request):
-    return render(request, 'business_dashboard/about-us.html')
+    return render(request, 'commons/about-us.html')
 
 
 def redirect_params(url, tiffin_id, params=None):
