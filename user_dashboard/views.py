@@ -107,7 +107,7 @@ class TiffinDetails(DetailView):
             context["disallow"] = True
         else:
             context["disallow"] = False
-        messages.success(self.request, "Item(s) added to cart!")
+        # messages.success(self.request, "Item(s) added to cart!")
         return context
 
 
@@ -360,6 +360,6 @@ def edit_profile(request):
 
 
 def logout(request):
-    ref = request.GET.get('next', '/login')
+    ref = request.GET.get('next', '/login/')
     auth_views.auth_logout(request)
     return redirect(ref)
