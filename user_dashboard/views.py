@@ -304,7 +304,7 @@ def cart(request):
     tiffins = OrderItem.objects.filter(order_id__user_id__id=request.user.id, order_id__status=4)
     totalPrice = 0
     for tiffin in tiffins:
-        totalPrice = tiffin.tiffin_id.price + totalPrice
+        totalPrice = (tiffin.quantity * tiffin.tiffin_id.price) + totalPrice
     return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice})
 
 
