@@ -27,7 +27,7 @@
                                         {% bs_icon "pen" size='1.2em' %}
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><a class="dropdown-item" href="#">Edit Tiffin</a></li>
+                                        <li><a class="dropdown-item" href="{% url "business_dashboard:edit_tiffin" tiffin.id %}">Edit Tiffin</a></li>
                                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
                                                data-bs-target="#delete-tiffin-modal">Delete Tiffin</a></li>
                                     </ul>

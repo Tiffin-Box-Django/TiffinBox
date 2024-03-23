@@ -17,8 +17,9 @@ def insert_fake_data(request):
                    "https://images.creativemarket.com/0.1.0/ps/7262394/1820/1214/m1/fpnw/wm0/dining-restaurant-logo-design-inspiration-.jpg?1573169154&s=f5468f33601a341466e0fb5dc1da8c4d")]
     business_ids = (1, len(businesses))
     for ele in businesses:
-        tmp = TBUser(username=ele[0], first_name=ele[1], email=ele[2], password=ele[3], client_type=1,
+        tmp = TBUser(username=ele[0], first_name=ele[1], email=ele[2], client_type=1,
                      profile_picture=ele[4], shipping_address=fake.address(), is_registered=True)
+        tmp.set_password("admin@1234")
         try:
             tmp.save()
         except IntegrityError:

@@ -18,7 +18,11 @@ border-radius: 10px;
                             <div class="alert {{ message.tags }}">{{ message }}</div>
                         {% endfor %}
                     {% endif %}
-                        <h2 class="text-center mb-3">Login</h2>
+                        {% if ufname %}
+                            <h2 class="text-center mb-3">Welcome back, {{ ufname|title }}!</h2>
+                        {% else %}
+                            <h2 class="text-center mb-3">Login</h2>
+                        {% endif %}
                         <form method="post" novalidate>
                             {% csrf_token %}
                             {% bootstrap_form form layout="floating" size="md" show_help=False show_label=True %}
