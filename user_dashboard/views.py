@@ -1,25 +1,26 @@
 from decimal import Decimal
 
+from django.contrib import messages
+from django.contrib.auth import views as auth_views, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponse
-from django.views.generic.detail import DetailView
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Avg
-from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
-from .forms import ExploreSearchForm, FilterForm, SignUpForm, EditProfileForm
-from django.contrib.auth import views as auth_views
-from django.contrib.auth import views as auth_views, get_user_model
-from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from .tokens import account_activation_token
 from django.core.mail import send_mail
+from django.db.models import Avg
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views.generic.detail import DetailView
 
+from .forms import ExploreSearchForm, FilterForm, SignUpForm, EditProfileForm
+from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
+from .tokens import account_activation_token
 
 searchForm = ExploreSearchForm()
+
 
 def explore(request):
     if request.method == 'POST':
@@ -29,18 +30,18 @@ def explore(request):
 
         if post_data.get("calories"):
             calories = [int(c.strip()) for c in post_data["calories"].split("-")]
-            post_data["calories__gt"] = float(calories[0])
-            post_data["calories__lt"] = float(calories[1])
+            post_data["calories__gte"] = float(calories[0])
+            post_data["calories__lte"] = float(calories[1])
             post_data.pop("calories")
 
         if post_data.get("price"):
             prices = [int(c.strip().replace("$", "")) for c in post_data["price"].split("-")]
-            post_data["price__gt"] = float(prices[0])
-            post_data["price__lt"] = float(prices[1])
+            post_data["price__gte"] = float(prices[0])
+            post_data["price__lte"] = float(prices[1])
             post_data.pop("price")
 
         if post_data.get('free_delivery_eligible'):
-            if post_data['free_delivery_eligible'] == "on":
+            if "on" in post_data['free_delivery_eligible']:
                 post_data['free_delivery_eligible'] = True
             else:
                 post_data['free_delivery_eligible'] = False
@@ -102,8 +103,67 @@ class TiffinDetails(DetailView):
                           .filter(business_id__id=kwargs["object"].business_id.id)[:4]
         context["recommended_tiffins"] = recommended
         context["is_authenticated"] = self.request.user.is_authenticated
+        if self.request.GET.get("disallow") == "true":
+            context["disallow"] = True
+        else:
+            context["disallow"] = False
         # messages.success(self.request, "Item(s) added to cart!")
         return context
+
+
+def business_details(request, pk):
+    business = get_object_or_404(TBUser, pk=pk)
+
+    if business.client_type != 1:
+        pass
+
+    tiffins = Tiffin.objects.filter(business_id=business.pk)
+
+    if request.method == 'POST':
+        # filters_form = FilterForm(request.POST)
+        post_data = request.POST.dict()
+        if post_data.get('meal_type'):
+            tiffins = tiffins.filter(meal_type=post_data['meal_type'])
+
+        if post_data.get("avg_rating"):
+            post_data["avg_rating"] = float(post_data["avg_rating"])
+
+        if post_data.get("calories"):
+            calories = [int(c.strip()) for c in post_data["calories"].split("-")]
+            post_data["calories__gte"] = float(calories[0])
+            post_data["calories__lte"] = float(calories[1])
+            post_data.pop("calories")
+
+        if post_data.get("price"):
+            prices = [int(c.strip().replace("$", "")) for c in post_data["price"].split("-")]
+            post_data["price__gte"] = float(prices[0])
+            post_data["price__lte"] = float(prices[1])
+            post_data.pop("price")
+
+        if post_data.get('free_delivery_eligible'):
+            if post_data['free_delivery_eligible'] == "on":
+                post_data['free_delivery_eligible'] = True
+            else:
+                post_data['free_delivery_eligible'] = False
+
+        post_data.pop("csrfmiddlewaretoken")
+        tiffins = tiffins.filter(
+            **{k: v for k, v in post_data.items() if v != '' and v is not None})
+
+        filters_form = FilterForm(initial=request.POST)
+        
+    else:
+        filters_form = FilterForm()
+
+    context = {
+        'business': business,
+        'tiffins': tiffins,
+        'is_authenticated': request.user.is_authenticated,
+        'filtersForm': filters_form,
+        'searchForm': ExploreSearchForm(),
+    }  
+
+    return render(request, 'user_dashboard/businessdetails.html', context)
 
 
 @login_required
@@ -117,17 +177,17 @@ def update_cart(request):
 
     tiffin = Tiffin.objects.get(id=tiffin_id)
     try:
-        user_order = Order.objects.get(user_id__id=request.user.id, status=0)
+        user_order = Order.objects.get(user_id=TBUser.objects.get(id=request.user.id), status=4)
     except Order.DoesNotExist:
         user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
         user_order.save()
 
     try:
-        order_item = OrderItem.objects.get(order_id__id=user_order.id, tiffin_id__id=tiffin.id)
+        order_item = OrderItem.objects.get(order_id=Order.objects.get(id=user_order.id), tiffin_id=tiffin)
         order_item.quantity += quantity
         order_item.save()
     except OrderItem.DoesNotExist:
-        order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=1)
+        order_item = OrderItem(order_id=user_order, tiffin_id=tiffin, quantity=quantity)
         order_item.save()
     messages.success(request, "your")
     return response
@@ -138,6 +198,14 @@ def add_review(request, tiffinid: int):
     if request.method != "POST":
         return HttpResponse(status=204)
 
+    if request.session.get("reviewed_tiffins"):
+        if tiffinid in request.session["reviewed_tiffins"]:
+            return redirect(reverse("user_dashboard:tiffindetails", kwargs={"pk": 3}) + "?disallow=true")
+        else:
+            request.session["reviewed_tiffins"].append(tiffinid)
+    else:
+        request.session["reviewed_tiffins"] = [tiffinid]
+
     tmp = Review(user=TBUser.objects.get(id=request.user.id), comment=request.POST["review-text"],
                  rating=int(request.POST["review-stars"]), tiffin=Tiffin.objects.get(id=tiffinid))
     tmp.save()
@@ -146,7 +214,7 @@ def add_review(request, tiffinid: int):
     tmp.avg_rating = Decimal(Review.objects.filter(tiffin=tmp).aggregate(Avg('rating'))["rating__avg"])
     tmp.save()
 
-    return redirect("user_dashboard:tiffindetails", tiffinid)
+    return redirect("user_dashboard:tiffindetails", pk=tiffinid)
 
 
 def landing(request):
@@ -156,11 +224,14 @@ def landing(request):
             return redirect('user_dashboard:explore')
     else:
         form = ExploreSearchForm()
-        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:5]
-        top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(client_type=1).order_by('-avg_rating')[:3]
+        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:4
+                      ]
+        top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(
+            client_type=1).order_by('-avg_rating')[:4]
         testimonials = Testimonial.objects.all()
         return render(request, 'user_dashboard/landing.html',
-                  {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses, 'searchForm': form})
+                      {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses,
+                       'searchForm': form})
 
 
 def signup(request):
@@ -169,17 +240,18 @@ def signup(request):
         if form.is_valid():
             # Save the user
             user = form.save(commit=False)
-            user.is_active=False
+            user.is_active = False
             user.set_password(form.cleaned_data['password1'])
             user.save()
             activateEmail(request, user)
             messages.success(request, 'Please check your email to confirm your registration.')
             # Redirect to login page after successful signup
-            return redirect('user_dashboard:login')  
+            return redirect('user_dashboard:login')
         else:
             for error in list(form.errors.values()):
                 messages.error(request, error)
-            return render(request, 'user_dashboard/signup.html', {'form': form, 'error': form.errors, 'searchForm': searchForm})
+            return render(request, 'user_dashboard/signup.html',
+                          {'form': form, 'error': form.errors, 'searchForm': searchForm})
     else:
         form = SignUpForm()
     return render(request, 'user_dashboard/signup.html', {'form': form, 'searchForm': searchForm})
@@ -187,8 +259,13 @@ def signup(request):
 
 def activateEmail(request, user):
     mail_subject = 'Activate Your TiffinBox Account Now!'
-    message = render_to_string("user_dashboard/account_activation_email.html", {'user': user.first_name, 'domain': get_current_site(request).domain, 'uid': urlsafe_base64_encode(force_bytes(user.pk)), 'token': account_activation_token.make_token(user), 'protocol': 'https' if request.is_secure() else 'http'})
+    message = render_to_string("user_dashboard/account_activation_email.html",
+                               {'user': user.first_name, 'domain': get_current_site(request).domain,
+                                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                                'token': account_activation_token.make_token(user),
+                                'protocol': 'https' if request.is_secure() else 'http'})
     send_mail(mail_subject, message, 'raholsarvy@gmail.com', [user.email])
+
 
 def activate(request, uidb64, token):
     User = get_user_model()
@@ -203,7 +280,8 @@ def activate(request, uidb64, token):
         user.save()
 
         # messages.success(request, "Thank you for your email confirmation. Please login your account.")
-        messages.success(request, "Cheers! Your email verification is a success. Please Login & start ordering your favorite Tiffins now!")
+        messages.success(request,
+                         "Cheers! Your email verification is a success. Please Login & start ordering your favorite Tiffins now!")
         return redirect('user_dashboard:login')
     else:
         messages.error(request, "Unfortunately, the activation link has expired.")
@@ -223,21 +301,21 @@ class UserLogin(LoginView):
 
 
 def cart(request):
-    # tiffins = Tiffin.objects.filter(id = 1)  # Query all Tiffin objects for demonstration
-    # tiffins = OrderItem.objects.filter(order_id__status= 4, order_id__user_id= request.user.id)  # Query all Tiffin objects for demonstration
     tiffins = OrderItem.objects.filter(order_id__user_id__id=request.user.id, order_id__status=4)
     totalPrice = 0
     for tiffin in tiffins:
         totalPrice = tiffin.tiffin_id.price + totalPrice
-    return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice    })
+    return render(request, 'user_dashboard/cart.html', {'tiffins': tiffins, 'totalPrice': totalPrice})
 
-def deleteCartItem(request,id):
+
+def deleteCartItem(request, id):
     dele = OrderItem.objects.get(id=id)
     dele.delete()
     return redirect('user_dashboard:cart')
 
+
 def placeOrder(request):
-    #tiffins = OrderItem.objects.filter(order_id__status=4,order_id__user_id=request.user.id)  # Query all Tiffin objects for demonstration
+    # tiffins = OrderItem.objects.filter(order_id__status=4,order_id__user_id=request.user.id)  # Query all Tiffin objects for demonstration
     tiffins = Order.objects.filter(status=4)  # Query all Tiffin objects for demonstration
 
     for order in tiffins:
@@ -245,13 +323,16 @@ def placeOrder(request):
         order.save()
     return render(request, 'user_dashboard/placeOrder.html')
 
+
 def OrderHistory(request):
-  orderHistory = Order.objects.filter(user_id = request.user.id)
-  return  render(request,'user_dashboard/orderHistory.html')
+    orderHistory = Order.objects.filter(user_id=request.user.id)
+    return render(request, 'user_dashboard/orderHistory.html')
+
 
 def user_profile(request):
     user = get_object_or_404(TBUser, username=request.user.username, is_active=True)
     return render(request, 'user_dashboard/profile.html', context={'user': user})
+
 
 def edit_profile(request):
     user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
@@ -277,6 +358,6 @@ def edit_profile(request):
 
 
 def logout(request):
-    ref = request.GET.get('next', '/')
+    ref = request.GET.get('next', '/login/')
     auth_views.auth_logout(request)
     return redirect(ref)

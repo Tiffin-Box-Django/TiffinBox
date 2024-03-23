@@ -45,6 +45,9 @@
         }
     </script>
     <div class="alert alert-success collapse" role="alert" id="cart-alert">Items added to cart!</div>
+    {% if disallow %}
+        <div class="alert alert-danger" role="alert">You have already reviewed this tiffin!</div>
+    {% endif %}
     <div class="d-flex flex-column align-items-center">
         <!-- Product Details Area Start -->
         <div class="container mx-5 flex-row">

@@ -57,7 +57,7 @@ class Tiffin(models.Model):
     calories = models.IntegerField(blank=True)
     price = models.DecimalField(max_digits=4, decimal_places=2, blank=True)
     avg_rating = models.DecimalField(max_digits=2, decimal_places=1, default=0.0, blank=True)
-    free_delivery_eligible = models.BooleanField(default=True)
+    free_delivery_eligible = models.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)
 
     def meal_name(self):
@@ -69,7 +69,7 @@ class Tiffin(models.Model):
 
 class Order(models.Model):
     PAYMENT_TYPES = [(0, "Credit Card"), (1, "Debit Card"), (2, "Cash"), (3, "Interac")]
-    ORDER_STATUS = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled"), (4,"Cart")]
+    ORDER_STATUS = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled"), (4, "Cart")]
 
     user_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
     total_price = models.DecimalField(max_digits=4, decimal_places=2)
@@ -123,6 +123,9 @@ class Review(models.Model):
     rating = models.IntegerField(choices=RATINGS)
     comment = models.TextField()
     created_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (('user', 'tiffin',),)
 
     def __str__(self):
         return self.user.username + " " + str(self.rating) + " " + self.comment
