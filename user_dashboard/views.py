@@ -301,8 +301,6 @@ class UserLogin(LoginView):
 
 
 def cart(request):
-    # tiffins = Tiffin.objects.filter(id = 1)  # Query all Tiffin objects for demonstration
-    # tiffins = OrderItem.objects.filter(order_id__status= 4, order_id__user_id= request.user.id)  # Query all Tiffin objects for demonstration
     tiffins = OrderItem.objects.filter(order_id__user_id__id=request.user.id, order_id__status=4)
     totalPrice = 0
     for tiffin in tiffins:
