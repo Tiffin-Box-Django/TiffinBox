@@ -7,10 +7,15 @@
 <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
 
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
 
 <section class="hero">
     <div class="hero-content">
-        {% if user.is_authenticated %}
+        {% if username %}
             <h1>Welcome, {{ user.first_name }}!</h1>
         {% else %}
             <h1>Welcome to Tiffin Box!</h1>
