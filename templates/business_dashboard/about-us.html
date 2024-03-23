@@ -1,0 +1,30 @@
+{% extends 'business_dashboard/base.html' %}
+{% load svg %}
+{% load static %}
+{% block content %}
+    <div class="container">
+        <h1 class="text-center mb-5 mt-2" style="color: #F3274C;">Our Story</h1>
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                {% svg 'about'%}
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow p-4 mb-4">
+                    <h5 class="card-title text-center mb-4" style="color: #F3274C;">Meet Our Team</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li>Dhvani Sheth</li>
+                        <li>Jay Vipulbhai Mistry</li>
+                        <li>Joel Matthew Koshy</li>
+                        <li>Parth Vinodbhai Dangaria</li> 
+                        <li>Pratik Sanjay Choudhari</li>
+                        <li>Riddhi Yogesh Jobanputra</li>
+                        <li>Samreetha Williams</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <div>
+        <p class="lead text-muted text-center" style="margin-top: 2em">We were inspired to start this as we had difficulty locating tiffin services across Windsor as international students. There is no particular website available where we can find all the tiffin services. We had to rely on WhatsApp groups or individual details on social media.</p>
+    </div>
+    </div>
+{% endblock %}

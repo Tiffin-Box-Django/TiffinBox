@@ -5,6 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.db.models import Q
 
 
 def index(request):
@@ -15,8 +16,18 @@ def index(request):
 
 @login_required
 def tiffin(request):
-        tiffins = Tiffin.objects.filter(business_id__id=request.user.id)
-        return render(request, template_name='business_dashboard/tiffin.html', context={'tiffins': tiffins})
+    if request.method=='POST':
+        tiffin_id = request.POST.get('tiffin_id')
+        tiffin_item = Tiffin.objects.get(id=tiffin_id, business_id__id= request.user.id)
+        if tiffin_item:
+            tiffin_item.delete()
+            return redirect("business_dashboard:tiffin")
+    else:
+        if request.GET.get('search'):
+            tiffins = Tiffin.objects.filter(Q(business_id__id = request.user.id) & Q(tiffin_name__contains = request.GET['search']))
+        else:
+            tiffins = Tiffin.objects.filter(business_id__id=request.user.id)
+    return render(request, template_name='business_dashboard/tiffin.html', context={'tiffins': tiffins})
   
 @login_required
 def add_tiffin(request):
@@ -178,3 +189,5 @@ def update_order_status(request, order_id):
     else:
         return redirect("business_dashboard:orders", 0)
 
+def about_us(request):
+    return render(request, 'business_dashboard/about-us.html')
