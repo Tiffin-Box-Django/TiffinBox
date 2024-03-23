@@ -38,6 +38,7 @@ def add_tiffin(request):
             business_user = request.user.id
             tiffin_item = form.save(commit=False)
             tiffin_item.business_id = TBUser.objects.get(pk=business_user)
+            tiffin_item.image = form.cleaned_data['image']
             if 'image' in request.FILES:
                 tiffin_item.image = request.FILES['image']
             tiffin_item.save()
@@ -106,8 +107,9 @@ def businessLoginPage(request):
 def edit_tiffin(request, tiffin_id):
     the_tiffin = get_object_or_404(Tiffin, id=tiffin_id)
     if request.method == 'POST':
-        form = EditTiffinForm(request.POST)
+        form = EditTiffinForm(request.POST, request.FILES)
         if form.is_valid():
+            the_tiffin.image = form.cleaned_data['image']
             the_tiffin.tiffin_name = form.cleaned_data['tiffin_name']
             the_tiffin.tiffin_description = form.cleaned_data['tiffin_description']
             the_tiffin.meal_type = form.cleaned_data['meal_type']
