@@ -164,3 +164,11 @@ MESSAGE_TAGS = {
 AUTO_LOGOUT = {'IDLE_TIME': 3600, 'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
                'MESSAGE': 'The session has expired. Please login again to continue.'}
 LOGOUT_REDIRECT_URL = "/login"
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_NAME = "sessionid"
+SESSION_SAVE_EVERY_REQUEST = True
+
+# cookies settings
+SESSION_COOKIE_AGE = 3600
