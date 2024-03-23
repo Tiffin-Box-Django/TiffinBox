@@ -76,6 +76,19 @@ class TiffinDetails(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        tiffin_id = self.kwargs["pk"]
+        recently_viewed = self.request.session.get("recently_viewed", [])
+        if recently_viewed:
+            if tiffin_id in recently_viewed:
+                recently_viewed.remove(tiffin_id)
+            recently_viewed.insert(0, tiffin_id)
+            self.request.session["recently_viewed"] = recently_viewed
+        else:
+            self.request.session["recently_viewed"] = [tiffin_id]
+
+        context["recently_viewed"] = self.request.session["recently_viewed"]
+
         context["review_counts"] = Review.objects.filter(tiffin_id=self.kwargs["pk"]).count()
         reviews = Review.objects.filter(tiffin_id=self.kwargs["pk"]).values("user__first_name", "user__last_name",
                                                                             "comment", "rating", "created_date",
@@ -224,13 +237,6 @@ def landing(request):
         user = TBUser.objects.get(pk=user_id)
         username = user.username
 
-    recently_viewed_ids = request.session.get('recently_viewed')
-    print(recently_viewed_ids)
-    recently_viewed = Tiffin.objects.filter(pk__in=recently_viewed_ids or [])
-    recently_viewed = sorted(recently_viewed, key=lambda x: recently_viewed_ids.index(x.id))
-
-    print(recently_viewed)
-
     if request.method == 'POST':
         form = ExploreSearchForm(request.POST)
         if form.is_valid():
@@ -252,7 +258,6 @@ def landing(request):
         'top_tiffins': top_tiffins,
         'top_businesses': top_businesses,
         'searchForm': form,
-        'recently_viewed': recently_viewed,
         'username': username  # Pass the username to the template context
     })
 
