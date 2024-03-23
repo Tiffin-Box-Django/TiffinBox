@@ -318,6 +318,9 @@ def activate(request, uidb64, token):
 class UserLogin(LoginView):
     template_name = 'user_dashboard/login.html'
 
+    def get_initial(self):
+        return {"username": self.request.COOKIES['uname']} if self.request.COOKIES.get('uname') else {}
+
     def form_valid(self, form):
         # Set session data upon successful login
         user = form.get_user()
@@ -330,6 +333,9 @@ class UserLogin(LoginView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["searchForm"] = searchForm
+        context["ufname"] = self.request.COOKIES.get("ufname")
+        # if self.request.COOKIES.get("uname"):
+        #     self.initial = {"username": self.request.COOKIES["uname"]}
         return context
 
     def get_success_url(self):

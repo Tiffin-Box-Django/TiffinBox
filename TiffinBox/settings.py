@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_auto_logout.middleware.auto_logout',
+    'TiffinBox.middleware.login_cookie_middleware.LoginCookieMiddleware'
 ]
 
 ROOT_URLCONF = 'TiffinBox.urls'
