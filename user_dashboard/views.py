@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.db.models import Avg
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -76,6 +76,19 @@ class TiffinDetails(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        tiffin_id = self.kwargs["pk"]
+        recently_viewed = self.request.session.get("recently_viewed", [])
+        if recently_viewed:
+            if tiffin_id in recently_viewed:
+                recently_viewed.remove(tiffin_id)
+            recently_viewed.insert(0, tiffin_id)
+            self.request.session["recently_viewed"] = recently_viewed
+        else:
+            self.request.session["recently_viewed"] = [tiffin_id]
+
+        context["recently_viewed"] = self.request.session["recently_viewed"]
+
         context["review_counts"] = Review.objects.filter(tiffin_id=self.kwargs["pk"]).count()
         reviews = Review.objects.filter(tiffin_id=self.kwargs["pk"]).values("user__first_name", "user__last_name",
                                                                             "comment", "rating", "created_date",
@@ -151,7 +164,7 @@ def business_details(request, pk):
             **{k: v for k, v in post_data.items() if v != '' and v is not None})
 
         filters_form = FilterForm(initial=request.POST)
-        
+
     else:
         filters_form = FilterForm()
 
@@ -218,20 +231,35 @@ def add_review(request, tiffinid: int):
 
 
 def landing(request):
+    username = None
+    if 'user_id' in request.session:
+        user_id = request.session['user_id']
+        user = TBUser.objects.get(pk=user_id)
+        username = user.username
+
     if request.method == 'POST':
         form = ExploreSearchForm(request.POST)
         if form.is_valid():
-            return redirect('user_dashboard:explore')
+            response = HttpResponseRedirect(
+                reverse('user_dashboard:explore') + '?search=' + form.cleaned_data['search'])
+            response.set_cookie('last_search', form.cleaned_data['search'])
+            return response
     else:
         form = ExploreSearchForm()
-        top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:4
-                      ]
-        top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(
-            client_type=1).order_by('-avg_rating')[:4]
-        testimonials = Testimonial.objects.all()
-        return render(request, 'user_dashboard/landing.html',
-                      {'testimonials': testimonials, 'top_tiffins': top_tiffins, 'top_businesses': top_businesses,
-                       'searchForm': form})
+
+    # Proceed with rendering the landing page
+    top_tiffins = Tiffin.objects.annotate(rating=Avg('avg_rating')).order_by('-rating')[:4]
+    top_businesses = TBUser.objects.annotate(avg_rating=Avg('tiffin__review__rating')).filter(
+        client_type=1).order_by('-avg_rating')[:4]
+    testimonials = Testimonial.objects.all()
+
+    return render(request, 'user_dashboard/landing.html', {
+        'testimonials': testimonials,
+        'top_tiffins': top_tiffins,
+        'top_businesses': top_businesses,
+        'searchForm': form,
+        'username': username  # Pass the username to the template context
+    })
 
 
 def signup(request):
@@ -290,6 +318,15 @@ def activate(request, uidb64, token):
 
 class UserLogin(LoginView):
     template_name = 'user_dashboard/login.html'
+
+    def form_valid(self, form):
+        # Set session data upon successful login
+        user = form.get_user()
+        self.request.session['user_id'] = user.id
+        self.request.session['username'] = user.username
+        self.request.session.modified = True
+
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -360,4 +397,5 @@ def edit_profile(request):
 def logout(request):
     ref = request.GET.get('next', '/login/')
     auth_views.auth_logout(request)
+    messages.success(request, "You have been logged out.")
     return redirect(ref)
