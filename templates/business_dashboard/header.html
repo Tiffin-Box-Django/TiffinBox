@@ -11,7 +11,7 @@
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             {% if request.user.is_authenticated %}
-                <li><a href="{% url "business_dashboard:orders" 0 %}" class="nav-link px-2 link-secondary">Orders</a></li>
+                <li><a href="{% url "business_dashboard:orders" 4 %}" class="nav-link px-2 link-secondary">Orders</a></li>
                 <li><a href="{% url "business_dashboard:index" %}" class="nav-link px-2 link-secondary">Tiffins</a></li>
             {% endif %}
         </ul>
