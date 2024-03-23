@@ -161,6 +161,6 @@ MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info'
 }
 
-AUTO_LOGOUT = {'IDLE_TIME': 10, 'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
+AUTO_LOGOUT = {'IDLE_TIME': 3600, 'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
                'MESSAGE': 'The session has expired. Please login again to continue.'}
 LOGOUT_REDIRECT_URL = "/login"

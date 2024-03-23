@@ -5,23 +5,23 @@
         <h3 style="margin-top: 1.5em; margin-bottom: 0.5em">Orders - {{ order_type }}</h3>
 
         <div class="btn-group" role="group" aria-label="Basic mixed styles example" style="margin-bottom: 1em">
-            <button type="button" class="btn btn-primary"
+            <button type="button" {% if order_type == "All" %} class="btn btn-outline-primary" {% else %} class="btn btn-primary" {% endif %}
                     onclick="location.href='{% url "business_dashboard:orders" 4 %}';"><i class="fa fa-home"></i>&nbsp;
                 &nbsp; &nbsp;All
             </button>
-            <button type="button" class="btn btn-warning"
+            <button type="button" {% if order_type == "Order Placed" %} class="btn btn-outline-warning" {% else %} class="btn btn-warning" {% endif %}
                     onclick="location.href='{% url "business_dashboard:orders" 1 %}';"><i class="fa fa-bars"></i>&nbsp;
                 &nbsp; &nbsp;Order Placed
             </button>
-            <button type="button" class="btn btn-secondary"
+            <button type="button" {% if order_type == "Shipped" %} class="btn btn-outline-secondary" {% else %} class="btn btn-secondary" {% endif %} 
                     onclick="location.href='{% url "business_dashboard:orders" 2 %}';"><i class="fa fa-truck"></i>&nbsp;
                 &nbsp; &nbsp;Shipped
             </button>
-            <button type="button" class="btn btn-success"
+            <button type="button" {% if order_type == "Delivered" %} class="btn btn-outline-success" {% else %} class="btn btn-success" {% endif %}
                     onclick="location.href='{% url "business_dashboard:orders" 0 %}';"><i
                     class="fa fa-check-circle"></i>&nbsp; &nbsp; &nbsp;Delivered
             </button>
-            <button type="button" class="btn btn-danger"
+            <button type="button" {% if order_type == "Cancelled" %} class="btn btn-outline-danger" {% else %} class="btn btn-danger" {% endif %}
                     onclick="location.href='{% url "business_dashboard:orders" 3 %}';"><i
                     class="fa fa-times-circle"></i>&nbsp; &nbsp; &nbsp;Cancelled
             </button>
@@ -39,7 +39,7 @@
                     <th>Quantity</th>
                     <th>Total Price</th>
                     <th>Order Date</th>
-                    <th style="width:12%">Status</th>
+                    <th style="width:14%">Status</th>
                 </tr>
                 {% for order in orders %}
                     <tr>
@@ -56,6 +56,7 @@
                             <form method="post" action="{% url "business_dashboard:update_order_status" order.2.id %}">
                                 {% csrf_token %}
                                 <select class="form-select" name="order_status_change" onchange="this.form.submit()" {% if order.2.order_id.status == 0 %}disabled{% endif %}>
+                                    <option {% if order.2.order_id.status == 1 %} selected {% endif %} value="1">Order Placed</option>
                                     <option {% if order.2.order_id.status == 2 %} selected {% endif %} value="2">Shipped</option>
                                     <option {% if order.2.order_id.status == 0 %} selected {% endif %} value="0">Delivered</option>
                                     <option {% if order.2.order_id.status == 3 %} selected {% endif %} value="3">Cancel</option>
