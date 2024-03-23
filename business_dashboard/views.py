@@ -145,19 +145,19 @@ def orders(request, order_status):
     # 0 1 2 3
     if order_status == 0:
         order_type = "Delivered"
-        order_items = OrderItem.objects.filter(order_id__status=0).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(order_id__status=0, tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
     elif order_status == 1:
         order_type = "Order Placed"
-        order_items = OrderItem.objects.filter(order_id__status=1).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(order_id__status=1, tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
     elif order_status == 2:
         order_type = "Shipped"
-        order_items = OrderItem.objects.filter(order_id__status=2).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(order_id__status=2, tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
     elif order_status == 3:
         order_type = "Cancelled"
-        order_items = OrderItem.objects.filter(order_id__status=3).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(order_id__status=3, tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
     else:
         order_type = "All"
-        order_items = OrderItem.objects.all().order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
 
     updated_orders = []
 
