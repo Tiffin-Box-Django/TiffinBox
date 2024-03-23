@@ -83,6 +83,8 @@ class Order(models.Model):
     def __str__(self):
         return str(self.id) + " " + str(self.status) + " " + str(self.payment_method) + " " + str(self.shipping_address)
 
+    def statusname(self):
+        return dict(self.ORDER_STATUS)[self.status]
 
 class TiffinContent(models.Model):
     tiffin = models.ForeignKey(Tiffin, on_delete=models.CASCADE)
