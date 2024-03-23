@@ -1,4 +1,5 @@
 {% extends 'business_dashboard/base.html'%}
+{% load svg %}
 {% block content %}
 <div class="container">
    <div class="flex-container d-flex justify-content-between align-items-center">
@@ -15,6 +16,7 @@
       </form>
    </div>
    <div class="row mt-3">
+   {% if tiffins %}
       {% for dish in tiffins %}
       <div class="col-md-4 mb-4">
          <div class="card h-100">
@@ -46,6 +48,12 @@
         </div>
         </div>
       {% endfor %}
+   {% else %}
+    <div class="d-flex justify-content-center align-items-center">
+        {% svg 'nodata' %}
+        <p class="text" style="margin-left: 2em">There are no tiffins to display</p>
+    </div>
+   {% endif %}
    </div>
 </div>
 <script>

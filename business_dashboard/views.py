@@ -97,7 +97,7 @@ def businessLoginPage(request):
                 return redirect('business_dashboard:tiffin')
             else:
                 msg = 'Invalid Username or Password!' #This message is being overridden by the error message from AuthenticationForm
-                return render(request, 'business_dashboard/login.html', {'msg': msg})
+                return render(request, 'business_dashboard/login.html', {'form':form,'msg': msg})
     else:
         form = AuthenticationForm()
     return render(request, 'business_dashboard/login.html', {'form': form})
