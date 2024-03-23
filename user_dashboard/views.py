@@ -89,10 +89,10 @@ class TiffinDetails(DetailView):
 
         context["recently_viewed"] = self.request.session["recently_viewed"]
 
-        context["review_counts"] = Review.objects.filter(tiffin_id=self.kwargs["pk"]).count()
-        reviews = Review.objects.filter(tiffin_id=self.kwargs["pk"]).values("user__first_name", "user__last_name",
-                                                                            "comment", "rating", "created_date",
-                                                                            "user__profile_picture")
+        context["review_counts"] = Review.objects.filter(tiffin_id=tiffin_id).count()
+        reviews = Review.objects.filter(tiffin_id=tiffin_id).values("user__first_name", "user__last_name",
+                                                                    "comment", "rating", "created_date",
+                                                                    "user__profile_picture")
         reviews_grid, tmp = [], []
         for idx, review in enumerate(reviews):
             if review["user__profile_picture"].startswith("image"):
@@ -112,8 +112,7 @@ class TiffinDetails(DetailView):
                          ("Calories", kwargs["object"].calories, "lightning")]
 
         context["tiffin_extras"] = tiffin_extras
-        recommended = Tiffin.objects.exclude(id=self.kwargs["pk"]) \
-                          .filter(business_id__id=kwargs["object"].business_id.id)[:4]
+        recommended = Tiffin.objects.exclude(id=tiffin_id).filter(business_id__id=kwargs["object"].business_id.id)[:4]
         context["recommended_tiffins"] = recommended
         context["is_authenticated"] = self.request.user.is_authenticated
         if self.request.GET.get("disallow") == "true":
@@ -174,7 +173,7 @@ def business_details(request, pk):
         'is_authenticated': request.user.is_authenticated,
         'filtersForm': filters_form,
         'searchForm': ExploreSearchForm(),
-    }  
+    }
 
     return render(request, 'user_dashboard/businessdetails.html', context)
 
@@ -334,8 +333,6 @@ class UserLogin(LoginView):
         context = super().get_context_data(**kwargs)
         context["searchForm"] = searchForm
         context["ufname"] = self.request.COOKIES.get("ufname")
-        # if self.request.COOKIES.get("uname"):
-        #     self.initial = {"username": self.request.COOKIES["uname"]}
         return context
 
     def get_success_url(self):
