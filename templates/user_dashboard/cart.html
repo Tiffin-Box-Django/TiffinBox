@@ -1,7 +1,9 @@
 <!-- cart.html -->
+{% extends 'base.html' %}
+
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<style>
+    <style>
         .card {
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
@@ -59,11 +61,22 @@
         }
     </style>
 </head>
-{% extends 'base.html' %}
 
 {% block title %}Cart - Tiffin Service{% endblock %}
 
 {% block content %}
+      <script>
+        function checkAddressAndPhone() {
+            var address = "{{ request.user.shipping_address }}"; 
+            var phone = "{{ request.user.phone_number }}"; 
+
+            if (!address || !phone) {
+                alert("Please fill in your address and phone number before placing the order.");
+            } else {
+                window.location.href = "{% url 'user_dashboard:placeOrder' %}"; // Redirect to place order page
+            }
+        }
+    </script>
 <section class="vh-100" style="background-color: #f9f9f9;"> <!-- Changing background color to off-white -->
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
@@ -129,11 +142,7 @@
                   {% csrf_token %}
                   <button type="submit" class="btn btn-light btn-lg me-2">Continue shopping</button>
               </form>
-              <form action="{% url 'user_dashboard:placeOrder'%}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary btn-lg" >Place Order</button>
-              </form>
-
+              <button type= "submit" onclick="checkAddressAndPhone()" class="btn btn-primary btn-lg">Place Order</button>
           </div>
 
         {% else %}
