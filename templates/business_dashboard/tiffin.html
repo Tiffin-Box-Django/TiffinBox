@@ -1,40 +1,63 @@
 {% extends 'business_dashboard/base.html'%}
 {% block content %}
-    <div class="container">
-        <div class="flex-container d-flex justify-content-between align-items-center">
-            <h2 style="margin-top: 1em ; margin-bottom: 1em; color: #F3274C">Tiffin List</h2>
-            <a href="{% url 'business_dashboard:add_tiffin' %}" class="btn btn-primary">Add Tiffin</a>
-        </div>
-        <div class="row">
-            <div class="input-group col-md-4">
-                <input class="form-control py-2 border-right-0 border" type="search" value="Search" id="example-search-input"/>
+<div class="container">
+   <div class="flex-container d-flex justify-content-between align-items-center">
+      <h2 style="margin-top: 1em ; margin-bottom: 1em; color: #F3274C">Tiffin List</h2>
+      <a href="{% url 'business_dashboard:add_tiffin' %}" class="btn btn-primary">Add Tiffin</a>
+   </div>
+   <div class="row">
+      <form action="{% url 'business_dashboard:tiffin' %}" method="GET" class = 'd-flex'>
+         <input class="form-control py-2 border-right-0 border" type="search" name="search" value="{{ request.GET.search }}" placeholder="Search"/>
+         <div class="input-group-append">
+            <button class="btn btn-outline-primary" type="submit"><i class="fa fa-search" style="color: #F3274C"></i>
+            </button>
+         </div>
+      </form>
+   </div>
+   <div class="row mt-3">
+      {% for dish in tiffins %}
+      <div class="col-md-4 mb-4">
+         <div class="card h-100">
+            <img src="{{ dish.image.url}}" class="card-img-top" alt="{{ dish.tiffin_name }}" style="height: 300px; object-fit: cover;">
+            <div class="card-body">
+               <div class="text-white category-tag text-center px-2 py-2 rounded position-absolute"
+               style="top: 1em; left: 1em;
+               {% if dish.category == "NON-VEG" %}
+               background-color: red;
+               {% else %}
+               background-color: #1e832a;
+               {% endif %}">
+               {{ dish.category }}
+                </div>
+                <h5 class="card-title mb-0">{{ dish.tiffin_name }}</h5>
+                <p>{{ dish.tiffin_description | truncatewords:20 }}</p>
+                <div class="d-flex justify-content-between flex-lg-wrap">
+                <p class="fs-5">Price: {{ dish.price }}</p>
+                </div>
+                <div class="d-flex">
+                  <a href="{% url 'business_dashboard:profile' %}" class="btn btn-primary" style="margin-right: 1em">View
+                  </a>
+                    <a href="{% url 'business_dashboard:edit_tiffin' dish.id %}" class="btn btn-primary" style="margin-right: 1em">Edit
+                  </a>
+                  <form id="delete-form-{{ dish.id }}" action="{% url 'business_dashboard:tiffin' %}" method="POST">
+                     {% csrf_token %}
+                     <input type="hidden" name="tiffin_id" value="{{ dish.id }}">
+                     <button type="button" class="btn btn-danger" style="margin-left: 12em" onclick="confirmDelete({{ dish.id }})">
+                     <i class="fa fa-trash"></i>
+                     </button>
+                  </form>
+               </div>
             </div>
         </div>
-        <div class="row mt-3">
-            {% for dish in tiffins %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="{{ dish.image.url}}" class="card-img-top" alt="{{ dish.tiffin_name }}" style="height: 300px; object-fit: cover;">
-                        <div class="card-body">
-                            <div class="text-white category-tage text-center px-3 py-1 rounded position-absolute"
-                                 style="top: 10px; left: 10px;
-                                         {% if dish.category == "NON-VEG" %}
-                                            background-color: red;
-                                         {% else %}
-                                            background-color: #1e832a;
-                                         {% endif %}">
-                                    {{ dish.category }}</div>
-                                    <h5 class="card-title mb-0">{{ dish.tiffin_name }}</h5>
-                                    <p>{{ dish.tiffin_description }}</p>
-                                    <div class="d-flex justify-content-between flex-lg-wrap">
-                                        <p class="text-muted fs-5 mb-0">Price: {{ dish.price }}</p>
-    {#                                  This link must be replaced to be redirected to each tiffin details page#}
-                                        <a href="{% url 'business_dashboard:tiffin_detail' dish.id %}" class="stretched-link"></a>
-                                    </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
         </div>
-    </div>
+      {% endfor %}
+   </div>
+</div>
+<script>
+   function confirmDelete(tiffinId) {
+       if (confirm('Do you want to delete this Tiffin item?')) {
+           document.getElementById('delete-form-' + tiffinId).submit();
+       }
+   }
+</script>
 {% endblock %}
