@@ -366,10 +366,10 @@ def deleteCartItem(request, id):
 
 
 def placeOrder(request):
-    # tiffins = OrderItem.objects.filter(order_id__status=4,order_id__user_id=request.user.id)  # Query all Tiffin objects for demonstration
-    tiffins = Order.objects.filter(status=4)  # Query all Tiffin objects for demonstration
+    tiffins = OrderItem.objects.filter(order_id__status=4, order_id__user_id=request.user.id)
 
-    for order in tiffins:
+    for tiffin in tiffins:
+        order = Order.objects.get(id=tiffin.order_id.id)
         order.status = 1
         order.save()
     return render(request, 'user_dashboard/placeOrder.html')
