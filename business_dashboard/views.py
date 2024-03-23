@@ -17,6 +17,9 @@ def index(request):
 
 @login_required
 def tiffin(request):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
+
     if request.method=='POST':
         tiffin_id = request.POST.get('tiffin_id')
         tiffin_item = Tiffin.objects.get(id=tiffin_id, business_id__id= request.user.id)
@@ -32,6 +35,9 @@ def tiffin(request):
   
 @login_required
 def add_tiffin(request):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
+
     if request.method == 'POST':
         form = AddTiffinForm(request.POST, request.FILES)
         if form.is_valid():
@@ -48,8 +54,10 @@ def add_tiffin(request):
         form = AddTiffinForm()
     return render(request, 'business_dashboard/add-tiffin.html', {'form': form})
 
-# @login_required
+@login_required
 def business_profile(request):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
     user = get_object_or_404(TBUser, username=request.user.username, is_active=True)
     return render(request, 'business_dashboard/profile.html', context={'user': user})
 
@@ -105,6 +113,9 @@ def businessLoginPage(request):
 
 @login_required
 def edit_tiffin(request, tiffin_id):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
+
     the_tiffin = get_object_or_404(Tiffin, id=tiffin_id)
     if request.method == 'POST':
         form = EditTiffinForm(request.POST, request.FILES)
@@ -132,6 +143,9 @@ def logout_view(request):
 
   
 def edit_profile(request):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
+
     user_profile = get_object_or_404(TBUser, username=request.user.username, is_active=True)
     if request.method == "POST":
         form = EditProfileForm(request.POST, request.FILES, instance=user_profile)
@@ -155,6 +169,9 @@ def edit_profile(request):
   
 @login_required
 def orders(request, order_status):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
+
     # 0 1 2 3
     if order_status == 0:
         order_type = "Delivered"
@@ -182,6 +199,9 @@ def orders(request, order_status):
 
 @login_required
 def update_order_status(request, order_id):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
+
     if request.method == "POST":
         the_order = OrderItem.objects.get(id=order_id)
         order_item = Order.objects.get(id=the_order.order_id.id)
@@ -206,6 +226,9 @@ def redirect_params(url, tiffin_id, params=None):
 
 @login_required
 def delete_tiffin_review(request):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
+
     if request.method != "POST":
         return HttpResponse(status=204)
 
@@ -230,6 +253,9 @@ def tiffin_detail_delete_tiffin(request):
 
 @login_required
 def tiffin_detail(request, tiffin_id):
+    if request.user.client_type == 0:
+        return redirect('business_dashboard:logout')
+
     print(f"query: {request.GET.get('status')}")
     the_tiffin = Tiffin.objects.get(pk=tiffin_id)
 
