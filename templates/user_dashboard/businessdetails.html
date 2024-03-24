@@ -64,7 +64,7 @@ function resetFilterForm() {
                         <h5>{{ tiffin.tiffin_name }}</h5>
                         <p>{{ tiffin.tiffin_description }}</p>
                         <div class="d-flex justify-content-between flex-lg-wrap">
-                            <p class="text-muted fs-5 mb-0">Price: {{ tiffin.price }}</p>
+                            <p class="text-muted fs-5 mb-0">Price: ${{ tiffin.price }}</p>
                             <a href="{% url 'user_dashboard:tiffindetails' tiffin.id %}" class="stretched-link"></a>
                         </div>
                     </div>
