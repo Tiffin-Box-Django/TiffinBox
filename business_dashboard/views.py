@@ -9,30 +9,34 @@ from django.contrib.auth import logout
 from django.db.models import Q
 import urllib.parse
 
+
 def index(request):
     if request.user.is_authenticated:
         return redirect("business_dashboard:tiffin")
     else:
         return redirect("business_dashboard:login")
 
+
 @login_required
 def tiffin(request):
     if request.user.client_type == 0:
         return redirect('business_dashboard:logout')
 
-    if request.method=='POST':
+    if request.method == 'POST':
         tiffin_id = request.POST.get('tiffin_id')
-        tiffin_item = Tiffin.objects.get(id=tiffin_id, business_id__id= request.user.id)
+        tiffin_item = Tiffin.objects.get(id=tiffin_id, business_id__id=request.user.id)
         if tiffin_item:
             tiffin_item.delete()
             return redirect("business_dashboard:tiffin")
     else:
         if request.GET.get('search'):
-            tiffins = Tiffin.objects.filter(Q(business_id__id = request.user.id) & Q(tiffin_name__contains = request.GET['search']))
+            tiffins = Tiffin.objects.filter(
+                Q(business_id__id=request.user.id) & Q(tiffin_name__contains=request.GET['search']))
         else:
             tiffins = Tiffin.objects.filter(business_id__id=request.user.id)
     return render(request, template_name='business_dashboard/tiffin.html', context={'tiffins': tiffins})
-  
+
+
 @login_required
 def add_tiffin(request):
     if request.user.client_type == 0:
@@ -54,6 +58,7 @@ def add_tiffin(request):
         form = AddTiffinForm()
     return render(request, 'business_dashboard/add-tiffin.html', {'form': form})
 
+
 @login_required
 def business_profile(request):
     if request.user.client_type == 0:
@@ -71,7 +76,7 @@ def signup(request):
         # we have request.FILES for image files upload
         form = SignUpForm(request.POST, request.FILES)
 
-        #verify the username
+        # verify the username
         username = request.POST['username']
         if any(char in special_characters for char in username):
             form.add_error('username', 'Username cannot contain special characters')
@@ -90,13 +95,19 @@ def signup(request):
         form = SignUpForm()
     return render(request, "business_dashboard/sign-up.html", {'form': form})
 
+
 def businessLoginPage(request):
     if request.user.is_authenticated:
         return redirect("business_dashboard:index")
 
+    if request.COOKIES.get("utype") == "1":
+        login_header = f"Welcome back, {request.COOKIES['ufname']}!"
+    else:
+        login_header = "Login for Business"
+
     if request.method == 'POST':
         msg = ''
-        form = AuthenticationForm(request,request.POST)
+        form = AuthenticationForm(request, request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
@@ -106,18 +117,15 @@ def businessLoginPage(request):
                 return redirect('business_dashboard:tiffin')
             else:
                 msg = 'Invalid Username or Password!'
-                return render(request, 'business_dashboard/login.html', {'form':form,'msg': msg})
+                return render(request, 'business_dashboard/login.html',
+                              {'form': form, 'msg': msg, "login_header": login_header})
     else:
         form = AuthenticationForm()
-
-    if request.COOKIES.get("utype") == "1":
-        login_header = f"Welcome back, {request.COOKIES['ufname']}!"
-    else:
-        login_header = "Login for Business"
 
     form.initial = {"username": request.COOKIES.get('uname')}
     return render(request, 'business_dashboard/login.html', {'form': form,
                                                              "login_header": login_header})
+
 
 @login_required
 def edit_tiffin(request, tiffin_id):
@@ -148,12 +156,13 @@ def edit_tiffin(request, tiffin_id):
 
     return render(request, "business_dashboard/edit-tiffin.html", {"tiffin_id": tiffin_id, 'form': form})
 
+
 @login_required
 def logout_view(request):
     logout(request)
     return redirect("business_dashboard:login")
 
-  
+
 def edit_profile(request):
     if request.user.client_type == 0:
         return redirect('business_dashboard:logout')
@@ -178,7 +187,7 @@ def edit_profile(request):
         form = EditProfileForm(instance=user_profile)
     return render(request, "business_dashboard/edit-profile.html", {'user_profile': user_profile, 'form': form})
 
-  
+
 @login_required
 def orders(request, order_status):
     if request.user.client_type == 0:
@@ -187,24 +196,30 @@ def orders(request, order_status):
     # 0 1 2 3
     if order_status == 0:
         order_type = "Delivered"
-        order_items = OrderItem.objects.filter(order_id__status=0, tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(order_id__status=0, tiffin_id__business_id=request.user.id).order_by(
+            "-order_id__created_date")
     elif order_status == 1:
         order_type = "Order Placed"
-        order_items = OrderItem.objects.filter(order_id__status=1, tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(order_id__status=1, tiffin_id__business_id=request.user.id).order_by(
+            "-order_id__created_date")
     elif order_status == 2:
         order_type = "Shipped"
-        order_items = OrderItem.objects.filter(order_id__status=2, tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(order_id__status=2, tiffin_id__business_id=request.user.id).order_by(
+            "-order_id__created_date")
     elif order_status == 3:
         order_type = "Cancelled"
-        order_items = OrderItem.objects.filter(order_id__status=3, tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(order_id__status=3, tiffin_id__business_id=request.user.id).order_by(
+            "-order_id__created_date")
     else:
         order_type = "All"
-        order_items = OrderItem.objects.filter(tiffin_id__business_id=request.user.id).order_by("-order_id__created_date")
+        order_items = OrderItem.objects.filter(tiffin_id__business_id=request.user.id).order_by(
+            "-order_id__created_date")
 
     updated_orders = []
 
     for order in order_items:
-        updated_orders.append((dict(order.order_id.ORDER_STATUS)[order.order_id.status], dict(order.order_id.PAYMENT_TYPES)[order.order_id.payment_method], order))
+        updated_orders.append((dict(order.order_id.ORDER_STATUS)[order.order_id.status],
+                               dict(order.order_id.PAYMENT_TYPES)[order.order_id.payment_method], order))
 
     return render(request, "business_dashboard/orders.html", {"order_type": order_type, "orders": updated_orders})
 
@@ -223,6 +238,7 @@ def update_order_status(request, order_id):
         return redirect("business_dashboard:orders", int(request.POST['order_status_change']))
     else:
         return redirect("business_dashboard:orders", 0)
+
 
 def about_us(request):
     return render(request, 'commons/about-us.html')
@@ -263,6 +279,7 @@ def tiffin_detail_delete_tiffin(request):
 
     return redirect("business_dashboard:tiffin")
 
+
 @login_required
 def tiffin_detail(request, tiffin_id):
     if request.user.client_type == 0:
@@ -277,8 +294,8 @@ def tiffin_detail(request, tiffin_id):
     n_reviews = Review.objects.filter(tiffin_id=tiffin_id).count()
 
     reviews = Review.objects.filter(tiffin_id=tiffin_id).values("user__first_name", "user__last_name",
-                                                                        "comment", "rating", "created_date",
-                                                                        "user__profile_picture", "id")
+                                                                "comment", "rating", "created_date",
+                                                                "user__profile_picture", "id")
     reviews_grid, tmp = [], []
     for idx, review in enumerate(reviews):
         if review["user__profile_picture"].startswith("image"):
@@ -300,4 +317,6 @@ def tiffin_detail(request, tiffin_id):
     if request.GET.get('status') == 'review_removed':
         review_removed_alert = True
 
-    return render(request, "business_dashboard/tiffin-detail.html", {'tiffin': the_tiffin, "n_reviews": n_reviews, "tiffin_extras": tiffin_extras, "reviews_grid": reviews_grid, "review_removed_alert": review_removed_alert})
+    return render(request, "business_dashboard/tiffin-detail.html",
+                  {'tiffin': the_tiffin, "n_reviews": n_reviews, "tiffin_extras": tiffin_extras,
+                   "reviews_grid": reviews_grid, "review_removed_alert": review_removed_alert})

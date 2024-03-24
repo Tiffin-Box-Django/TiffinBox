@@ -7,6 +7,11 @@
         <div class="col-md-9">
             <div style="background-color: rgba(255, 255, 255, 0.6); margin-left: 20em; margin-right: 20em; margin-top: 5em; padding: 2em;border-radius: 1em">
                 <h2 class="font-weight-bold text-center" style="margin-bottom: 1em; color: #F3274C">{{ login_header }}</h2>
+                {% if msg %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ msg }}
+                    </div>
+                {% endif %}
                 <form method="post">
                     {% csrf_token %}
                     {% bootstrap_form form layout="floating" size="md" show_help=False show_label=True %}
@@ -18,11 +23,6 @@
                 </div>
                 <div class="mt-4 text-center">Trying to login as user? Login <a href={% url 'user_dashboard:login' %}>here</a>
                 </div>
-                {% if msg %}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ msg }}
-                    </div>
-                {% endif %}
             </div>
         </div>
     </div>
