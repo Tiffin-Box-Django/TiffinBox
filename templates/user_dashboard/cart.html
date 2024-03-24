@@ -1,68 +1,6 @@
 <!-- cart.html -->
 {% extends 'base.html' %}
-
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .card {
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .empty-cart-message {
-            margin-bottom: 100px;
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            background-color: #f8f9fa;
-        }
-
-        .empty-cart-message p {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .empty-cart-message a.btn {
-            font-size: 18px;
-            border-radius: 5px;
-            padding: 10px 20px;
-            background-color: #ff0051;
-            color: #fff;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .empty-cart-message a.btn:hover {
-            background-color: #b3001b;
-        }
-        .empty-cart-message {
-            margin-top: 50px;
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            background-color: #f8f9fa;
-        }
-
-        .empty-cart-message p {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .empty-cart-message a.btn {
-            font-size: 18px;
-            border-radius: 5px;
-            padding: 10px 20px;
-            background-color: #ff0051;
-            color: #fff;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .empty-cart-message a.btn:hover {
-            background-color: #b3001b;
-        }
-    </style>
-</head>
-
-{% block title %}Cart - Tiffin Service{% endblock %}
+{% load static %}
 
 {% block content %}
       <script>
@@ -77,7 +15,8 @@
             }
         }
     </script>
-<section class="vh-100" style="background-color: #f9f9f9;"> <!-- Changing background color to off-white -->
+    <link rel="stylesheet" href="{% static 'styles/user_dashboard/cart.css' %}">
+<section class="vh-100"> <!-- Changing background color to off-white -->
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col">
@@ -146,10 +85,12 @@
           </div>
 
         {% else %}
-          <div class="empty-cart-message text-center">
-            <p class="lead">Your cart is empty.</p>
-            <p>Start adding items to your cart to see them here.</p>
-            <a href="{% url 'user_dashboard:explore' %}" class="btn btn-primary btn-lg">Start Shopping</a>
+          <div class="empty-cart text-center">
+              <img src="http://www.peacockbluesaustralia.com/Content/cart-empty.png" alt="empty bag picture">
+                <h3>Looks like your cart is on a <b>diet!</b></h3>
+              <h5>Give it a boost with wholesome meals from our <b>Tiffin Service.</b></h5>
+
+                <a href="{% url 'user_dashboard:explore' %}" class="feeding btn btn-primary btn-lg">Start feeding</a>
           </div>
         {% endif %}
       </div>
