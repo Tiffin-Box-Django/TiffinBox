@@ -47,7 +47,11 @@ function resetFilterForm() {
                 {% for dish in tiffins %}
                 <div class="col-md-4 my-2">
                     <div class="rounded position-relative item">
-                            <img src="{{ dish.photo }}" class="img-fluid w-100 rounded-top" alt="">
+                        {% if dish.photo %}
+                            <img src="{{ dish.photo.url }}" class="img-fluid w-100 rounded-top" 
+                            style="height:300px; width: 200px;" alt="">
+                        {% endif %}
+
                         <div class="text-white category-tage text-center px-3 py-1 rounded position-absolute"
                              style="top: 10px; left: 10px;
                              {% if dish.category == "NON-VEG" %}

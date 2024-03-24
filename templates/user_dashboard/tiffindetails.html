@@ -55,7 +55,7 @@
             <div class="row m-2">
                 
                 <div class="col-md-5">
-                    <img class="img-fluid" style="height: 450px; object-fit: cover;" src="{{ object.image }}" alt=""/>
+                    <img class="img-fluid" style="height: 450px; object-fit: cover;" src="{{ object.image.url }}" alt=""/>
                 </div>
                 <div class="col-md-7">
                     <!-- Tiffin name -->
@@ -208,7 +208,7 @@
                 {% for rtiffin in recommended_tiffins %}
                     <div class="col-md-3 mb-4">
                         <div class="card">
-                            <img src="{{ tiffin.image }}" class="card-img-top" alt="{{ rtiffin.tiffin_name }}">
+                            <img src="{{ tiffin.image.url }}" class="card-img-top" alt="{{ rtiffin.tiffin_name }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ rtiffin.tiffin_name|truncatechars:20 }}</h5>
                                 <p class="card-text"><small class="text-muted">Price: ${{ rtiffin.price }}</small></p>

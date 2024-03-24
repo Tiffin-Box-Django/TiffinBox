@@ -15,7 +15,7 @@
 
 <section class="hero">
     <div class="hero-content">
-        {% if username %}
+        {% if request.user.is_authenticated %}
             <h1>Welcome, {{ user.first_name }}!</h1>
         {% else %}
             <h1>Welcome to Tiffin Box!</h1>
@@ -32,7 +32,12 @@
             {% for tiffin in top_tiffins %}
             <div class="col-md-3 m-2" style="width: 18rem;">
                 <div class="card rounded">
-                    <img src="{{ tiffin.image }}" class="card-img-top" alt="...">
+                    {% if tiffin.image %}
+                        <img src="{{ tiffin.image.url }}" class="card-img-top"
+                        style="height: 300px; width: 263px;" alt="...">
+                    {% else %}
+                        <img src="{% static 'img/tiffin-background.jpg' %}" class="card-img-top" alt="...">
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ tiffin.tiffin_name }}</h5>
                         <p class="card-text"><small class="text-muted">{{ tiffin.tiffin_description|truncatechars:50 }}</small></p>
@@ -52,7 +57,11 @@
             {% for business in top_businesses %}
             <div class="col-md-3 m-0 my-4">
                 <div class="card rounded">
+                    {% if business.profile_picture %}
                     <img src="{{ business.profile_picture }}" class="card-img-top" alt="...">
+                    {% else %}
+                    <img src="{% static 'img/default-user.png' %}" class="card-img-top" alt="...">
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ business.first_name }} {{ business.last_name }}</h5>
                         <p class="card-text"><small class="text-muted">{{ business.shipping_address }}</small></p>
@@ -86,9 +95,15 @@
                             {% endif %}
                             <div class="col-lg-3 col-md-4 col-sm-6">
                                 <div class="card testimonial-card h-100">
+                                    {% if i.user.profile_picture %}
                                     <img class="card-img-top mx-auto rounded-circle shadow mb-4"
                                         src="{{ i.user.profile_picture }}" alt="avatar"
                                         style="width: 100px; height: 100px;" />
+                                    {% else %}
+                                    <img class="card-img-top mx-auto rounded-circle shadow mb-4"
+                                        src="{% static 'img/default-user.png' %}" alt="avatar"
+                                        style="width: 100px; height: 100px;" />
+                                    {% endif %}
                                     <div class="card-body">
                                         <h5 class="card-title mb-3">{{ i.user.first_name }} {{ i.user.last_name }}</h5>
                                         <p class="card-text text-muted" id="testimonial-comment">
