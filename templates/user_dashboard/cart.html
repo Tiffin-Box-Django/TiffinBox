@@ -1,83 +1,23 @@
-<!-- cart.html -->
 {% extends 'base.html' %}
-
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .card {
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .empty-cart-message {
-            margin-bottom: 100px;
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            background-color: #f8f9fa;
-        }
-
-        .empty-cart-message p {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .empty-cart-message a.btn {
-            font-size: 18px;
-            border-radius: 5px;
-            padding: 10px 20px;
-            background-color: #ff0051;
-            color: #fff;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .empty-cart-message a.btn:hover {
-            background-color: #b3001b;
-        }
-        .empty-cart-message {
-            margin-top: 50px;
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            background-color: #f8f9fa;
-        }
-
-        .empty-cart-message p {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        .empty-cart-message a.btn {
-            font-size: 18px;
-            border-radius: 5px;
-            padding: 10px 20px;
-            background-color: #ff0051;
-            color: #fff;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .empty-cart-message a.btn:hover {
-            background-color: #b3001b;
-        }
-    </style>
-</head>
-
-{% block title %}Cart - Tiffin Service{% endblock %}
+{% load static %}
 
 {% block content %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
       <script>
         function checkAddressAndPhone() {
             var address = "{{ request.user.shipping_address }}"; 
             var phone = "{{ request.user.phone_number }}"; 
 
             if (!address || !phone) {
-                alert("Please fill in your address and phone number before placing the order.");
+                $('#userDetailsModal').modal('show');
             } else {
-                window.location.href = "{% url 'user_dashboard:placeOrder' %}"; // Redirect to place order page
+                window.location.href = "{% url 'user_dashboard:placeOrder' %}";
             }
         }
     </script>
-<section class="vh-100" style="background-color: #f9f9f9;"> <!-- Changing background color to off-white -->
+    <link rel="stylesheet" href="{% static 'styles/user_dashboard/cart.css' %}">
+<section class="vh-100">
   <div class="container h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col">
@@ -107,7 +47,7 @@
                   <div class="col-md-2 d-flex justify-content-center">
                     <div>
                       <p class="small text-muted mb-4 pb-2">Quantity</p>
-                      <p class="lead fw-normal mb-0">{{ tiffin.quantity }}</p> <!-- You may need to adjust this based on your actual cart quantity -->
+                      <p class="lead fw-normal mb-0">{{ tiffin.quantity }}</p>
                     </div>
                   </div>
                   <div class="col-md-2 d-flex justify-content-center">
@@ -146,14 +86,45 @@
           </div>
 
         {% else %}
-          <div class="empty-cart-message text-center">
-            <p class="lead">Your cart is empty.</p>
-            <p>Start adding items to your cart to see them here.</p>
-            <a href="{% url 'user_dashboard:explore' %}" class="btn btn-primary btn-lg">Start Shopping</a>
+          <div class="empty-cart text-center">
+              <img src="../../static/img/cart-empty.png" alt="empty bag picture">
+                <h3>Looks like your cart is on a <b>diet!</b></h3>
+              <h5>Give it a boost with wholesome meals from our <b>Tiffin Service.</b></h5>
+
+                <a href="{% url 'user_dashboard:explore' %}" class="btn btn-primary btn-lg">Start feeding</a>
           </div>
         {% endif %}
       </div>
     </div>
   </div>
+
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userDetailsModalLabel">Fill in your details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="userDetailsForm" method="post" action="{% url 'user_dashboard:placeOrder' %}">
+         {% csrf_token %}
+          {% if not request.user.shipping_address %}
+              <div class="mb-3">
+                <label for="shippingAddress" class="form-label">Shipping Address:</label>
+                <input type="text" class="form-control" id="shippingAddress" name="shippingAddress" required>
+              </div>
+          {% endif %}
+        {% if not request.user.phone_number %}
+          <div class="mb-3">
+            <label for="phoneNumber" class="form-label">Phone Number:</label>
+            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required>
+          </div>
+        {% endif %}
+          <button type="submit" class="btn btn-primary">Save Details</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 </section>
 {% endblock %}

@@ -1,88 +1,47 @@
-/* profile.css */
+body {
+    text-align: left;
+    font-size: 30px !important;
+}
 
-/* Style for container */
 .container-fluid {
     padding-top: 50px;
+    padding-bottom: 50px;
 }
 
-/* Style for profile picture */
-.profile-picture {
-    width: 150px;
-    height: 150px;
-}
-
-/* Style for profile information */
-.profile-info {
+.card {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .06);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 0 solid rgba(0, 0, 0, .125);
+    border-radius: .25rem;
+    width: 100%;
+    padding: 2rem;
     margin-top: 20px;
 }
 
-/* Style for card */
-.card {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-}
-
-/* Style for card title */
-.card-title {
-    font-size: 50px; /* Increased font size */
-    color: #333;
-}
-
-/* Style for card body */
 .card-body {
-    padding: 30px;
+    min-height: 1px;
+    padding: 1rem;
 }
 
-/* Style for text center */
-.text-center {
-    text-align: center;
+.col-md-8 .card {
+    width: 100%;
+    margin: 0 auto;
 }
 
-/* Style for container */
-.container {
-    max-width: 960px;
+.row.gutters-sm .col-md-4 {
+    display: flex;
+    align-items: stretch;
 }
 
-/* Style for row */
-.row {
-    margin-left: -15px;
-    margin-right: -15px;
+.row.gutters-sm .col-md-4 .card-body {
+    height: 100%;
 }
 
-/* Style for justify content center */
-.justify-content-center {
-    justify-content: center;
-}
-
-/* Style for column */
-.col-md-8 {
-    flex: 0 0 66.66667%;
-    max-width: 66.66667%;
-}
-
-/* Style for rounded circle */
-.rounded-circle {
-    border-radius: 50%;
-}
-
-/* Style for background light */
-.bg-light {
-    background-color: #f8f9fa !important;
-}
-
-/* Style for padding y-5 */
-.py-5 {
-    padding-top: 3rem !important;
-    padding-bottom: 3rem !important;
-}
-
-/* Style for margin top */
-.mt-4 {
-    margin-top: 1.5rem !important;
-}
-
-/* Style for padding y-5 */
-.py-5 {
-    padding-top: 3rem !important;
-    padding-bottom: 3rem !important;
+.card-title {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: #F3274C;
 }

@@ -108,4 +108,20 @@ class SignUpForm(UserCreationForm):
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = TBUser
-        fields = ['profile_picture', 'username','first_name', 'last_name', 'email', 'phone_number', 'shipping_address']
+        fields = ['profile_picture', 'username', 'first_name', 'last_name', 'email', 'phone_number', 'shipping_address']
+    def clean(self):
+        cleaned_data = super().clean()
+        username = cleaned_data.get('username')
+        email = cleaned_data.get('email')
+
+        if not username:
+            self.add_error('username', 'Username cannot be empty')
+        user = TBUser.objects.filter(username=username)
+
+        if user.count() > 1:
+            raise forms.ValidationError('Username is already in use.')
+
+        if not email:
+            self.add_error('email', 'Email address cannot be empty')
+
+        return cleaned_data

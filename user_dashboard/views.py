@@ -362,8 +362,18 @@ def deleteCartItem(request, id):
 
 
 def placeOrder(request):
-    tiffins = OrderItem.objects.filter(order_id__status=4, order_id__user_id=request.user.id)
-
+    tiffins = OrderItem.objects.filter(order_id__status=4, order_id__user_id=request.user)
+    user = TBUser.objects.get(id=request.user.id)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            shipping_address = request.POST.get('shippingAddress')
+            phone_number = request.POST.get('phoneNumber')
+            if shipping_address and not user.shipping_address:
+                user.shipping_address = shipping_address
+                user.save()
+            if phone_number and not user.phone_number:
+                user.phone_number = phone_number
+                user.save()
     for tiffin in tiffins:
         order = Order.objects.get(id=tiffin.order_id.id)
         order.status = 1
