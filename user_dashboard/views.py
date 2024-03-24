@@ -192,7 +192,7 @@ def update_cart(request):
         user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
         user_order.save()
 
-    # user_order.total_price += Decimal(tiffin.price * quantity)
+    user_order.total_price += Decimal(tiffin.price * quantity)
     user_order.save()
 
     try:
@@ -356,8 +356,20 @@ def cart(request):
 
 
 def deleteCartItem(request, id):
-    dele = OrderItem.objects.get(id=id)
-    dele.delete()
+    order_item = OrderItem.objects.get(id=id)
+    order_id = order_item.order_id
+
+    order_items_count = OrderItem.objects.filter(order_id=order_id).count()
+    order_item_price = order_item.quantity * order_item.tiffin_id.price
+
+    order_item.delete()
+    order_obj = Order.objects.get(id=order_id.id)
+    if order_items_count == 1:
+        order_obj.delete()
+    else:
+        order_obj.total_price -= order_item_price
+        order_obj.save()
+
     return redirect('user_dashboard:cart')
 
 

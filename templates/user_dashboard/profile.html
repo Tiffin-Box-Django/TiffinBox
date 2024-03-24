@@ -20,13 +20,6 @@
                                             {% endif %}
                                             <div class="mt-3">
                                                 <h4>{{ user.first_name }} {{ user.last_name }}</h4>
-                                                <p class="text-secondary mb-1">
-                                                    {% if user.client_type == 0 %}
-                                                    User
-                                                    {% elif user.client_type == 1 %}
-                                                    Business
-                                                    {% endif %}
-                                                </p>
                                                 <p class="text-muted font-size-sm">{{ user.shipping_address }}</p>
                                             </div>
                                         </div>

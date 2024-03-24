@@ -72,7 +72,7 @@ class Order(models.Model):
     ORDER_STATUS = [(0, "Delivered"), (1, "Order Placed"), (2, "Shipped"), (3, "Cancelled"), (4, "Cart")]
 
     user_id = models.ForeignKey(TBUser, on_delete=models.CASCADE)
-    total_price = models.DecimalField(max_digits=4, decimal_places=2)
+    total_price = models.DecimalField(max_digits=6, decimal_places=2)
     shipping_address = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=10)
     payment_method = models.IntegerField(choices=PAYMENT_TYPES, default=0)
