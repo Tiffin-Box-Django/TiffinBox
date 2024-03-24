@@ -31,6 +31,9 @@
         {% endfor %}
         </ul>
     {% endif %}
+        <div class="mt-4 text-center">
+            <a href={% url 'business_dashboard:sign-up' %}>Business Sign-Up</a>
+        </div>
         <p class="text-center mt-3">
           Already a member?<a href="{% url 'user_dashboard:login' %}">Log In</a>
         </p>
