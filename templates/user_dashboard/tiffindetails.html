@@ -55,7 +55,7 @@
             <div class="row m-2">
                 
                 <div class="col-md-5">
-                    <img class="img-fluid" src="{{ object.image }}" alt=""/>
+                    <img class="img-fluid" style="height: 450px; object-fit: cover;" src="{{ object.image }}" alt=""/>
                 </div>
                 <div class="col-md-7">
                     <!-- Tiffin name -->
@@ -129,11 +129,13 @@
         <!-- Reviews grid -->
         <div class="container mx-5 mt-4 flex-row" id="reviews-grid">
             <div>
-                <h5 style="display: flex; align-items: center;">Customer Reviews (
+                <h5 style="display: flex; align-items: center;">Customer Reviews
+                    {% if is_authenticated %}(
                     <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#reviewModal">
                         Write a review
                     </button>
                     )
+                    {% endif %}
                 </h5>
             </div>
 

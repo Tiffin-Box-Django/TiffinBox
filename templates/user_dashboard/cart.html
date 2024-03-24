@@ -1,4 +1,3 @@
-<!-- cart.html -->
 {% extends 'base.html' %}
 {% load static %}
 
@@ -11,7 +10,7 @@
             if (!address || !phone) {
                 alert("Please fill in your address and phone number before placing the order.");
             } else {
-                window.location.href = "{% url 'user_dashboard:placeOrder' %}"; // Redirect to place order page
+                window.location.href = "{% url 'user_dashboard:placeOrder' %}"; 
             }
         }
     </script>
