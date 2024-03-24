@@ -1,41 +1,88 @@
 {% extends 'base.html'%}
 {% load static %}
+{% load django_bootstrap5 %}
 <head>
     <link rel="stylesheet" href="../../static/styles/user_dashboard/profile.css">
-     <style>
-        .profile-info p {
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 {% block content %}
-    <div class="container-fluid bg-light py-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-body">
-                            <h1 class="card-title text-center mb-4">Profile Summary</h1>
-                            <div class="text-center">
-                                {% if user.profile_picture.url != '/False' %}
-                                <img src="{{ request.user.profile_picture.url }}" class="rounded-circle img-fluid profile-picture" style="height: 250px; object-fit: cover;" alt="Profile Picture">
-                                {% else %}
-                                <img src="{% static 'img/default-user.png' %}" class="rounded-circle img-fluid profile-picture" style="height: 250px; object-fit: cover;" alt="Profile Picture">
-                                {% endif %}
+<div class="bg-light py-5 row justify-content-center">
+            <div class="col-md-8 card">
+                        <h1 class="card-title text-center mb-4" style="color: #F3274C">Profile Summary</h1>
+                        <div class="row gutters">
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex flex-column align-items-center text-center">
+                                            {% if user.profile_picture %}
+                                            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="150">
+                                            {% else %}
+                                            <img src="{% static 'img/default-user.png' %}" alt="Default Profile Picture" class="rounded-circle" width="150">
+                                            {% endif %}
+                                            <div class="mt-3">
+                                                <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+                                                <p class="text-secondary mb-1">
+                                                    {% if user.client_type == 0 %}
+                                                    User
+                                                    {% elif user.client_type == 1 %}
+                                                    Business
+                                                    {% endif %}
+                                                </p>
+                                                <p class="text-muted font-size-sm">{{ user.shipping_address }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="profile-info mt-4 text-center">
-                                <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-                                <p><strong>User Name:</strong>{{ user.username }}</p>
-                                <p><strong>Email:</strong> {{ user.email }}</p>
-                                <p><strong>Phone Number:</strong> {{ user.phone_number }}</p>
-                                <p><strong>Address:</strong> {{ user.shipping_address }}</p>
+                            <div class="col-md-8">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">Full Name</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary">
+                                                {{ user.first_name }} {{ user.last_name }}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">User Name</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary">
+                                                {{ user.username }}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">Email</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary">
+                                                {{ user.email }}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">Phone</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary">
+                                                {{ user.phone_number }}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="d-flex justify-content-start">
+                                                <a href="{% url 'user_dashboard:editprofile' %}" class="btn btn-primary mt-3">Edit Profile</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
             </div>
-        </div>
-    </div>
+</div>
 {% endblock %}
 
 
