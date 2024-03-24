@@ -117,6 +117,10 @@ def edit_tiffin(request, tiffin_id):
         return redirect('business_dashboard:logout')
 
     the_tiffin = get_object_or_404(Tiffin, id=tiffin_id)
+
+    if the_tiffin.business_id.id != request.user.id:
+        return redirect('business_dashboard:index')
+
     if request.method == 'POST':
         form = EditTiffinForm(request.POST, request.FILES)
         if form.is_valid():
