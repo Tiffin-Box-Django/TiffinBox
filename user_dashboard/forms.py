@@ -4,6 +4,7 @@ from django import forms
 from django.db.models import Max, Min
 from user_dashboard.models import Tiffin, TBUser
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.password_validation import validate_password
 
 
 class ExploreSearchForm(forms.Form):
@@ -78,6 +79,27 @@ class SignUpForm(UserCreationForm):
         if TBUser.objects.filter(username=username).exists():
             raise forms.ValidationError("This username is already in use.")
         return username
+    
+    def clean_first_name(self):
+        first_name = self.cleaned_data['first_name']
+        return first_name.capitalize()
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data['last_name']
+        return last_name.capitalize()
+
+    def clean_password1(self):
+        password1 = self.cleaned_data['password1']
+        validate_password(password1)
+        return password1
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        if not phone_number.isdigit():
+            raise forms.ValidationError("Phone number must contain only digits.")
+        elif len(phone_number) != 10:
+            raise forms.ValidationError("Phone number must be 10 digits long.")
+        return phone_number
 
     class Meta:
         model = TBUser
