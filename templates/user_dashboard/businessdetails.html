@@ -54,7 +54,7 @@ function resetFilterForm() {
                         <img src="{{ tiffin.image }}" class="img-fluid w-100 rounded-top" alt="">
                     <div class="text-white category-tage text-center px-3 py-1 rounded position-absolute"
                          style="top: 10px; left: 10px;
-                         {% if tiffin.neal_name == "NON-VEG" %}
+                         {% if tiffin.meal_type == 1 %}
                              background-color: red;
                          {% else %}
                             background-color: #1e832a;

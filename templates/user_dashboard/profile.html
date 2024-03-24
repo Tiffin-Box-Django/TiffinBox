@@ -18,9 +18,9 @@
                             <h1 class="card-title text-center mb-4">Profile Summary</h1>
                             <div class="text-center">
                                 {% if request.user.profile_picture %}
-                                <img src="{{ request.user.profile_picture.url }}" class="rounded-circle img-fluid profile-picture" alt="Profile Picture">
+                                <img src="{{ request.user.profile_picture.url }}" class="rounded-circle img-fluid profile-picture" style="height: 250px; object-fit: cover;" alt="Profile Picture">
                                 {% else %}
-                                <img src="{% static 'img/default-user.png' %}" class="rounded-circle img-fluid profile-picture" alt="Profile Picture">
+                                <img src="{% static 'img/default-user.png' %}" class="rounded-circle img-fluid profile-picture" style="height: 250px; object-fit: cover;" alt="Profile Picture">
                                 {% endif %}
                             </div>
                             <div class="profile-info mt-4 text-center">

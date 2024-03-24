@@ -195,7 +195,7 @@ def update_cart(request):
         user_order = Order(user_id=TBUser.objects.get(id=request.user.id), total_price=0)
         user_order.save()
 
-    user_order.total_price += tiffin.price * quantity
+    # user_order.total_price += Decimal(tiffin.price * quantity)
     user_order.save()
 
     try:
