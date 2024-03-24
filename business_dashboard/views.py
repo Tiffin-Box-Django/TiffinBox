@@ -105,11 +105,19 @@ def businessLoginPage(request):
                 login(request, user)
                 return redirect('business_dashboard:tiffin')
             else:
-                msg = 'Invalid Username or Password!' #This message is being overridden by the error message from AuthenticationForm
+                msg = 'Invalid Username or Password!'
                 return render(request, 'business_dashboard/login.html', {'form':form,'msg': msg})
     else:
         form = AuthenticationForm()
-    return render(request, 'business_dashboard/login.html', {'form': form})
+
+    if request.COOKIES.get("utype") == "1":
+        login_header = f"Welcome back, {request.COOKIES['ufname']}!"
+    else:
+        login_header = "Login for Business"
+
+    form.initial = {"username": request.COOKIES.get('uname')}
+    return render(request, 'business_dashboard/login.html', {'form': form,
+                                                             "login_header": login_header})
 
 @login_required
 def edit_tiffin(request, tiffin_id):
