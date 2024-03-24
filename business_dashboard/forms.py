@@ -23,6 +23,14 @@ class SignUpForm(UserCreationForm):
             raise forms.ValidationError(f"Email '{email}' is already in use")
         return email
 
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        if not phone_number.isdigit():
+            raise forms.ValidationError("Phone number must contain only digits.")
+        elif len(phone_number) != 10:
+            raise forms.ValidationError("Phone number must be 10 digits long.")
+        return phone_number
+
     class Meta:
         model = TBUser
         fields = ['first_name', 'last_name', 'is_registered', 'phone_number', 'shipping_address', 'username', 'email', 'password1', 'password2', 'profile_picture']
