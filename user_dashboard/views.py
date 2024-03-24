@@ -20,8 +20,6 @@ from .forms import ExploreSearchForm, FilterForm, SignUpForm, EditProfileForm
 from .models import Tiffin, Testimonial, TBUser, Review, Order, OrderItem
 from .tokens import account_activation_token
 
-searchForm = ExploreSearchForm()
-
 
 def explore(request):
     if request.method == 'POST':
@@ -173,7 +171,6 @@ def business_details(request, pk):
         'tiffins': tiffins,
         'is_authenticated': request.user.is_authenticated,
         'filtersForm': filters_form,
-        'searchForm': ExploreSearchForm(),
     }
 
     return render(request, 'user_dashboard/businessdetails.html', context)
@@ -239,8 +236,8 @@ def landing(request):
         user = TBUser.objects.get(pk=user_id)
         username = user.username
 
-    if request.method == 'POST':
-        form = ExploreSearchForm(request.POST)
+    if request.GET.get('search'):
+        form = ExploreSearchForm(request.GET)
         if form.is_valid():
             response = HttpResponseRedirect(
                 reverse('user_dashboard:explore') + '?search=' + form.cleaned_data['search'])
@@ -259,7 +256,7 @@ def landing(request):
         'testimonials': testimonials,
         'top_tiffins': top_tiffins,
         'top_businesses': top_businesses,
-        'searchForm': form,
+        'search_form': form,
         'username': username  # Pass the username to the template context
     })
 
@@ -281,10 +278,10 @@ def signup(request):
             for error in list(form.errors.values()):
                 messages.error(request, error)
             return render(request, 'user_dashboard/signup.html',
-                          {'form': form, 'error': form.errors, 'searchForm': searchForm})
+                          {'form': form, 'error': form.errors})
     else:
         form = SignUpForm()
-    return render(request, 'user_dashboard/signup.html', {'form': form, 'searchForm': searchForm})
+    return render(request, 'user_dashboard/signup.html', {'form': form})
 
 
 def activateEmail(request, user):
@@ -343,7 +340,6 @@ class UserLogin(LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["searchForm"] = searchForm
         context["ufname"] = self.request.COOKIES.get("ufname")
         return context
 
