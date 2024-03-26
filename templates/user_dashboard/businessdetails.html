@@ -45,6 +45,18 @@ function resetFilterForm() {
               <p class="fs-5 m-0">{{ business.shipping_address }}</p>
             </div>
           </div>
+         <div class="row">
+            <div class="col-md-12">
+              <p class="fs-5 m-0">Mobile:
+              <a href="tel:{{ business.phone_number }}">+1 {{ business.phone_number }}</a></p>
+            </div>
+          </div>
+         <div class="row">
+            <div class="col-md-12">
+              <p class="fs-5 m-0">Email:
+                  <a href="mailto:{{ business.email }}">{{ business.email }}</a></p>
+            </div>
+          </div>
          
             <!-- List of dishes as cards -->
             <div class="row mt-3">

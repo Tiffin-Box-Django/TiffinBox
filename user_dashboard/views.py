@@ -166,6 +166,10 @@ def business_details(request, pk):
     else:
         filters_form = FilterForm()
 
+    ph_no = business.phone_number
+    ph_no = ph_no[0:3] + "-" + ph_no[3:6] + "-" + ph_no[6:10]
+    business.phone_number = ph_no
+
     context = {
         'business': business,
         'tiffins': tiffins,
@@ -374,22 +378,26 @@ def deleteCartItem(request, id):
 
 
 def placeOrder(request):
-    tiffins = OrderItem.objects.filter(order_id__status=4, order_id__user_id=request.user)
     user = TBUser.objects.get(id=request.user.id)
-    if request.method == 'POST':
-        if request.user.is_authenticated:
+    order = Order.objects.get(user_id__id=request.user.id, status=4)
+    if request.user.is_authenticated:
+        if request.method == 'POST':
             shipping_address = request.POST.get('shippingAddress')
             phone_number = request.POST.get('phoneNumber')
-            if shipping_address and not user.shipping_address:
-                user.shipping_address = shipping_address
-                user.save()
-            if phone_number and not user.phone_number:
-                user.phone_number = phone_number
-                user.save()
-    for tiffin in tiffins:
-        order = Order.objects.get(id=tiffin.order_id.id)
+
+            if not shipping_address:
+                shipping_address = user.shipping_address
+            elif not phone_number:
+                phone_number = user.phone_number
+        else:
+            phone_number = user.phone_number
+            shipping_address = user.shipping_address
+
+        order.shipping_address = shipping_address
+        order.phone_number = phone_number
         order.status = 1
         order.save()
+
     return render(request, 'user_dashboard/placeOrder.html')
 
 

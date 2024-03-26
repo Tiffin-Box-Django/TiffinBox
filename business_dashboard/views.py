@@ -275,6 +275,8 @@ def tiffin_detail_delete_tiffin(request):
         return HttpResponse(status=204)
 
     the_tiffin = Tiffin.objects.get(id=request.POST['tiffin_id'])
+    Review.objects.filter(tiffin=the_tiffin).delete()
+    OrderItem.objects.filter(tiffin_id=the_tiffin).delete()
     the_tiffin.delete()
 
     return redirect("business_dashboard:tiffin")
