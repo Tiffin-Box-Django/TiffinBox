@@ -34,6 +34,7 @@
                     <th>Customer</th>
                     <th>Shipping Address</th>
                     <th>Phone Number</th>
+                    <th>Payment Method</th>
                     <th>Tiffin</th>
                     <th>Quantity</th>
                     <th>Total Price</th>
@@ -46,6 +47,7 @@
                         <td style="vertical-align:middle">{{ order.2.order_id.user_id.first_name }} {{ order.2.order_id.user_id.last_name }}</td>
                         <td style="vertical-align:middle">{{ order.2.order_id.shipping_address }}</td>
                         <td style="vertical-align:middle">{{ order.2.order_id.phone_number }}</td>
+                        <td style="vertical-align:middle">{{ order.1 }}</td>
                         <td style="vertical-align:middle">{{ order.2.tiffin_id.tiffin_name }}</td>
                         <td style="vertical-align:middle">{{ order.2.quantity }}</td>
                         <td style="vertical-align:middle">${{ order.2.order_id.total_price }}</td>

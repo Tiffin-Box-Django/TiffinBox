@@ -26,6 +26,8 @@ def tiffin(request):
         tiffin_id = request.POST.get('tiffin_id')
         tiffin_item = Tiffin.objects.get(id=tiffin_id, business_id__id=request.user.id)
         if tiffin_item:
+            Review.objects.filter(tiffin=tiffin_item).delete()
+            OrderItem.objects.filter(tiffin_id=tiffin_item).delete()
             tiffin_item.delete()
             return redirect("business_dashboard:tiffin")
     else:
