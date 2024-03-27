@@ -279,10 +279,9 @@ def signup(request):
             # Redirect to login page after successful signup
             return redirect('user_dashboard:login')
         else:
-            for error in list(form.errors.values()):
-                messages.error(request, error)
+
             return render(request, 'user_dashboard/signup.html',
-                          {'form': form, 'error': form.errors})
+                          {'form': form})
     else:
         form = SignUpForm()
     return render(request, 'user_dashboard/signup.html', {'form': form})
