@@ -36,13 +36,13 @@
                   </a>
                     <a href="{% url 'business_dashboard:edit_tiffin' dish.id %}" class="btn btn-primary" style="margin-right: 1em">Edit
                   </a>
-                  <form id="delete-form-{{ dish.id }}" action="{% url 'business_dashboard:tiffin' %}" method="POST">
-                     {% csrf_token %}
-                     <input type="hidden" name="tiffin_id" value="{{ dish.id }}">
-                     <button type="button" class="btn btn-danger" style="margin-left: 12em" onclick="confirmDelete({{ dish.id }})">
-                     <i class="fa fa-trash"></i>
-                     </button>
-                  </form>
+{#                  <form id="delete-form-{{ dish.id }}" action="{% url 'business_dashboard:tiffin' %}" method="POST">#}
+{#                     {% csrf_token %}#}
+{#                     <input type="hidden" name="tiffin_id" value="{{ dish.id }}">#}
+{#                     <button type="button" class="btn btn-danger" style="margin-left: 12em" onclick="confirmDelete({{ dish.id }})">#}
+{#                     <i class="fa fa-trash"></i>#}
+{#                     </button>#}
+{#                  </form>#}
                </div>
             </div>
         </div>
