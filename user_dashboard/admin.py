@@ -16,10 +16,15 @@ class SessionAdmin(admin.ModelAdmin):
         return obj.get_decoded().get('username')
 
 
+class TBUserAdmin(admin.ModelAdmin):
+    list_display = ["id", "first_name", "last_name", "username", "email", 'client_type']
+
+
+
 # Register your models here.
 admin.site.register(models.TiffinItemList)
 admin.site.register(models.Schedule)
-admin.site.register(models.TBUser)
+admin.site.register(models.TBUser, TBUserAdmin)
 admin.site.register(models.Tiffin)
 admin.site.register(models.TiffinContent)
 admin.site.register(models.Testimonial)

@@ -1,0 +1,1 @@
+[{"model": "user_dashboard.schedule", "pk": 1, "fields": {"frequency": 1}}, {"model": "user_dashboard.schedule", "pk": 2, "fields": {"frequency": 2}}, {"model": "user_dashboard.schedule", "pk": 3, "fields": {"frequency": 3}}, {"model": "user_dashboard.schedule", "pk": 4, "fields": {"frequency": 4}}]
